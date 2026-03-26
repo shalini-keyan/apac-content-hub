@@ -1,0 +1,44 @@
+# ── Sensitive internal data ───────────────────────────────────
+*.csv
+*.xlsx
+*.pdf
+*.json
+
+# ── Re-allow generated site data ─────────────────────────────
+!assets.json
+!hot-this-week.json
+
+# ── Internal folders ──────────────────────────────────────────
+2026 Strategic priorities/
+anz-sales-insights/
+apac-insights-hub/
+apac-marketing-hub/
+brand-champions-apac/
+brand-champions-apac-static/
+campaign-measurement-agent/
+merchant-research-agents/
+shopify-connect-2026/
+apps-script/
+
+# ── Internal HTML/MD files ────────────────────────────────────
+anz-content-funnel.html
+apac-sales-insights-hub.html
+audit-pdfs.html
+audit-pdfs-melbourne.html
+melbourne-dm-pack-paste.html
+shopify-adv-vs-plus.html
+outreach-internal.md
+outreach-ortus.md
+review_stories_table.md
+Sydney_Connect_Rego_Summary.md
+links_review_rows.json
+review_values.json
+
+# ── OS / Editor ───────────────────────────────────────────────
+.DS_Store
+.cursor/
+*.swp
+*.swo
+
+# ── Deploy temp folders ───────────────────────────────────────
+/tmp/

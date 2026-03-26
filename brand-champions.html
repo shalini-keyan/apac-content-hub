@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand Champions — Shopify APAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #f9fafb; color: #111827; min-height: 100vh; }
+
+/* ── Topbar ── */
+.topbar {
+  background: #0a0a1a; color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px; position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid #1e2a1e;
+}
+.topbar-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+.topbar-badge {
+  background: #008060; color: #fff; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.topbar-right { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+.topbar-right a { color: #9ca3af; text-decoration: none; }
+.topbar-right a:hover { color: #fff; }
+
+/* ── Hero ── */
+.bc-hero {
+  background: linear-gradient(135deg, #008060 0%, #004c3f 100%);
+  padding: 36px 32px 28px; color: #fff;
+}
+.bc-hero h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.bc-hero p  { font-size: 14px; opacity: 0.85; max-width: 680px; line-height: 1.6; }
+.bc-tip {
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px; padding: 10px 16px; margin-top: 14px;
+  font-size: 12px; line-height: 1.5; max-width: 700px;
+}
+.bc-tip strong { color: #fff; }
+
+/* ── Tone banner ── */
+.li-tone-banner {
+  background: #f0f6ff; border-bottom: 1px solid #dbeafe; padding: 10px 32px;
+  display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151;
+  border-left: 4px solid #008060;
+}
+.li-tone-banner-icon { font-size: 15px; flex-shrink: 0; }
+.li-tone-banner a, .li-tone-banner button.li-tone-banner-btn {
+  color: #008060; text-decoration: none; font-weight: 600; background: none;
+  border: none; cursor: pointer; font-family: inherit; font-size: 13px; padding: 0;
+}
+.li-tone-banner a:hover, .li-tone-banner button.li-tone-banner-btn:hover { text-decoration: underline; }
+
+/* ── Filters ── */
+.li-filters {
+  background: #fff; border-bottom: 1px solid #e5e7eb;
+  padding: 12px 32px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  position: sticky; top: 52px; z-index: 90; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.li-search-wrap { position: relative; flex: 1 1 220px; }
+.li-search-wrap input {
+  width: 100%; padding: 8px 10px 8px 30px; border: 1px solid #d1d5db;
+  border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; background: #f9fafb;
+}
+.li-search-wrap input:focus { border-color: #008060; background: #fff; }
+.li-search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 12px; }
+.li-select {
+  flex: 0 1 180px; padding: 8px 24px 8px 10px; border: 1px solid #d1d5db;
+  border-radius: 6px; font-size: 13px; font-family: inherit; background: #f9fafb;
+  outline: none; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239BA3AF' strokeWidth='1.5' strokeLinecap='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+}
+.li-select:focus { border-color: #008060; }
+.li-count { font-size: 13px; color: #6b7280; margin-left: auto; white-space: nowrap; }
+.li-clear { background: none; border: none; color: #008060; font-size: 12px; font-weight: 500; cursor: pointer; padding: 0; }
+.li-new-chip {
+  display: flex; align-items: center; gap: 5px; padding: 7px 11px;
+  border: 1.5px dashed #d1d5db; border-radius: 20px; background: #fff;
+  color: #6b7280; font-size: 12px; font-weight: 500; cursor: pointer;
+  font-family: inherit; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+}
+.li-new-chip:hover { border-color: #10b981; color: #065f46; }
+.li-new-chip.active { border-style: solid; border-color: #10b981; color: #065f46; background: #ecfdf5; }
+.li-tone-pill {
+  display: flex; align-items: center; gap: 5px; padding: 7px 11px;
+  border: 1.5px dashed #d1d5db; border-radius: 20px; background: #fff;
+  color: #6b7280; font-size: 12px; font-weight: 500; cursor: pointer;
+  font-family: inherit; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+}
+.li-tone-pill:hover { border-color: #008060; color: #008060; }
+.li-tone-pill.has-tone { border-style: solid; border-color: #008060; color: #008060; background: #f0fdf4; }
+
+/* ── Cards ── */
+.li-grid {
+  max-width: 1280px; margin: 0 auto; padding: 24px 32px 60px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px;
+}
+.li-card {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 18px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07); transition: box-shadow 0.15s, border-color 0.15s;
+}
+.li-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.10); border-color: #c3c8d0; }
+.li-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.li-tag { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+.li-tag-market { background: #f3f4f6; color: #6b7280; font-weight: 500; }
+.li-post-text { font-size: 13px; line-height: 1.65; color: #1a1d23; white-space: pre-wrap; word-break: break-word; flex: 1; }
+.li-show-more { margin-top: 4px; background: none; border: none; color: #008060; font-size: 12px; font-weight: 500; cursor: pointer; padding: 0; font-family: inherit; }
+.li-actions { display: flex; gap: 7px; flex-wrap: wrap; }
+.li-btn-copy {
+  flex: 1; min-width: 70px; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid #e5e7eb; background: #fff; color: #6b7280;
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-family: inherit; transition: all 0.15s;
+}
+.li-btn-copy:hover { background: #f9fafb; border-color: #c3c8d0; }
+.li-btn-copy.copied { background: #ecfdf5; color: #065f46; border-color: #86efac; }
+.li-btn-post {
+  flex: 1.4; min-width: 130px; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid #0a66c2; background: #e8f1fb; color: #0a66c2;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-family: inherit; transition: all 0.15s; text-decoration: none;
+}
+.li-btn-post:hover { background: #0a66c2; color: #fff; }
+.li-btn-source {
+  padding: 8px 10px; border-radius: 6px; border: 1px solid #e5e7eb;
+  background: #fff; color: #9ca3af; font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  font-family: inherit; transition: all 0.15s; text-decoration: none; white-space: nowrap;
+}
+.li-btn-source:hover { border-color: #c3c8d0; color: #6b7280; }
+.li-empty { text-align: center; padding: 60px 20px; color: #9ca3af; }
+.li-empty-icon { font-size: 32px; margin-bottom: 10px; }
+
+/* ── Tone modal ── */
+.li-tone-opt {
+  border: 2px solid #e5e7eb; border-radius: 10px; padding: 14px;
+  cursor: pointer; transition: all 0.15s; text-align: left; background: #fff; font-family: inherit;
+}
+.li-tone-opt:hover { border-color: #008060; background: #f0fdf4; }
+.li-tone-opt.selected { border-color: #008060; background: #dcfce7; }
+.li-tone-opt-icon { font-size: 22px; margin-bottom: 6px; display: block; }
+.li-tone-opt-name { font-size: 13px; font-weight: 700; color: #111827; display: block; margin-bottom: 3px; }
+.li-tone-opt-desc { font-size: 11px; color: #6b7280; line-height: 1.4; display: block; }
+.li-tone-opt-example { font-size: 11px; color: #008060; font-style: italic; margin-top: 5px; display: block; }
+
+/* ── Footer ── */
+footer {
+  background: #0a0a1a; color: #9ca3af; text-align: center;
+  padding: 16px 20px; font-size: 12px; border-top: 1px solid #1e2a1e;
+}
+footer a { color: #9ca3af; text-decoration: none; }
+footer a:hover { color: #fff; }
+
+@media (max-width: 600px) {
+  .li-grid { padding: 16px; }
+  .li-filters { padding: 10px 16px; }
+  .bc-hero { padding: 24px 16px 20px; }
+  #li-tone-options { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <span>★</span>
+    Brand Champions
+    <span class="topbar-badge">APAC</span>
+  </div>
+  <div class="topbar-right">
+    <a href="https://apac-brand-champions.quick.shopify.io" target="_self">apac-brand-champions.quick.shopify.io</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="bc-hero">
+  <h1>Brand Champions</h1>
+  <p>Ready-to-use LinkedIn posts for Shopify team members — from global leadership perspectives to event highlights, PR moments, campaigns, and evergreen content. Filtered for ANZ and Japan. Make every post yours before you publish.</p>
+  <div class="bc-tip">
+    <strong>Make it yours before you post.</strong> These are starting points, not scripts. Add a personal anecdote, swap in a stat that resonates, or lead with your own take. The goal is no two people on the team post the same thing. Authenticity always outperforms a copied template.
+  </div>
+</div>
+
+<!-- TONE BANNER -->
+<div class="li-tone-banner" id="li-tone-banner">
+  <span class="li-tone-banner-icon">✍️</span>
+  <span id="li-tone-banner-text">Personalise how posts sound before you copy or post. <button class="li-tone-banner-btn" onclick="liShowToneModal()">Set your tone →</button></span>
+</div>
+
+<!-- FILTERS -->
+<div class="li-filters">
+  <div class="li-search-wrap">
+    <span class="li-search-icon">🔍</span>
+    <input type="text" id="li-search" placeholder="Search posts, topics, brands…" oninput="liRender()" autocomplete="off">
+  </div>
+  <select class="li-select" id="li-section" onchange="liRender()">
+    <option value="">All posts</option>
+    <option value="Global Leaders">Posts from Global Leaders</option>
+    <option value="Events &amp; Webinars">Events &amp; Webinars</option>
+    <option value="PR &amp; Comms">PR &amp; Comms</option>
+    <option value="Campaign">Campaign</option>
+    <option value="Evergreen">Evergreen</option>
+  </select>
+  <select class="li-select" id="li-region" onchange="liRender()">
+    <option value="">All regions</option>
+    <option value="ANZ">ANZ</option>
+    <option value="Japan">Japan</option>
+  </select>
+  <button class="li-new-chip" id="li-new-chip" onclick="liToggleNew()" title="Show posts added in the last update">🆕 New this week</button>
+  <span class="li-count" id="li-count"></span>
+  <button class="li-clear" id="li-clear" style="display:none" onclick="liClear()">Clear ×</button>
+  <button class="li-tone-pill" id="li-tone-pill" onclick="liShowToneModal()" title="Personalise your writing tone">
+    <span id="li-tone-pill-icon">✍️</span>
+    <span id="li-tone-pill-label">Set my tone</span>
+  </button>
+</div>
+
+<!-- GRID -->
+<div class="li-grid" id="li-grid"></div>
+<div class="li-empty" id="li-empty" style="display:none">
+  <div class="li-empty-icon">🔍</div>
+  <div style="font-size:15px;font-weight:600;margin-bottom:6px">No posts match your filters</div>
+  <div style="font-size:13px">Try adjusting the search or filters above</div>
+</div>
+
+<!-- TONE MODAL -->
+<div id="li-tone-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;align-items:center;justify-content:center;">
+  <div id="li-tone-modal" style="background:#fff;border-radius:14px;padding:28px 28px 24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative;max-height:90vh;overflow-y:auto;">
+    <button onclick="liCloseToneModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af;">✕</button>
+
+    <div id="li-step-name">
+      <div style="font-size:13px;font-weight:600;color:#008060;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">Brand Champions</div>
+      <h3 style="font-size:20px;font-weight:700;color:#111827;margin-bottom:6px;">First, who are you?</h3>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:20px;line-height:1.5;">We'll set up how posts get rewritten in your voice before opening in LinkedIn.</p>
+      <input id="li-name-input" type="text" placeholder="Your first name" autocomplete="off"
+        style="width:100%;padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:15px;font-family:inherit;outline:none;color:#111827;box-sizing:border-box;margin-bottom:12px;"
+        oninput="document.getElementById('li-name-next').disabled=!this.value.trim()"
+        onkeydown="if(event.key==='Enter'&&this.value.trim())liNameNext()">
+      <button id="li-name-next" onclick="liNameNext()" disabled
+        style="width:100%;padding:12px;background:#008060;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;opacity:0.45;transition:opacity 0.15s;"
+        onmouseover="if(!this.disabled)this.style.opacity='1'" onmouseout="if(!this.disabled)this.style.opacity='0.9'">Continue →</button>
+    </div>
+
+    <div id="li-step-quiz" style="display:none;">
+      <div style="font-size:13px;font-weight:600;color:#008060;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">3 quick questions</div>
+      <h3 id="li-quiz-heading" style="font-size:19px;font-weight:700;color:#111827;margin-bottom:18px;"></h3>
+      <div id="li-quiz-options" style="display:flex;flex-direction:column;gap:9px;margin-bottom:20px;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div id="li-quiz-dots" style="display:flex;gap:5px;"></div>
+        <button id="li-quiz-next" onclick="liQuizNext()" disabled
+          style="padding:10px 20px;background:#008060;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;opacity:0.45;transition:opacity 0.15s;">Next →</button>
+      </div>
+    </div>
+
+    <div id="li-step-result" style="display:none;">
+      <div style="font-size:13px;font-weight:600;color:#008060;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">Your style</div>
+      <div id="li-result-card" style="margin-bottom:20px;"></div>
+      <button onclick="liConfirmTone()" style="width:100%;padding:12px;background:#008060;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:10px;">Looks right — let's go</button>
+      <button onclick="liShowManualPick()" style="width:100%;padding:10px;background:#fff;color:#6b7280;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Choose a different style</button>
+    </div>
+
+    <div id="li-step-pick" style="display:none;">
+      <div style="font-size:13px;font-weight:600;color:#008060;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">Choose your style</div>
+      <div id="li-tone-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;"></div>
+      <button id="li-tone-save" onclick="liSaveTone()" style="width:100%;padding:12px;background:#008060;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Save my tone</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  For questions about this site, reach out to
+  <a href="mailto:shalini.keyan@shopify.com">Shalini Keyan</a>
+  &nbsp;|&nbsp;
+  <a href="mailto:shalini.keyan@shopify.com">shalini.keyan@shopify.com</a>
+</footer>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────
+const LI_POSTS = [{"id":1,"sheet":"Fresh & Timely","market":"Australia","type":"PR","topic":"Global data from Shopify merchants for the full Black Friday reveals our merchants' total 2025 sales were: $6.2 Billion USD - up 25% from last year\nPeak Sales (GMV) Per Minute: $5.1 million on Black Friday at 12:01 PM EST (up from 4.6M last year)\nTop Selling Countries: U.S., UK, Germany, Australia, Canada \n\nAustralia highlights from Shopify merchants from Black Friday shows:\nPeak Sales Hour: 10AM AEST on November 28\nTop Selling Cities: Melbourne, Sydney, and Brisbane\nTop Product Categories by Orders: Clothing Tops, Cosmetics, Activewear, Dresses, Fitness & Nutrition\nPercentage of Cross-Border Orders: 14%\nGrowth in offline retail sales via Shopify POS: POS sales made by Shopify merchants in Australia have grown by 53% since Black Friday last year.","link":"https://www.shopifyholidayretail.com/","date":"Dec 2025"},{"id":2,"sheet":"Fresh & Timely","market":"Australia, Japan, SEA","type":"Merchant Win","topic":"Harley post: When 115-Year-Old GM Chooses Shopify for Digital Innovation\n\n• Enterprise Trust: General Motors launching their OnStar store on Shopify proves our platform handles the most complex enterprise commerce needs\n• Innovation at Scale: GM built their connected vehicle services store using Hydrogen, showcasing how our headless commerce framework enables modern, custom experiences\n• Future-Forward Commerce: This partnership demonstrates that entrepreneurship and innovation don't stop at company age","link":"https://www.linkedin.com/feed/update/urn:li:activity:7394418807848460289/","date":"Nov 2025"},{"id":3,"sheet":"Fresh & Timely","market":"Australia, Japan, SEA","type":"Product","topic":"Carl Rivera post: Designing for Ambition\n\n• Design-First Innovation: Our Chief Design Officer Carl Rivera shares the untold story of Shop's creation and how Shopify's obsession with design details has consistently reshaped entire industries\n• Leadership Transparency: This rare glimpse into Shopify's internal culture and design history showcases the thoughtful leadership and long-term thinking that drives our platform innovations\n• Industry Impact: When design leaders discuss how \"obsessing over the right details can reshape industries,\" it reveals why enterprises trust Shopify","link":"https://www.linkedin.com/feed/update/urn:li:activity:7393689130758545408/","date":"Nov 2025"},{"id":4,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"Black Friday sales set to be biggest on record with shoppers spending billions on deals\n\nABC News reports on the BFCM sales hitting Australia, with insights from JB Hi-Fi, Australian Retail Association and Shopify. James Johnson explains how shopping behaviours are evolving as more consumers are using AI to discover new products, exploring a mix of online and in-store.\n\nKey insights:\n- More than a third (38%) plan to split it evenly between online and in-store\n- 31% planned to do a majority in-store, 25% plan to do a majority online\n- 50% preferred to shop online for smaller items, head in-store for larger purchases\n- 78% of retailers felt more confident than last year","link":"","date":"Nov 2025"},{"id":5,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"PR","topic":"Shopify Q3 Results & Growth Momentum\n\n• Proven Scale: 41% international GMV growth, particularly strong in JAPAC\n• Enterprise Trust: Major brands like Estée Lauder, Michael Kors, FanDuel choosing Shopify\n• Cross-Sector Growth: B2B nearly doubled, offline GMV up 31%\n• AI Innovation: Partnerships with OpenAI, Microsoft Copilot, Perplexity\n• Market Impact: New merchant onboarding every 26 seconds globally","link":"https://www.linkedin.com/feed/update/urn:li:activity:7391733197371228160/","date":"Nov 2025"},{"id":6,"sheet":"Evergreen","market":"Australia, SEA","type":"Campaign","topic":"New Marketing Campaign — Time to Value\n\n• EY-Verified Leadership: Research proves fastest migration times, lowest costs, and measurable incremental revenue from switching\n• Proven Scale Success: JB Hi-Fi scaled from $200M to $1B revenue; Brand Collective rapidly onboards 19+ retail brands\n• Competitive Edge: World's best-converting checkout (50% lift with Shop Pay), first-to-market channel access (ChatGPT, Roblox), 38 of 39 quarters outperforming market","link":"https://www.shopify.com/au/compare/time-to-value","date":"Oct 2025"},{"id":7,"sheet":"Evergreen","market":"Australia, Japan","type":"PR","topic":"Shopify Launches its Holiday Retail Report 2025\n\nThe report unpacks:\n- The economic reality: Planned holiday spending is up, but consumers set strict budgets\n- AI as the next platform shift: AI is now a practical tool for personalisation and efficiency\n- Unified commerce is no longer optional: Shoppers are discovering and buying across online, offline, social and beyond\n- Modern loyalty: Speed, ease, and credible values drive repeat purchase","link":"https://www.shopifyholidayretail.com/","date":"Oct 2025"},{"id":8,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"PR","topic":"Estée Lauder x Shopify Partnership Announcement\n\n• C-Suite Validation: CEO-level public endorsement positioning Shopify as strategic transformation partner\n• Innovation Leadership: Unified experience powered by data, technology, and personalisation capabilities\n• Digital Transformation: Part of Estée Lauder's \"Beauty Reimagined\" journey to move faster and connect deeper","link":"https://www.linkedin.com/posts/stephanedelafaverie_thrilled-to-share-a-major-milestone-for-the-activity-7391254026929020947-ctLi","date":"Nov 2025"},{"id":9,"sheet":"Evergreen","market":"Australia, SEA","type":"Blog","topic":"Fashion Brand Storytelling Advice\n\n• Proven ROI: Well-executed storytelling increases perceived brand value by up to 98%\n• Enterprise Success Stories: SKIMS ($4B valuation), Everlane (record conversions), Mejuri (5.7x sales boost) all built on Shopify\n• Strategic Framework: Five storytelling types — heritage, sustainability, community, innovation, and lifestyle","link":"https://www.shopify.com/sg/enterprise/blog/best-fashion-ecommerce-websites","date":"N/A"},{"id":10,"sheet":"Evergreen","market":"Australia, SEA","type":"Blog","topic":"Retail Analytics & Performance Guide\n\n• Unified Analytics Advantage: Connected data across online/offline channels vs fragmented systems\n• Performance Impact: Real-time business data makes companies 17% better at risk management, 20% better at innovation, 22% more efficient\n• Complete Solution: Shopify's 60+ prebuilt dashboards unify POS and ecommerce data into single reporting system","link":"https://www.shopify.com/sg/enterprise/blog/retail-reports","date":"N/A"},{"id":11,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"From \u201cWhy AI?\u201d to \u201cWhy Not AI?\u201d: Building an AI-enabled culture\n\nJames Johnson of Shopify emphasises building an AI-enabled culture to maximise AI\u2019s impact. Rather than isolated projects, AI should be embedded across workflows with leadership support, clear frameworks, and collaboration. AI should amplify human capabilities, focusing on strategic business goals.","link":"","date":"Oct 2025"},{"id":12,"sheet":"Evergreen","market":"Australia","type":"Case Study","topic":"How The Good Guys built scalability and confidence online\n\nThe Good Guys revamped its outdated e-commerce platform by migrating to Shopify, enabling scalability, faster performance, and streamlined operations. This business-led transformation improved collaboration, data insights, and readiness for peak retail periods.","link":"","date":"Oct 2025"},{"id":13,"sheet":"Evergreen","market":"Australia, SEA","type":"Product","topic":"Lovable Shopify Integration\n\n• Innovation Leadership: Shopify's AI roadmap enables users to build complete stores using simple text prompts\n• Seamless Creation: From concept to live store in minutes — AI handles setup, product descriptions, and publishing directly to Shopify\n• Commerce Vision: This AI-first approach represents how Shopify is transforming commerce operations for businesses of all sizes","link":"https://www.linkedin.com/posts/lovable-dev_introducing-the-lovable-shopify-integration-activity-7386416370449678336-rsa_","date":"Oct 2025"},{"id":16,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"PR / Product","topic":"Shopify and OpenAI bring commerce to ChatGPT\n\n- People can discover and buy products from Shopify merchants directly in ChatGPT\n- Shopify Catalog powers the experience with real-time product data, making hundreds of millions of products instantly discoverable\n- Merchants keep what matters most: customer relationships, order management, and merchant of record status","link":"","date":"Sept 2025"},{"id":19,"sheet":"Evergreen","market":"Australia, SEA","type":"Case Study","topic":"How Brand Collective Consolidated 19 Brands on Shopify and Unlocked 10% Sales Growth\n\n• Platform Consolidation: Migrated 19 brands from fragmented tech stack (Magento, BigCommerce, Salesforce) — reduced maintenance overhead by 60%, new brand launch time from 6 to 3 months\n• Dramatic Efficiency: Scaled from 20+ people to 6, while achieving 15-25% increase in checkout conversion rates\n• Test-and-Scale: Built reusable frameworks enabling A/B testing on one brand and instant rollout across all 19 stores","link":"https://www.shopify.com/au/case-studies/brand-collective","date":"Sept 2025"},{"id":21,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"PR / Product","topic":"Shopify and Klaviyo: Unified Commerce and CRM Now Powered by AI\n\n• Decade-Long Partnership: 117,000+ brands use both Shopify and Klaviyo, achieving 62% average GMV growth in 12 months\n• AI-Driven Independence: Sub-200ms data flow enables marketers to launch sophisticated campaigns in hours, not weeks\n• Proven Impact: Dollar Shave Club achieved 30%+ reduction in total cost of ownership with 60%+ faster campaign setup","link":"https://www.shopify.com/partners/blog/shopify-klaviyo-crm","date":"N/A"},{"id":22,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Blog","topic":"How Kendo Brands (Fenty Beauty) Leads Beauty Innovation by Taking Bold Risks with Shopify\n\n• Social Commerce Pioneer: Launched on TikTok Shop in under 60 days; created first-ever Fenty Beauty Gloss Bomb Lab on Roblox\n• Unified Global Strategy: Scaled to 191 countries in just two months on one platform\n• \"Phygital\" Experience: Seamlessly connected NYC pop-up with Shop app exclusives and Roblox gameplay","link":"https://www.shopify.com/enterprise/blog/kendo","date":"N/A"},{"id":25,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Product","topic":"Shopify Launch Check: Free App Eliminates Launch Day Surprises with 2-Minute AI Health Checks\n\n• AI-driven recommendations based on actual store data, not generic advice\n• Comprehensive health checks that complete in under 2 minutes\n• Collaborative checklists keep merchants, partners, and teams synchronised on launch readiness","link":"https://www.linkedin.com/posts/rukmanisubramanian_launch-day-can-make-or-break-a-merchant-activity-7370858691945787392-F7UE","date":"Sept 2025"},{"id":27,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"PR","topic":"Everlane.com Live on Shopify: From Radical Transparency to Platform Innovation\n\n• Founder-driven disruption: Michael Preysman challenged luxury fashion's 10x markups with radical transparency, creating viral waitlists of 60,000+ customers\n• Pioneering commerce: Everlane became the first brand to use Shop Pay Commerce Components\n• Technical transformation: Their new Shopify site delivers 4.5x faster performance compared to their previous headless build","link":"https://www.linkedin.com/posts/harleyf_everlanecom-is-live-on-shopify-what-makes-activity-7371573186200776706-PZGT","date":"Sept 2025"},{"id":28,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"Australia Post partners with Shopify to deliver seamless shipping for businesses\n\nThousands of businesses across Australia now have a quicker and easier way to manage shipping thanks to a powerful new integration between Australia Post and Shopify. The built-in connection allows businesses to seamlessly book shipments, print labels and track parcels without toggling between platforms.","link":"https://newsroom.auspost.com.au/australia-post-partners-with-shopify-to-deliver-seamless-shipping-for-businesses","date":"Sept 2025"},{"id":30,"sheet":"Evergreen","market":"Australia, SEA","type":"Product","topic":"Product demo video series to accelerate sales conversations\n\nTeams now have a powerful new resource to showcase Shopify's platform capabilities. The collection features three short demonstrations (under 5 minutes each) of checkout extensibility functionality, designed to help prospects visualise platform value before committing to sales conversations.","link":"https://www.shopify.com/resources/enterprise/product-demos","date":"Sept 2025"},{"id":31,"sheet":"Evergreen","market":"SEA","type":"Case Study","topic":"New Case Study: How Delugs expanded across Asia, the Middle East, and the US on Shopify Markets, boosting checkout conversion rate by 58%\n\n• Custom Watch Finder tool reduced sizing errors and returns\n• Shopify Markets localisation unlocked seamless international expansion — US now represents 40%+ of total revenue\n• Dedicated B2B expansion store launched in under a month","link":"https://www.shopify.com/case-studies/delugs","date":"Sept 2025"},{"id":32,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"How Aussie businesses are fighting back against rising costs\n\nShaun Broughton on how Australian retailers facing rising costs are shifting from defensive cost-cutting to proactive moves:\n- 38% of Australian retail leaders are taking more risks to outpace cautious competitors\n- 39% have raised prices on at least one product\n- 99% see non-local markets as important; 26% have already expanded internationally","link":"https://businessbuilders.com.au/business-advice/growth/how-aussie-businesses-are-fighting-back-against-rising-costs/","date":"Aug 2025"},{"id":35,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Blog","topic":"Multi-Brand Ecommerce Strategy: Scale with AI and Shopify Collective\n\n• Portfolio Diversification: Global ecommerce forecast to exceed $7.3 trillion by 2027\n• AI-Powered Cross-Selling: Larroudé's 21% revenue increase and 82% new customer acquisition through Shopify Collective\n• Unified Infrastructure: Escalade Sports' 139% sales boost and tripled checkout completion rates","link":"https://www.shopify.com/au/enterprise/blog/multi-brand-ecommerce","date":"Aug 2025"},{"id":36,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Product","topic":"Shopify's \"Scout\" Internal AI Agent Transforms Merchant Feedback Into Product Innovation\n\n• Merchant Voice Amplification: Scout bridges the gap between scattered merchant feedback and product development teams\n• Non-Engineer Innovation: Shopify's Support team built their own AI solution, proving innovative solutions can emerge from any team\n• Reduced Distance to Customers: CEO Tobias Lütke highlighted Scout as connecting engineers directly with merchant experiences","link":"https://x.com/tobi/status/1958244700189790549","date":"Aug 2025"},{"id":37,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Product","topic":"Shopify for Agents\n\n- Shopify Catalog lets your agent search millions of products from Shopify merchants, with accurate inventory and localised pricing\n- Universal Cart allows shoppers to add products from different stores to a single cart\n- Checkout Kit combines a merchant's fully customised checkout with the agent's branding\n- Microsoft Copilot is already using Checkout Kit","link":"https://www.linkedin.com/posts/harleyf_shopify-makes-it-easy-to-bring-shopping-on-activity-7358589918211702785-GPA-","date":"Aug 2025"},{"id":38,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"PR","topic":"Q2 Earnings Results: Shopify is steady, strong and built on discipline\n\nGMV hit $87.8B, up 31%. Eighth straight quarter of GMV growth above 20%.\nRevenue reached $2.7B, also up 31%. Nine straight quarters of 25%+ top-line growth.\nFree cash flow margin was 16%. Eleven straight quarters of positive free cash flow.\nShop Pay Q2: $27B GMV, +65% YoY. Cumulative: $252B GMV since inception.","link":"","date":"Aug 2025"},{"id":39,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"How Shopify's Sidekick is Powering Smarter Commerce in 2025\n\nShaun Broughton unpacks Sidekick, Shopify's AI-powered assistant designed to help merchants work smarter by simplifying tasks like content creation, marketing, and customer engagement.","link":"https://techedgeai.com/how-shopifys-sidekick-is-powering-smarter-commerce-in-2025/","date":"Aug 2025"},{"id":40,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"Shopify research reveals cautious AI adoption among ANZ retailers\n\n- 83% of ANZ businesses plan to use AI in some capacity in 2025\n- 17% have no plans to integrate AI — nearly 3x higher than rest of APAC (6%)\n- 55% plan to use AI for content generation; fewer intend to use AI for customer service (27%) or personalisation (26%)","link":"","date":"Aug 2025"},{"id":43,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Trends / Data","topic":"Shopify Recognised as a Leader in Gartner's Voice of the Customer for Digital Commerce\n\n- Shopify's leadership in digital commerce is reinforced by Gartner's Voice of the Customer report\n- Demonstrates superior capabilities over Salesforce\n- Access the full report to leverage in client discussions and position Shopify as a trusted advisor","link":"https://www.shopify.com/resource/gartner-voice-of-customer","date":"July 2025"},{"id":45,"sheet":"Evergreen","market":"APAC","type":"Case Study","topic":"New Case Study: Bydee's 189% Global Sales Growth via International Expansion\n\n• Automated checkout features (tiered discounts, free gifts) drove 26% AOV increase\n• Localised expansion stores with region-specific currency and shipping unlocked 500% US revenue growth\n• Shopify Flow automation handled 131% customer growth without increasing manual workload","link":"https://www.shopify.com/au/case-studies/bydee","date":"June 2025"},{"id":46,"sheet":"Evergreen","market":"APAC","type":"Case Study","topic":"FRANKIE4 boosts innovation with Shopify, increasing site visits by 170%. Highlights unified commerce, enhanced engagement, and scalability benefits.","link":"https://www.shopify.com/au/case-studies/frankie4","date":"Apr 2025"},{"id":47,"sheet":"Evergreen","market":"APAC","type":"Case Study","topic":"Allied Medical transforms B2B with Shopify, reducing backend tasks by 40%. Highlights improved B2B operations, enhanced customer experience, and accelerated growth.","link":"https://www.shopify.com/au/case-studies/allied-medical","date":"Apr 2025"},{"id":51,"sheet":"Evergreen","market":"APAC","type":"Whitepapers / eBooks","topic":"The Innovation Mindset: Five Shifts for Modern CTOs\n\n• Strategic Leadership Development: Helps CTOs transition from purely technical roles to strategic business leaders\n• Innovation Framework: Provides proven strategies like first principles thinking and modular system approaches\n• Industry Insights: Features perspectives from top technology leaders across retail and ecommerce","link":"https://www.shopify.com/au/resource/innovationmindset","date":"May 2025"},{"id":52,"sheet":"Evergreen","market":"APAC","type":"Case Study","topic":"Hommey Slashes Development Costs by 70% and Drives 254% Revenue Growth with Shopify Plus Migration\n\n• In-house agility replaces developer dependency: eliminated costly external developer needs\n• Unified commerce: seamless integration of B2B wholesale, POS systems, and Ship from Store\n• Speed to market: launched 11 new product lines and expanded globally with Shopify Markets","link":"https://www.shopify.com/case-studies/hommey","date":"July 2025"},{"id":54,"sheet":"Evergreen","market":"APAC","type":"PR","topic":"Blue Bungalow's human-first AI strategy wins over cautious shoppers\n\nHow Blue Bungalow, a fashion retailer, has successfully implemented a human-first AI strategy to improve customer service and gain the trust of hesitant online shoppers. Includes reference to their use of Sidekick to gain critical data and insights.","link":"https://www.retailbiz.com.au/topics/customer-service/blue-bungalows-human-first-ai-strategy-wins-over-cautious-shoppers/","date":"June 2025"},{"id":56,"sheet":"Evergreen","market":"APAC","type":"PR","topic":"How Retailers Who Integrate AI Early Will Define the Future of Commerce\n\nShaun Broughton emphasises that retailers who adopt AI early will gain a competitive edge. Early AI integration offers: personalised shopping experiences, predictive analytics for demand forecasting, and streamlined supply chains.","link":"https://www.retailbiz.com.au/contributor/how-retailers-who-integrate-ai-early-will-define-the-future-of-commerce/","date":"July 2025"},{"id":57,"sheet":"Evergreen","market":"APAC","type":"PR","topic":"EOFY: Shopify sees 18% lift in local buyers as they hunt for value\n\nNew EOFY data shows the number of consumers in Australia buying from Shopify merchants in June increased 18.1% in the 24-25 FY. Top trending categories: Orthopedic Pet Beds (+1,607%), Soft-Structured Baby Carriers (+1,543%), Video Baby Monitors (+1,197%), Swim Boxers (+1,005%).","link":"","date":"N/A"},{"id":58,"sheet":"Evergreen","market":"Australia, Japan, SEA","type":"Product","topic":"Shopify Collective Expands Globally — Regional Brand Partnerships available for 36 New Countries (including ANZ, JP, SG)\n\n• Merchants can access Shopify Collective in 36 additional countries\n• Platform handles all order processing, payment coordination, and fulfillment between brand partners\n• Risk-free catalog expansion — zero inventory risk, automated workflows","link":"https://www.shopify.com/collective","date":"Aug 2025"},{"id":59,"sheet":"Evergreen","market":"Australia","type":"PR","topic":"James Johnson interview on Add To Cart's Checkout series\n\nJJ, Shopify's ANZ Director, on AI-first approaches in ecommerce. His philosophy: focus on what matters to customers, stay curious, start small, and move fast rather than getting caught up in flashy features.","link":"https://addtocart.com.au/add-to-cart/james-johnson-from-shopify-542/","date":"Aug 2025"},{"id":101,"isNew":true,"sheet":"From Slack","market":"Australia, SEA, Japan","type":"Case Study","topic":"75 retail locations. Two separate platforms. One expensive problem.\n\nSea Bags was running Clover POS in-store and Salesforce Commerce Cloud online. After unifying on Shopify:\n↓ 20% reduction in platform fees ($70K annual savings)\n📧 1,200 customer emails captured per week at POS checkout\n↑ 47% email opt-in rate at checkout\n📍 36 retail locations + online unified under one platform","link":"https://www.shopify.com/case-studies/sea-bags","date":"Jan 2026"},{"id":102,"isNew":true,"sheet":"From Slack","market":"Australia, SEA, Japan","type":"Case Study","topic":"80+ stores. 3 months. No on-site IT required.\n\nFaherty was running Shopify online + NewStore for retail — data silos, integration failures. After unifying on Shopify:\n✓ 80+ stores deployed in 3 months with remote setup\n✓ BOPIS and ship-from-store now live across all locations\n✓ One unified catalog — no more pricing mismatches\n✓ Associates have full customer visibility: loyalty, gift cards, complete order history","link":"https://www.shopify.com/enterprise/blog/faherty-unified-commerce","date":"Jan 2026"},{"id":103,"sheet":"From Slack","market":"Australia, SEA, Japan","type":"Case Study","topic":"Three iconic brands. Nine months. On time, on scope, on budget.\n\nThe ALDO Group after replatforming on Shopify:\n📈 +20% YoY conversion increase in first 2 months post-launch\n⚡ Release process reduced from hours to seconds\n🚀 3 brands launched on a single platform in under 9 months","link":"https://www.shopify.com/case-studies/aldo-group","date":"Dec 2025"},{"id":104,"sheet":"From Slack","market":"Australia, SEA, Japan","type":"Case Study","topic":"\"Change or die.\" — The words that led a 75-year-old retailer to Shopify.\n\nDavid's Bridal accomplished in 9 months what typically takes years:\n✓ Complete replatform of a 75-year-old retail brand\n✓ Canada market launch\n✓ New concept store opened\n✓ First-of-its-kind interactive screens powered by Shopify POS","link":"https://www.shopify.com/case-studies/davids-bridal","date":"Oct 2025"},{"id":105,"isNew":true,"sheet":"From Slack","market":"Australia, SEA","type":"Case Study","topic":"From 12 engineers maintaining infrastructure to 6 engineers building competitive advantage.\n\nCocunat moved from a fully custom commerce stack to Shopify:\n👥 Technical team: 12–15 → 5–6 people, fully focused on strategy\n⏱️ POS setup time reduced to 1–2 hours per location\n🌍 20+ international markets managed without engineering projects\n⚡ 50% less time on operational issues → 50% more on strategic work","link":"https://www.shopify.com/case-studies/cocunat","date":"Mar 2026"},{"id":106,"sheet":"From Slack","market":"Australia, SEA, Japan","type":"LinkedIn Insights","topic":"5 things that actually move the needle on LinkedIn organic reach:\n\n1️⃣ Engage in the first 30 minutes — the algorithm prioritises early engagement signals\n2️⃣ Write longer posts that go \"below the fold\" — LinkedIn favours quality, longer-form content\n3️⃣ Upload video natively — LinkedIn deprioritises external links\n4️⃣ Tag strategically — one tag to a well-connected person can 10x your organic reach\n5️⃣ Personalise corporate messaging — \"just helped a client implement this\" beats pure corporate messaging","link":"","date":"Aug 2025"},{"id":107,"sheet":"From Slack","market":"Australia, SEA, Japan","type":"LinkedIn Insights","topic":"When should you use Thought Leader Ads on LinkedIn? From our APAC campaigns:\n\n✓ Lead with technical credibility for technical audiences\n✓ \"Warm\" your thought leaders with organic posts before adding paid spend\n✓ Start with 2–3 thought leaders, stagger the amplification\n✓ Position content as value-exchange: \"benchmark yourself in 10 mins\" outperforms \"read our whitepaper\"","link":"","date":"Sep 2025"},{"id":108,"sheet":"From Slack","market":"Australia","type":"Case Study","topic":"How The Good Guys rebuilt their ecommerce foundation — and why it mattered more than they expected.\n\n✓ Scalability they didn't have to engineer themselves\n✓ Faster site performance across their entire catalogue\n✓ Streamlined operations across the business\n✓ Better data insights that actually reached the right teams\n✓ A team that could focus on growth, not platform maintenance","link":"","date":"Nov 2025"},
+
+
+// ── ICONS ────────────────────────────────────────────────────
+const LI_ICON = `<svg width="13" height="13" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
+const COPY_ICON_LI = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+const EXTERNAL_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>`;
+
+const LI_TRUNCATE = 350;
+const liExpanded = new Set();
+
+function liEsc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── SECTION LOGIC ────────────────────────────────────────────
+function liGetSection(p) {
+  if (p.type === 'Event / Webinar') return 'Events & Webinars';
+  if (p.type === 'PR')              return 'PR & Comms';
+  if (p.type === 'Campaign')        return 'Campaign';
+  if (p.sheet === 'Evergreen')      return 'Evergreen';
+  return 'Global Leaders';
+}
+
+function liMatchRegion(p, region) {
+  const m = (p.market || '').toLowerCase();
+  if (region === 'ANZ')   return m.includes('australia') || m === 'apac';
+  if (region === 'Japan') return m.includes('japan');
+  return true;
+}
+
+// ── RENDER ───────────────────────────────────────────────────
+let liShowNew = false;
+function liToggleNew() {
+  liShowNew = !liShowNew;
+  document.getElementById('li-new-chip').classList.toggle('active', liShowNew);
+  liRender();
+}
+
+function liRender() {
+  const q      = (document.getElementById('li-search')?.value||'').toLowerCase();
+  const sec    = document.getElementById('li-section')?.value||'';
+  const region = document.getElementById('li-region')?.value||'';
+  const hasFilter = q||sec||region||liShowNew;
+  document.getElementById('li-clear').style.display = hasFilter ? '' : 'none';
+
+  const filtered = LI_POSTS.filter(p => {
+    if (liShowNew && !p.isNew) return false;
+    if (sec    && liGetSection(p) !== sec)   return false;
+    if (region && !liMatchRegion(p, region)) return false;
+    if (q && !(p.topic+p.market+p.type+p.sheet).toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  document.getElementById('li-count').textContent = filtered.length + ' of ' + LI_POSTS.length + ' posts';
+  document.getElementById('li-empty').style.display = filtered.length ? 'none' : 'block';
+
+  const sectionColors = {
+    'Global Leaders':   {bg:'#f0fdf4',text:'#166534'},
+    'Events & Webinars':{bg:'#eff6ff',text:'#1e40af'},
+    'PR & Comms':       {bg:'#fef3c7',text:'#92400e'},
+    'Campaign':         {bg:'#fdf4ff',text:'#7e22ce'},
+    'Evergreen':        {bg:'#ecfdf5',text:'#065f46'},
+  };
+
+  const c = document.getElementById('li-grid');
+  c.innerHTML = filtered.map(p => {
+    const sectionLabel = liGetSection(p);
+    const scol = sectionColors[sectionLabel] || {bg:'#f3f4f6',text:'#374151'};
+    const isLong = p.topic.length > LI_TRUNCATE;
+    const isExp  = liExpanded.has(p.id);
+    const display = isLong && !isExp ? p.topic.slice(0, LI_TRUNCATE) + '…' : p.topic;
+    return `<div class="li-card" id="li-card-${p.id}">
+      <div class="li-tags">
+        <span class="li-tag" style="background:${scol.bg};color:${scol.text};font-weight:600">${liEsc(sectionLabel)}</span>
+        <span class="li-tag li-tag-market">${liEsc(p.market)}</span>
+        ${p.date ? `<span class="li-tag" style="background:#f9fafb;color:#9ca3af;font-weight:400">${liEsc(p.date)}</span>` : ''}
+      </div>
+      <div>
+        <p class="li-post-text" id="li-text-${p.id}">${liEsc(display)}</p>
+        ${isLong ? `<button class="li-show-more" onclick="liToggle(${p.id})">${isExp ? 'Show less' : 'Show full post'}</button>` : ''}
+      </div>
+      <div class="li-actions">
+        <button class="li-btn-copy" id="li-copy-${p.id}" onclick="liCopyPost(${p.id})">${COPY_ICON_LI} Copy</button>
+        <button class="li-btn-post" onclick="liOpenPost(${p.id})">${LI_ICON} Post to LinkedIn</button>
+        ${p.link ? `<a class="li-btn-source" href="${liEsc(p.link)}" target="_blank" rel="noopener">${EXTERNAL_ICON} Source</a>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function liToggle(id) {
+  if (liExpanded.has(id)) liExpanded.delete(id); else liExpanded.add(id);
+  liRender();
+  document.getElementById('li-card-'+id)?.scrollIntoView({block:'nearest'});
+}
+
+function liCopyPost(id) {
+  const p = LI_POSTS.find(x => x.id === id);
+  if (!p) return;
+  const toneKey = liGetTone();
+  const text = toneKey ? liTransformPost(p.topic, toneKey) : p.topic;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('li-copy-'+id);
+    if (btn) {
+      btn.classList.add('copied');
+      btn.innerHTML = COPY_ICON_LI + ' Copied!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = COPY_ICON_LI + ' Copy'; }, 2000);
+    }
+  });
+}
+
+function liClear() {
+  document.getElementById('li-search').value  = '';
+  document.getElementById('li-section').value = '';
+  document.getElementById('li-region').value  = '';
+  liShowNew = false;
+  document.getElementById('li-new-chip').classList.remove('active');
+  liRender();
+}
+
+function liOpenPost(id) {
+  const p = LI_POSTS.find(x => x.id === id);
+  if (!p) return;
+  const toneKey = liGetTone();
+  const text = toneKey ? liTransformPost(p.topic, toneKey) : p.topic;
+  window.open('https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
+
+// ── TONE PROFILES ────────────────────────────────────────────
+const LI_TONES = {
+  story: {
+    icon: '📖', name: 'Story-first',
+    desc: 'Opens with a personal hook, pulls the reader in before the content',
+    example: '"I was in a conversation last week that stuck with me..."',
+    openers: [
+      "I was in a conversation last week that stuck with me.\n\n",
+      "Something came up in a prospect call that I keep thinking about.\n\n",
+      "Here's something worth sharing from the field:\n\n",
+      "A merchant I work with asked me a question last week I hadn't heard before. It led me to this.\n\n",
+    ],
+    closers: ["\n\nCurious if others are seeing the same thing.", "\n\nWhat's your experience been?", "\n\nHappy to share more if this resonates."],
+  },
+  data: {
+    icon: '📊', name: 'Data-led',
+    desc: 'Leads with the key stat or result, then unpacks the so-what',
+    example: '"The numbers don\'t lie. Worth pausing on this..."',
+    openers: ["The numbers don't lie.\n\n", "Worth pausing on this:\n\n", "This data caught my attention this week:\n\n", "A stat I've been sharing with every account I work with:\n\n"],
+    closers: ["\n\nIf you're working through similar challenges, worth a conversation.", "\n\nThe data is clear. The question is what you do with it.", "\n\nLet me know if you'd like to dig into what this means for your business."],
+  },
+  insight: {
+    icon: '💡', name: 'Insight-led',
+    desc: 'Opinionated take, thought leader voice, invites debate',
+    example: '"Here\'s what I keep coming back to..."',
+    openers: ["Here's what I keep coming back to:\n\n", "The most underrated part of this:\n\n", "What nobody talks about enough:\n\n", "An angle I don't hear discussed nearly enough:\n\n"],
+    closers: ["\n\nHappy to debate this.", "\n\nAgree? Disagree? Genuinely want to know.", "\n\nThis is the conversation we should be having."],
+  },
+  direct: {
+    icon: '⚡', name: 'Direct',
+    desc: 'Sharp and specific, no fluff, gets to the point fast',
+    example: '"Quick one. This is worth your time..."',
+    openers: ["Quick one.\n\n", "Worth your time:\n\n", "This is relevant.\n\n", ""],
+    closers: ["\n\nReach out if this is relevant to where you are.", "\n\nHappy to share the full story.", "\n\nLet's talk."],
+  },
+};
+
+const LI_TEAM = {
+  'james':'insight','jj':'insight','shalini':'insight','daniel':'data','alice':'data',
+  'shaun':'insight','shane':'direct','gabby':'story','daniela':'data','jason':'insight',
+  'gareth':'story','vivey':'direct','tricia':'direct','nadine':'data','ross':'data',
+  'steph':'story','stephanie':'story','kostas':'data','dano':'story','fanshen':'story',
+  'hannah':'story','frankie':'data','junichi':'direct','derek':'story','kajsa':'data',
+  'sarah':'data','taylor':'insight','chris':'direct','tucker':'data','matt':'insight',
+  'ruxandra':'direct','lindsey':'direct',
+};
+
+const LI_QUIZ = [
+  { q:"When you post on LinkedIn, you usually open with…", opts:[{label:"A story or observation from the field",tone:'story'},{label:"A number, stat, or result",tone:'data'},{label:"A question or a provocative take",tone:'insight'},{label:"The point — no preamble",tone:'direct'}]},
+  { q:"How do you usually close a post?", opts:[{label:'"Curious if others are seeing the same thing"',tone:'story'},{label:'"The data is clear. Worth acting on."',tone:'data'},{label:'"Agree? Disagree? Genuinely want to know."',tone:'insight'},{label:"A single CTA or nothing at all",tone:'direct'}]},
+  { q:"Which opening sounds most like you?", opts:[{label:'"A merchant I work with asked me something last week…"',tone:'story'},{label:'"31% growth. Here\'s what that actually means…"',tone:'data'},{label:'"What nobody talks about enough in this space…"',tone:'insight'},{label:'"Worth your time. Short version:"',tone:'direct'}]},
+];
+
+let _selectedTone = null, _quizStep = 0, _quizAnswers = [], _quizName = '';
+
+function liGetTone() { return localStorage.getItem('li_tone') || null; }
+function liRand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function liTransformPost(text, toneKey) {
+  const tone = LI_TONES[toneKey]; if (!tone) return text;
+  let cleaned = text
+    .replace(/\s*[\u2014\u2013—–]\s*/g, ', ')
+    .replace(/\b(it(?:'s| is) worth noting that |it(?:'s| is) important to note that |importantly,?\s+|notably,?\s+|interestingly,?\s+|it should be noted that )\s*/gi, '')
+    .replace(/^(This is (interesting|worth (sharing|reading|your time)|relevant)\.\s*\n+)/i, '')
+    .replace(/\n{3,}/g, '\n\n').replace(/ +\n/g, '\n').trim();
+  const paras = cleaned.split('\n\n');
+  const lines  = cleaned.split('\n').filter(l => l.trim());
+  const hasStats = /\d+[\d,\.]*\s*%|\d+[xX]\b|\$[\d,\.]+/.test(cleaned);
+  if (toneKey === 'data' && hasStats) {
+    let bestLine = null, bestScore = -1;
+    lines.forEach((l, i) => {
+      if (i === 0) return;
+      const score = [...(l.match(/(\d[\d,\.]*)\s*%/g)||[])].reduce((s,m)=>s+parseFloat(m),0)
+                  + [...(l.match(/(\d+)[xX]\b/g)||[])].reduce((s,m)=>s+parseFloat(m)*20,0)
+                  + (l.match(/\$[\d,\.]+[BMKbmk]?/g)?50:0);
+      if (score > bestScore) { bestScore = score; bestLine = l; }
+    });
+    if (bestLine && bestScore > 0) cleaned = bestLine.trim() + '\n\n' + lines.filter(l=>l!==bestLine).join('\n');
+  }
+  if (toneKey === 'insight') {
+    const tp = paras.find((p,i)=>i>0&&(p.trim().endsWith('?')||/\b(but |however,|the question is|nobody talks about|not the same)\b/i.test(p)));
+    if (tp) cleaned = tp.trim() + '\n\n' + paras.filter(p=>p!==tp).join('\n\n');
+  }
+  if (toneKey === 'direct') {
+    const sp = paras.filter(p=>/\d+%|\d+[xX]\b|\$[\d]|\b(grew|surged|launched|migrated|switched|tripled|doubled|reduced|cut|boosted|unified)\b/i.test(p));
+    cleaned = (sp.length>=2?sp.slice(0,3):paras.slice(0,3)).join('\n\n');
+  }
+  const firstSentence = cleaned.trim().split('\n')[0]||'';
+  const alreadyNarrative = /^[A-Z][a-z]+ (is |was |has |had |launched |moved |switched |built |grew |went |started )/.test(firstSentence);
+  const opener = (toneKey==='story'&&alreadyNarrative) ? '' : (toneKey==='data'&&!hasStats) ? liRand(["Worth sharing:\n\n","This one is relevant:\n\n","Came across this recently:\n\n"]) : liRand(tone.openers);
+  return opener + cleaned + liRand(tone.closers);
+}
+
+// ── TONE MODAL ───────────────────────────────────────────────
+function liModalStep(step) {
+  ['name','quiz','result','pick'].forEach(s => document.getElementById('li-step-'+s).style.display = s===step?'':'none');
+}
+
+function liUpdateToneBanner() {
+  const toneKey = liGetTone(), savedName = localStorage.getItem('li_name');
+  const bannerTxt = document.getElementById('li-tone-banner-text'); if (!bannerTxt) return;
+  if (toneKey && LI_TONES[toneKey]) {
+    const tone = LI_TONES[toneKey], nameStr = savedName ? savedName+"'s" : 'your';
+    bannerTxt.innerHTML = `${tone.icon} Posts open in ${nameStr} voice &mdash; <strong>${tone.name}</strong>. <button class="li-tone-banner-btn" onclick="liShowToneModal()">Change tone →</button>`;
+  } else {
+    bannerTxt.innerHTML = `Personalise how posts sound before you copy or post. <button class="li-tone-banner-btn" onclick="liShowToneModal()">Set your tone →</button>`;
+  }
+}
+
+function liUpdateTonePill() {
+  const toneKey = liGetTone(), savedName = localStorage.getItem('li_name');
+  const pill = document.getElementById('li-tone-pill'), icon = document.getElementById('li-tone-pill-icon'), label = document.getElementById('li-tone-pill-label');
+  if (toneKey && LI_TONES[toneKey]) {
+    pill.classList.add('has-tone'); icon.textContent = LI_TONES[toneKey].icon;
+    label.textContent = savedName ? savedName+' · '+LI_TONES[toneKey].name : LI_TONES[toneKey].name;
+  } else {
+    pill.classList.remove('has-tone'); icon.textContent = '✍️';
+    label.textContent = savedName ? 'Hi '+savedName+' — set your tone' : 'Set my tone';
+  }
+}
+
+function liShowToneModal() {
+  _selectedTone = liGetTone();
+  const savedName = localStorage.getItem('li_name'), savedTone = liGetTone();
+  if (savedTone && savedName) { _quizName = savedName; document.getElementById('li-name-input').value = savedName; liShowResult(savedTone, false); }
+  else { document.getElementById('li-name-input').value = savedName||''; const nb = document.getElementById('li-name-next'); nb.disabled = !savedName; nb.style.opacity = savedName?'0.9':'0.45'; liModalStep('name'); }
+  document.getElementById('li-tone-overlay').style.display = 'flex';
+}
+
+function liCloseToneModal() { document.getElementById('li-tone-overlay').style.display = 'none'; }
+
+function liNameNext() {
+  const name = document.getElementById('li-name-input').value.trim(); if (!name) return;
+  _quizName = name; localStorage.setItem('li_name', name);
+  const prebaked = LI_TEAM[name.toLowerCase()];
+  if (prebaked) { _selectedTone = prebaked; liShowResult(prebaked, true); return; }
+  _quizStep = 0; _quizAnswers = []; liShowQuizStep(); liModalStep('quiz');
+}
+
+function liShowQuizStep() {
+  const q = LI_QUIZ[_quizStep];
+  document.getElementById('li-quiz-heading').textContent = q.q;
+  document.getElementById('li-quiz-options').innerHTML = q.opts.map((o,i)=>`<button class="li-quiz-opt" data-idx="${i}" onclick="liQuizSelect(${i})" style="text-align:left;padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;font-size:13px;color:#374151;cursor:pointer;font-family:inherit;transition:all 0.12s;line-height:1.4;">${o.label}</button>`).join('');
+  const next = document.getElementById('li-quiz-next'); next.disabled = true; next.style.opacity = '0.45';
+  next.textContent = _quizStep < LI_QUIZ.length-1 ? 'Next →' : 'See my style →';
+  document.getElementById('li-quiz-dots').innerHTML = LI_QUIZ.map((_,i)=>`<div style="width:7px;height:7px;border-radius:50%;background:${i===_quizStep?'#008060':'#e5e7eb'};transition:background 0.2s;"></div>`).join('');
+}
+
+function liQuizSelect(idx) {
+  _quizAnswers[_quizStep] = LI_QUIZ[_quizStep].opts[idx].tone;
+  document.querySelectorAll('.li-quiz-opt').forEach((el,i)=>{ el.style.borderColor=i===idx?'#008060':'#e5e7eb'; el.style.background=i===idx?'#f0fdf4':'#fff'; el.style.color=i===idx?'#008060':'#374151'; el.style.fontWeight=i===idx?'600':'400'; });
+  const next = document.getElementById('li-quiz-next'); next.disabled = false; next.style.opacity = '1';
+}
+
+function liQuizNext() {
+  if (_quizStep < LI_QUIZ.length-1) { _quizStep++; liShowQuizStep(); }
+  else {
+    const tally = {}; _quizAnswers.forEach(t=>{ tally[t]=(tally[t]||0)+1; });
+    const winner = Object.entries(tally).sort((a,b)=>b[1]-a[1])[0][0];
+    _selectedTone = winner; liShowResult(winner, false); liModalStep('result');
+  }
+}
+
+function liShowResult(toneKey, prebaked) {
+  const tone = LI_TONES[toneKey], name = _quizName || localStorage.getItem('li_name') || '';
+  document.getElementById('li-result-card').innerHTML = `<div style="background:#f0fdf4;border:2px solid #008060;border-radius:10px;padding:18px;"><div style="font-size:28px;margin-bottom:8px;">${tone.icon}</div><div style="font-size:18px;font-weight:700;color:#111827;margin-bottom:4px;">${name?name+', you\'re ':''} ${tone.name}</div><div style="font-size:13px;color:#374151;line-height:1.5;margin-bottom:10px;">${tone.desc}</div><div style="font-size:12px;color:#008060;font-style:italic;">${tone.example}</div>${prebaked?'<div style="font-size:11px;color:#9ca3af;margin-top:8px;">Pre-set for your profile. You can change this anytime.</div>':''}</div>`;
+  liModalStep('result');
+}
+
+function liConfirmTone() { if (!_selectedTone) return; localStorage.setItem('li_tone',_selectedTone); liCloseToneModal(); liUpdateTonePill(); liUpdateToneBanner(); }
+
+function liShowManualPick() {
+  _selectedTone = liGetTone();
+  document.getElementById('li-tone-options').innerHTML = Object.entries(LI_TONES).map(([key,t])=>`<button class="li-tone-opt${_selectedTone===key?' selected':''}" id="tone-opt-${key}" onclick="liSelectToneOpt('${key}')"><span class="li-tone-opt-icon">${t.icon}</span><span class="li-tone-opt-name">${t.name}</span><span class="li-tone-opt-desc">${t.desc}</span><span class="li-tone-opt-example">${t.example}</span></button>`).join('');
+  liModalStep('pick');
+}
+
+function liSelectToneOpt(key) { _selectedTone = key; document.querySelectorAll('.li-tone-opt').forEach(el=>el.classList.remove('selected')); document.getElementById('tone-opt-'+key)?.classList.add('selected'); }
+function liSaveTone() { if (!_selectedTone) return; localStorage.setItem('li_tone',_selectedTone); liCloseToneModal(); liUpdateTonePill(); liUpdateToneBanner(); }
+
+document.getElementById('li-tone-overlay').addEventListener('click', function(e) { if (e.target===this) liCloseToneModal(); });
+
+// ── INIT ─────────────────────────────────────────────────────
+liRender();
+liUpdateTonePill();
+liUpdateToneBanner();
+if (!liGetTone() && !sessionStorage.getItem('li_tone_prompted')) {
+  sessionStorage.setItem('li_tone_prompted','1');
+  setTimeout(liShowToneModal, 800);
+}
+</script>
+</body>
+</html>
