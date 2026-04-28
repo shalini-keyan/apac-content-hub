@@ -699,6 +699,17 @@
   }
   .weekly-guide-title { font-size: 12px; font-weight: 700; color: #111827; margin-bottom: 2px; }
   .weekly-guide-copy { font-size: 12px; color: #4b5563; line-height: 1.45; }
+  .weekly-score-help {
+    margin-top: 8px;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    background: #eff6ff;
+    padding: 7px 8px;
+    font-size: 12px;
+    color: #1e3a8a;
+    line-height: 1.45;
+  }
+  .weekly-score-help strong { color: #1d4ed8; }
   .weekly-guide.enablement {
     display: none;
     border-color: #d9d6fe;
@@ -864,6 +875,7 @@
   }
   .weekly-stat-value { font-size: 13px; font-weight: 800; color: #111827; line-height: 1.1; }
   .weekly-stat-label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.35px; margin-top: 2px; }
+  .weekly-stat-band { font-size: 10px; color: #334155; margin-top: 2px; font-weight: 700; }
   .weekly-block {
     border: 1px solid #eef0f2;
     border-radius: 8px;
@@ -1306,6 +1318,7 @@
     <div class="weekly-guide" id="weekly-guide-default">
       <div class="weekly-guide-title">How to use this view</div>
       <div class="weekly-guide-copy">Pick a country tab, scan <strong>High priority</strong> first, then review engagement context and campaign/keyword signals before outreach.</div>
+      <div class="weekly-score-help"><strong>How to read scores:</strong> Predict and Qual are 0 to 1 models (shown as 0 to 100%). Use bands: <strong>80%+</strong> high, <strong>50% to 79%</strong> medium, <strong>below 50%</strong> low. Engagement scores are relative activity signals, not revenue.</div>
     </div>
     <div class="weekly-guide enablement" id="weekly-guide-enablement">
       <div class="weekly-guide-title">Enablement Playbook (Simple English)</div>
@@ -3934,6 +3947,37 @@ function nextActionHint(signal, r) {
   return "Keep warm with short, relevant follow-up and watch for repeat commercial activity.";
 }
 
+function toNum(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function formatMetric(metric, value) {
+  const n = toNum(value);
+  if (n === null) return { display: "—", band: "No data" };
+
+  if (metric === "predict" || metric === "qual") {
+    const pct = Math.round(n * 100);
+    let band = "Low (<50%)";
+    if (pct >= 80) band = "High (80%+)";
+    else if (pct >= 50) band = "Medium (50-79%)";
+    return { display: `${pct}%`, band };
+  }
+
+  if (metric === "eng7") {
+    let band = "Low (<10)";
+    if (n >= 50) band = "High (50+)";
+    else if (n >= 10) band = "Medium (10-49)";
+    return { display: n.toFixed(1).replace(/\.0$/, ""), band };
+  }
+
+  // eng3
+  let band = "Low (<100)";
+  if (n >= 500) band = "High (500+)";
+  else if (n >= 100) band = "Medium (100-499)";
+  return { display: n.toFixed(1).replace(/\.0$/, ""), band };
+}
+
 function filterWeeklyRows(rows) {
   const q = weeklySearchQuery.trim().toLowerCase();
   return rows.filter(r => {
@@ -3964,6 +4008,10 @@ function buildWeeklyCards(regionName) {
         const keywordItems = splitSignalItems(r.campaignKeywords, 5);
         const confidence = confidenceLabel(r);
         const actionHint = nextActionHint(signalType, r);
+        const eng7 = formatMetric("eng7", r.engagement7d);
+        const eng3 = formatMetric("eng3", r.engagement3m);
+        const predict = formatMetric("predict", r.pipelinePredictScore);
+        const qual = formatMetric("qual", r.qualificationScore);
         return `
           <div class="weekly-card ${signalType}">
             <div class="weekly-card-top">
@@ -3982,20 +4030,24 @@ function buildWeeklyCards(regionName) {
 
             <div class="weekly-stats-row">
               <div class="weekly-stat-box">
-                <div class="weekly-stat-value">${escHtml(r.engagement7d || "—")}</div>
+                <div class="weekly-stat-value">${escHtml(eng7.display)}</div>
                 <div class="weekly-stat-label">Eng 7d</div>
+                <div class="weekly-stat-band">${escHtml(eng7.band)}</div>
               </div>
               <div class="weekly-stat-box">
-                <div class="weekly-stat-value">${escHtml(r.engagement3m || "—")}</div>
+                <div class="weekly-stat-value">${escHtml(eng3.display)}</div>
                 <div class="weekly-stat-label">Eng 3m</div>
+                <div class="weekly-stat-band">${escHtml(eng3.band)}</div>
               </div>
               <div class="weekly-stat-box">
-                <div class="weekly-stat-value">${escHtml(r.pipelinePredictScore || "—")}</div>
+                <div class="weekly-stat-value">${escHtml(predict.display)}</div>
                 <div class="weekly-stat-label">Predict</div>
+                <div class="weekly-stat-band">${escHtml(predict.band)}</div>
               </div>
               <div class="weekly-stat-box">
-                <div class="weekly-stat-value">${escHtml(r.qualificationScore || "—")}</div>
+                <div class="weekly-stat-value">${escHtml(qual.display)}</div>
                 <div class="weekly-stat-label">Qual</div>
+                <div class="weekly-stat-band">${escHtml(qual.band)}</div>
               </div>
             </div>
 
