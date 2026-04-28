@@ -748,7 +748,7 @@
 <body>
 
 <!-- ONBOARDING OVERLAY -->
-<div class="overlay" id="overlay">
+<div class="overlay hidden" id="overlay">
   <div class="onboard-card">
     <div class="onboard-logo">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
@@ -787,7 +787,7 @@
     <span class="topbar-badge">Weekly · APAC</span>
   </div>
   <div class="topbar-right">
-    <div class="viewing-as hidden" id="viewingAs" onclick="showOnboard()" title="Click to switch">
+    <div class="viewing-as hidden" id="viewingAs" title="Current view">
       <div class="va-avatar" id="vaAvatar"></div>
       <span class="va-label" id="vaLabel"></span>
       <span class="va-change">· switch</span>
@@ -2920,7 +2920,7 @@ function init() {
   } else if (saved) {
     applyAe(saved, false);   // restore saved AE silently
   } else {
-    showOnboard();           // first visit — show overlay
+    applyManager(false);     // default load without onboarding popup
   }
 
   renderAll();
@@ -2950,7 +2950,7 @@ function buildAeGrid() {
 }
 
 function showOnboard() {
-  document.getElementById("overlay").classList.remove("hidden");
+  return;
 }
 
 function selectAe(name) {
