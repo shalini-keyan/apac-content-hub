@@ -699,6 +699,12 @@
   }
   .weekly-guide-title { font-size: 12px; font-weight: 700; color: #111827; margin-bottom: 2px; }
   .weekly-guide-copy { font-size: 12px; color: #4b5563; line-height: 1.45; }
+  .weekly-guide.enablement {
+    display: none;
+    border-color: #d9d6fe;
+    background: linear-gradient(180deg, #f7f5ff 0%, #ffffff 100%);
+  }
+  .weekly-guide.enablement .weekly-guide-title { color: #4c1d95; }
   .weekly-legend {
     display: flex;
     align-items: center;
@@ -902,20 +908,56 @@
   .weekly-enable-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 10px;
+    gap: 12px;
   }
   .weekly-enable-card {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: #fff;
-    padding: 10px 11px;
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #faf5ff 0%, #ffffff 35%);
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+    box-shadow: 0 3px 10px rgba(76, 29, 149, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .weekly-enable-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #8b5cf6;
   }
   .weekly-enable-sec { font-size: 10px; font-weight: 700; letter-spacing: 0.45px; text-transform: uppercase; color: #6b7280; }
-  .weekly-enable-topic { font-size: 13px; font-weight: 700; color: #111827; }
-  .weekly-enable-line { font-size: 12px; color: #374151; line-height: 1.45; }
+  .weekly-enable-topic { font-size: 14px; font-weight: 800; color: #111827; line-height: 1.3; }
+  .weekly-enable-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+    background: #f5f3ff;
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+  .weekly-enable-line {
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.45;
+    border: 1px solid #ecebff;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 7px 8px;
+  }
+  .weekly-enable-line strong { color: #111827; }
 </style>
 </head>
 <body>
@@ -1209,11 +1251,15 @@
       </div>
       <div class="weekly-sub" id="weekly-sub-count"></div>
     </div>
-    <div class="weekly-guide">
+    <div class="weekly-guide" id="weekly-guide-default">
       <div class="weekly-guide-title">How to use this view</div>
       <div class="weekly-guide-copy">Pick a country tab, scan <strong>High priority</strong> first, then review engagement context and campaign/keyword signals before outreach.</div>
     </div>
-    <div class="weekly-legend">
+    <div class="weekly-guide enablement" id="weekly-guide-enablement">
+      <div class="weekly-guide-title">Enablement Playbook (Simple English)</div>
+      <div class="weekly-guide-copy">Use this page to train reps quickly. Each card uses <strong>What</strong>, <strong>Why</strong>, <strong>Now what</strong>, plus an example message.</div>
+    </div>
+    <div class="weekly-legend" id="weekly-legend">
       <span class="weekly-priority high">High priority</span>
       <span class="weekly-priority medium">Medium priority</span>
       <span class="weekly-mini-chip">Context retained</span>
@@ -3874,18 +3920,29 @@ function buildWeeklyCards(regionName) {
 function buildEnablementCards() {
   const rows = weeklyData.enablement || [];
   if (!rows.length) return '<div class="weekly-sub">No enablement content found.</div>';
+
+  const exampleByTopic = {
+    "Qualification Score": "Example: If Qual is high but there is no recent pricing/contact page activity, send a soft discovery message, not a hard sales pitch.",
+    "Pipeline Predict Score": "Example: High Predict + repeat visits to pricing/enterprise pages in 7 days = priority outreach this week.",
+    "Engagement Score": "Example: If engagement is mostly blog/tools traffic, treat as research interest and nurture first.",
+    "What is possible": "Example: A known contact opened a webinar email and visited pricing page. Mention both actions in your first outreach.",
+    "Platform limitation: anonymous account-level activity": "Example: Account shows high activity but no known person. Start with role-based outreach to likely buyer personas.",
+    "What “engaging” means": "Example: 'Engaging' means attention. It does not always mean buying now.",
+    "Trigger matrix (simple)": "Example: High Predict + High Qual + commercial page visits = act now. Informational-only signals = monitor."
+  };
+
   return `
     <div class="weekly-enable-grid">
       ${rows.map(r => `
       <div class="weekly-enable-card">
         <div class="weekly-enable-sec">${escHtml(r.section)}</div>
         <div class="weekly-enable-topic">${escHtml(r.topic)}</div>
-        <div class="weekly-enable-line"><strong>What it means:</strong> ${escHtml(r.whatItMeans)}</div>
-        <div class="weekly-enable-line"><strong>Platform limit:</strong> ${escHtml(r.platformLimit)}</div>
-        <div class="weekly-enable-line"><strong>Rep action:</strong> ${escHtml(r.repAction)}</div>
-        <div class="weekly-enable-line"><strong>Outreach trigger:</strong> ${escHtml(r.outreachTrigger)}</div>
-        <div class="weekly-enable-line"><strong>Do not overreact:</strong> ${escHtml(r.dontOverreact)}</div>
-        <div class="weekly-enable-line"><strong>Suggested motion:</strong> ${escHtml(r.suggestedMotion)}</div>
+        <div class="weekly-enable-pill">Simple team guidance</div>
+        <div class="weekly-enable-line"><strong>What:</strong> ${escHtml(shortText(r.whatItMeans, 210))}</div>
+        <div class="weekly-enable-line"><strong>Why:</strong> ${escHtml(shortText(r.platformLimit, 210))}</div>
+        <div class="weekly-enable-line"><strong>Now what:</strong> ${escHtml(shortText(r.repAction || r.suggestedMotion, 210))}</div>
+        <div class="weekly-enable-line"><strong>When to act:</strong> ${escHtml(shortText(r.outreachTrigger, 180))}</div>
+        <div class="weekly-enable-line"><strong>Example:</strong> ${escHtml(exampleByTopic[r.topic] || ("Example: " + shortText(r.suggestedMotion || r.repAction, 160)))}</div>
       </div>
       `).join("")}
     </div>
@@ -3896,15 +3953,21 @@ function renderWeeklyView() {
   const content = document.getElementById("weekly-content");
   const countEl = document.getElementById("weekly-sub-count");
   const signalFilter = document.getElementById("weekly-signal-filters");
+  const guideDefault = document.getElementById("weekly-guide-default");
+  const guideEnablement = document.getElementById("weekly-guide-enablement");
+  const legend = document.getElementById("weekly-legend");
   if (!content || !countEl) return;
 
   if (activeWeeklyTab === "Enablement") {
     content.innerHTML = buildEnablementCards();
-    countEl.textContent = `${(weeklyData.enablement || []).length} enablement topics`;
+    countEl.textContent = `${(weeklyData.enablement || []).length} enablement topics · plain-language mode`;
     const toolbar = document.getElementById("weekly-toolbar");
     const resultNote = document.getElementById("weekly-result-note");
     if (toolbar) toolbar.style.display = "none";
     if (signalFilter) signalFilter.style.display = "none";
+    if (guideDefault) guideDefault.style.display = "none";
+    if (guideEnablement) guideEnablement.style.display = "";
+    if (legend) legend.style.display = "none";
     if (resultNote) resultNote.textContent = "";
     return;
   }
@@ -3913,6 +3976,9 @@ function renderWeeklyView() {
   const resultNote = document.getElementById("weekly-result-note");
   if (toolbar) toolbar.style.display = "";
   if (signalFilter) signalFilter.style.display = "";
+  if (guideDefault) guideDefault.style.display = "";
+  if (guideEnablement) guideEnablement.style.display = "none";
+  if (legend) legend.style.display = "";
 
   const rows = (weeklyData.regions && weeklyData.regions[activeWeeklyTab]) || [];
   const filteredRows = filterWeeklyRows(rows);
