@@ -1,0 +1,3600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APAC Sales Insights Hub — Shopify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #008060;
+    --green-light: #00a877;
+    --bg: #f6f6f7;
+    --surface: #ffffff;
+    --border: #e1e3e5;
+    --text: #202223;
+    --muted: #6d7175;
+
+    /* Signal colours */
+    --mqa-bg: #d1fae5; --mqa-text: #065f46; --mqa-border: #6ee7b7; --mqa-dot: #10b981;
+    --lost-bg: #fee2e2; --lost-text: #991b1b; --lost-border: #fca5a5; --lost-dot: #ef4444;
+    --new-bg: #ede9fe;  --new-text: #5b21b6; --new-border: #c4b5fd; --new-dot: #8b5cf6;
+    --eng-bg: #fef9c3;  --eng-text: #713f12; --eng-border: #fde047; --eng-dot: #eab308;
+    --unm-bg: #f0f9ff;  --unm-text: #075985; --unm-border: #7dd3fc; --unm-dot: #0ea5e9;
+  }
+
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: #0d1117;
+    height: 52px;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-bottom: 1px solid #21262d;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 30px; height: 30px;
+    background: var(--green);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 16px; height: 16px; }
+  .topbar-title { color: #fff; font-size: 14px; font-weight: 600; letter-spacing: -0.2px; }
+  .topbar-badge {
+    font-size: 11px; font-weight: 500;
+    background: #21262d; color: #8b949e;
+    padding: 3px 8px; border-radius: 20px;
+    border: 1px solid #30363d;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .week-label { font-size: 12px; color: #8b949e; }
+  .week-label strong { color: #e6edf3; }
+  .topbar-owner { font-size: 11px; color: #6e7681; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #0a1628 50%, #0d2318 100%);
+    padding: 36px 28px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 90% at 50% 130%, rgba(0,128,96,0.3) 0%, transparent 65%);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+  .hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+  .hero h1 { font-size: 26px; font-weight: 700; color: #e6edf3; letter-spacing: -0.6px; line-height: 1.2; margin-bottom: 6px; }
+  .hero h1 span { color: #4ade80; }
+  .hero-sub { font-size: 13px; color: #8b949e; line-height: 1.5; max-width: 520px; }
+  .hero-sub strong { color: #b2d8c8; }
+
+  /* Signal legend pills */
+  .signal-legend { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .sig-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid;
+  }
+  .sig-pill .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .sig-mqa   { background: rgba(16,185,129,0.12); color: #6ee7b7; border-color: rgba(16,185,129,0.25); }
+  .sig-mqa   .dot { background: var(--mqa-dot); }
+  .sig-lost  { background: rgba(239,68,68,0.12);  color: #fca5a5; border-color: rgba(239,68,68,0.25); }
+  .sig-lost  .dot { background: var(--lost-dot); }
+  .sig-new   { background: rgba(139,92,246,0.12); color: #c4b5fd; border-color: rgba(139,92,246,0.25); }
+  .sig-new   .dot { background: var(--new-dot); }
+  .sig-eng   { background: rgba(234,179,8,0.12);  color: #fde047; border-color: rgba(234,179,8,0.25); }
+  .sig-eng   .dot { background: var(--eng-dot); }
+  .sig-unm   { background: rgba(14,165,233,0.12); color: #7dd3fc; border-color: rgba(14,165,233,0.25); }
+  .sig-unm   .dot { background: var(--unm-dot); }
+
+  /* Summary stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .stat-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .stat-num { font-size: 22px; font-weight: 700; color: #e6edf3; line-height: 1; }
+  .stat-label { font-size: 11px; color: #6e7681; margin-top: 2px; line-height: 1.3; }
+  .stat-mqa  .stat-icon { background: rgba(16,185,129,0.15); }
+  .stat-lost .stat-icon { background: rgba(239,68,68,0.15); }
+  .stat-new  .stat-icon { background: rgba(139,92,246,0.15); }
+  .stat-eng  .stat-icon { background: rgba(234,179,8,0.15); }
+  .stat-unm  .stat-icon { background: rgba(14,165,233,0.15); }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 28px;
+    position: sticky; top: 52px; z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+  .filter-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .search-wrap { position: relative; flex: 1 1 220px; min-width: 180px; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+  .search-wrap input {
+    width: 100%; padding: 8px 10px 8px 32px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; font-family: inherit; color: var(--text);
+    background: var(--bg); outline: none; transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--green); }
+
+  .divider { width: 1px; height: 22px; background: var(--border); }
+
+  .filter-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: var(--muted); white-space: nowrap; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--bg);
+    color: var(--text); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--green); color: var(--green); }
+  .chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+  .chip .cdot { width: 7px; height: 7px; border-radius: 50%; }
+
+  .ae-select {
+    padding: 7px 28px 7px 10px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; font-family: inherit;
+    color: var(--text); background: var(--bg); outline: none; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236d7175' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    transition: border-color 0.15s;
+  }
+  .ae-select:focus { border-color: var(--green); }
+
+  .results-info { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .results-info strong { color: var(--text); }
+
+  /* ── MAIN ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 24px 28px 60px; }
+
+  /* Section header */
+  .section-header {
+    display: flex; align-items: center; gap: 10px;
+    margin: 32px 0 14px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .section-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
+  .section-count {
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 10px; margin-left: 2px;
+  }
+  .section-desc { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+  /* Cards grid */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s, border-color 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; border-radius: 10px 0 0 10px;
+  }
+  .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #c9cdd1; }
+  .card.mqa::before  { background: var(--mqa-dot); }
+  .card.lost::before { background: var(--lost-dot); }
+  .card.new::before  { background: var(--new-dot); }
+  .card.eng::before  { background: var(--eng-dot); }
+  .card.unm::before  { background: var(--unm-dot); }
+
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .card-account { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.25; }
+  .card-website { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .signal-badge {
+    flex-shrink: 0; display: flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; border: 1px solid;
+    white-space: nowrap;
+  }
+  .signal-badge .bdot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-mqa  { background: var(--mqa-bg);  color: var(--mqa-text);  border-color: var(--mqa-border); }
+  .badge-mqa  .bdot { background: var(--mqa-dot); }
+  .badge-lost { background: var(--lost-bg); color: var(--lost-text); border-color: var(--lost-border); }
+  .badge-lost .bdot { background: var(--lost-dot); }
+  .badge-new  { background: var(--new-bg);  color: var(--new-text);  border-color: var(--new-border); }
+  .badge-new  .bdot { background: var(--new-dot); }
+  .badge-eng  { background: var(--eng-bg);  color: var(--eng-text);  border-color: var(--eng-border); }
+  .badge-eng  .bdot { background: var(--eng-dot); }
+  .badge-unm  { background: var(--unm-bg);  color: var(--unm-text);  border-color: var(--unm-border); }
+  .badge-unm  .bdot { background: var(--unm-dot); }
+
+  .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .meta-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px;
+    background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+    font-weight: 500;
+  }
+  .meta-tag.region { font-weight: 600; color: var(--text); }
+  .meta-tag.freshness-tag { color: #888; font-style: italic; border-style: dashed; }
+
+  .card-engagement {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .card-engagement .eng-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--muted); margin-bottom: 4px;
+    display: block;
+  }
+  .eng-item { display: flex; align-items: flex-start; gap: 6px; margin-top: 4px; }
+  .eng-item::before { content: '→'; font-size: 11px; color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 8px; border-top: 1px solid var(--border);
+    gap: 10px;
+  }
+  .ae-info { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .ae-info .ae-name { font-weight: 600; color: var(--text); }
+  .ae-avatar {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), #00a877);
+    color: #fff; font-size: 8px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .hook-preview {
+    margin: 8px 0 4px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .hook-preview summary {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    padding: 6px 10px; cursor: pointer; user-select: none;
+    list-style: none; display: flex; align-items: center; gap: 5px;
+  }
+  .hook-preview summary::before { content: "▶"; font-size: 8px; transition: transform 0.15s; }
+  .hook-preview[open] summary::before { transform: rotate(90deg); }
+  .hook-preview summary:hover { color: var(--text); }
+  .hook-text {
+    font-size: 12px; line-height: 1.6; color: var(--text);
+    padding: 8px 12px 10px; border-top: 1px dashed var(--border);
+    background: var(--bg); white-space: pre-wrap;
+    font-style: italic;
+  }
+  .outreach-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 12px; border-radius: 7px;
+    background: var(--green); color: #fff;
+    font-size: 11px; font-weight: 600; font-family: inherit;
+    border: none; cursor: pointer; text-decoration: none;
+    transition: background 0.15s; white-space: nowrap;
+  }
+  .outreach-btn:hover { background: var(--green-light); }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); display: none; }
+  .empty.visible { display: block; }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #f0fdf4; color: #166534;
+    border: 1px solid #bbf7d0; padding: 11px 16px;
+    border-radius: 10px; font-size: 13px; font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    z-index: 9999; transform: translateY(8px); opacity: 0;
+    transition: all 0.2s ease; pointer-events: none;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Section containers for show/hide */
+  .section-block { }
+  .section-block.hidden { display: none; }
+
+  /* How to use banner */
+  .how-to {
+    background: #eff6ff; border: 1px solid #bfdbfe;
+    border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 24px;
+  }
+  .how-to-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .how-to-body { font-size: 13px; color: #1e40af; line-height: 1.55; }
+  .how-to-body strong { display: block; font-weight: 700; margin-bottom: 3px; color: #1e3a8a; }
+
+  @media (max-width: 640px) {
+    .topbar, .filter-bar, .main { padding-left: 16px; padding-right: 16px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 24px 16px 28px; }
+  }
+
+  /* ── ONBOARDING OVERLAY ── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .overlay.hidden { display: none; }
+  .onboard-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 36px 40px;
+    max-width: 480px; width: 100%;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+  .onboard-logo {
+    width: 48px; height: 48px;
+    background: var(--green); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .onboard-card h2 { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+  .onboard-card p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+  .ae-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+    text-align: left;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .ae-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--bg); cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--text);
+    font-family: inherit; transition: all 0.15s;
+    text-align: left;
+  }
+  .ae-btn:hover { border-color: var(--green); background: #f0faf7; color: var(--green); }
+  .ae-btn:hover .ae-btn-avatar { background: var(--green); }
+  .ae-btn-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #d1d5db; color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s;
+  }
+  .ae-btn-info { display: flex; flex-direction: column; }
+  .ae-btn-name { font-size: 13px; font-weight: 600; }
+  .ae-btn-count { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .onboard-skip { font-size: 12px; color: var(--muted); cursor: pointer; background: none; border: none; font-family: inherit; text-decoration: underline; }
+  .onboard-skip:hover { color: var(--text); }
+
+  .manager-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-radius: 12px; margin-bottom: 4px;
+    border: 1.5px solid #1a1a2e;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0d2318 100%);
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+    text-align: left;
+  }
+  .manager-btn:hover { border-color: var(--green); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,128,96,0.2); }
+  .manager-btn-left { display: flex; align-items: center; gap: 12px; }
+  .manager-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(0,128,96,0.2); border: 1px solid rgba(0,128,96,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: #4ade80; flex-shrink: 0;
+  }
+  .manager-btn-label { font-size: 13px; font-weight: 700; color: #e6edf3; margin-bottom: 2px; }
+  .manager-btn-sub   { font-size: 11px; color: #8b949e; }
+  .manager-btn svg:last-child { color: #4d5566; flex-shrink: 0; }
+
+  .ae-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 16px 0 12px; color: var(--muted); font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.6px;
+  }
+  .ae-divider::before, .ae-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── TEAM SUMMARY BAR (manager mode) ── */
+  .team-bar {
+    background: #0d1117; border-bottom: 1px solid #21262d;
+    padding: 10px 28px; display: none;
+  }
+  .team-bar.visible { display: block; }
+  .team-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .team-bar-label { font-size: 11px; font-weight: 600; color: #6e7681; text-transform: uppercase; letter-spacing: 0.6px; margin-right: 4px; }
+  .team-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 20px;
+    background: #21262d; border: 1px solid #30363d;
+    font-size: 11px; font-weight: 500; color: #8b949e;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .team-chip:hover { border-color: var(--green); color: #4ade80; }
+  .team-chip .tc-count {
+    background: #30363d; color: #e6edf3;
+    border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 700;
+  }
+
+  /* ── VIEWING AS PILL ── */
+  .viewing-as {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(0,128,96,0.15);
+    border: 1px solid rgba(0,128,96,0.3);
+    border-radius: 20px;
+    padding: 4px 12px 4px 6px;
+    font-size: 12px; color: #4ade80;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .viewing-as:hover { background: rgba(0,128,96,0.25); }
+  .viewing-as .va-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--green); color: #fff;
+    font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .viewing-as .va-label { font-weight: 500; }
+  .viewing-as .va-change { opacity: 0.7; font-size: 10px; }
+  .viewing-as.hidden { display: none; }
+
+  /* ── VIEW TABS ── */
+  .view-tabs {
+    background: #0d1117;
+    border-bottom: 1px solid #21262d;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .view-tab {
+    padding: 11px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8b949e;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .view-tab:hover { color: #c9d1d9; }
+  .view-tab.active { color: #4ade80; border-bottom-color: #4ade80; }
+  .view-tab .tab-badge {
+    background: #21262d; color: #8b949e;
+    border-radius: 10px; padding: 1px 6px;
+    font-size: 10px; font-weight: 700;
+  }
+  .view-tab.active .tab-badge { background: rgba(74,222,128,0.15); color: #4ade80; }
+
+  /* ── SHOPIFY CONNECT VIC VIEW ── */
+  #vic-view { display: none; }
+  #vic-view.visible { display: block; }
+  .vic-main { max-width: 1200px; margin: 0 auto; padding: 24px 28px 60px; }
+
+  .vic-banner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0d2318 100%);
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .vic-banner-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+  .vic-banner-text h3 { font-size: 15px; font-weight: 700; color: #e6edf3; margin-bottom: 5px; }
+  .vic-banner-text p { font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .vic-banner-text strong { color: #4ade80; }
+
+  .vic-filter-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .vic-filter-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+  .vic-chip {
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--bg);
+    color: var(--text); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .vic-chip:hover { border-color: var(--green); color: var(--green); }
+  .vic-chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+  .vic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px; }
+
+  .vic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 11px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s, border-color 0.15s;
+    position: relative; overflow: hidden;
+  }
+  .vic-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; border-radius: 12px 0 0 12px;
+  }
+  .vic-card.p-high::before   { background: #ef4444; }
+  .vic-card.p-medium::before { background: #f59e0b; }
+  .vic-card.p-low::before    { background: #9ca3af; }
+  .vic-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: #c9cdd1; }
+
+  .vic-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .vic-account-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.25; }
+  .vic-account-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .intent-badge {
+    flex-shrink: 0;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+    border: 1px solid;
+  }
+  .intent-high   { background: rgba(239,68,68,0.1);   color: #dc2626; border-color: rgba(239,68,68,0.3); }
+  .intent-medium { background: rgba(245,158,11,0.1);  color: #d97706; border-color: rgba(245,158,11,0.3); }
+  .intent-low    { background: rgba(107,114,128,0.08); color: #6b7280; border-color: rgba(107,114,128,0.2); }
+  .intent-none   { background: rgba(107,114,128,0.05); color: #9ca3af; border-color: rgba(107,114,128,0.12); font-weight: 500; }
+
+  .vic-stats { display: flex; gap: 8px; }
+  .vic-stat {
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; flex: 1;
+  }
+  .vic-stat-val { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1; }
+  .vic-stat-lbl { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); margin-top: 3px; text-align: center; }
+  .vic-stat-val.green { color: #059669; }
+  .vic-stat-val.red   { color: #dc2626; }
+  .vic-stat-val.amber { color: #d97706; }
+
+  .vic-journey {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; border: 1px solid;
+  }
+  .vic-journey.sal      { background: rgba(239,68,68,0.1);   color: #dc2626; border-color: rgba(239,68,68,0.25); }
+  .vic-journey.mqa      { background: rgba(16,185,129,0.1);  color: #059669; border-color: rgba(16,185,129,0.25); }
+  .vic-journey.engaged  { background: rgba(234,179,8,0.1);   color: #d97706; border-color: rgba(234,179,8,0.25); }
+  .vic-journey.other    { background: rgba(107,114,128,0.08); color: #6b7280; border-color: rgba(107,114,128,0.15); }
+
+  .vic-keywords { display: flex; gap: 5px; flex-wrap: wrap; }
+  .vic-kw {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px;
+    background: rgba(139,92,246,0.08); color: #7c3aed;
+    border: 1px solid rgba(139,92,246,0.2); font-weight: 500;
+  }
+
+  .vic-contacts-block { font-size: 12px; }
+  .vic-contacts-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 5px; }
+  .vic-contact-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 0; border-top: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .vic-contact-name { font-weight: 600; color: var(--text); }
+  .vic-contact-title { color: var(--muted); }
+  .vic-contact-email { font-size: 11px; color: #0ea5e9; text-decoration: none; }
+  .vic-contact-email:hover { text-decoration: underline; }
+
+  .vic-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px solid var(--border); gap: 8px;
+    flex-wrap: wrap;
+  }
+  .vic-owner { font-size: 11px; color: var(--muted); display: flex; flex-direction: column; gap: 1px; }
+  .vic-owner strong { color: var(--text); font-weight: 600; }
+  .vic-sfdc-link {
+    font-size: 11px; color: var(--muted); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .vic-sfdc-link:hover { color: var(--green); border-color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="onboard-card">
+    <div class="onboard-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5M2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <h2>Who are you?</h2>
+    <p>Select your name to personalise this view to your accounts. Your choice is saved — you won't be asked again.</p>
+    <button class="manager-btn" onclick="selectManager()">
+      <div class="manager-btn-left">
+        <div class="manager-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <div class="manager-btn-label">Sales Lead / Manager</div>
+          <div class="manager-btn-sub">Full team view · all <span id="totalSignalCount"></span> signals across all AEs</div>
+        </div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="ae-divider"><span>or select your name</span></div>
+    <div class="ae-grid" id="aeGrid"></div>
+    <button class="onboard-skip" onclick="skipOnboard()">Skip for now</button>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5M2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <span class="topbar-title">APAC Sales Insights Hub</span>
+    <span class="topbar-badge">Weekly · APAC</span>
+  </div>
+  <div class="topbar-right">
+    <div class="viewing-as hidden" id="viewingAs" onclick="showOnboard()" title="Click to switch">
+      <div class="va-avatar" id="vaAvatar"></div>
+      <span class="va-label" id="vaLabel"></span>
+      <span class="va-change">· switch</span>
+    </div>
+    <a href="https://apacinsights-apr13.quick.shopify.io" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8b949e;text-decoration:none;padding:6px 12px;border:1px solid #30363d;border-radius:6px;transition:all 0.15s;white-space:nowrap;background:#161b22" onmouseover="this.style.color='#c9d1d9';this.style.borderColor='#58a6ff';this.style.background='#1c2128'" onmouseout="this.style.color='#8b949e';this.style.borderColor='#30363d';this.style.background='#161b22'">← Previous week: Apr 13</a>
+    <span class="week-label">Week of <strong id="weekLabel"></strong></span>
+  </div>
+</div>
+
+<!-- VIEW TABS -->
+<div class="view-tabs">
+  <div class="view-tab active" id="tab-signals" onclick="switchView('signals')">
+    Weekly Signals
+    <span class="tab-badge" id="tab-signals-badge">—</span>
+  </div>
+  <div class="view-tab" id="tab-vic" onclick="switchView('vic')">
+    🏟️ Shopify Connect VIC
+    <span class="tab-badge">12</span>
+  </div>
+</div>
+
+<!-- TEAM SUMMARY BAR (manager mode) -->
+<div class="team-bar" id="teamBar">
+  <div class="team-bar-inner" id="teamBarInner"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div>
+        <h1>Your <span>APAC</span> signal report</h1>
+        <p class="hero-sub">Accounts moving this week — <strong>act before someone else does.</strong> Each signal is personalised to your book. Prioritise, personalise, reach out.</p>
+      </div>
+      <div class="signal-legend">
+        <div class="sig-pill sig-mqa"><span class="dot"></span>MQA · No touch</div>
+        <div class="sig-pill sig-lost"><span class="dot"></span>Being worked · Re-engaging</div>
+        <div class="sig-pill sig-new"><span class="dot"></span>New buying contact</div>
+        <div class="sig-pill sig-eng"><span class="dot"></span>Engagement detail</div>
+        <div class="sig-pill sig-unm"><span class="dot"></span>Unmanaged · Engaged</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card stat-mqa">
+        <div class="stat-icon">🟢</div>
+        <div>
+          <div class="stat-num" id="countMqa">0</div>
+          <div class="stat-label">MQA hits · zero sales touch</div>
+        </div>
+      </div>
+      <div class="stat-card stat-lost">
+        <div class="stat-icon">🔴</div>
+        <div>
+          <div class="stat-num" id="countLost">0</div>
+          <div class="stat-label">Active opps visiting Shopify.com</div>
+        </div>
+      </div>
+      <div class="stat-card stat-new">
+        <div class="stat-icon">🟣</div>
+        <div>
+          <div class="stat-num" id="countNew">0</div>
+          <div class="stat-label">New buying contacts engaging</div>
+        </div>
+      </div>
+      <div class="stat-card stat-eng">
+        <div class="stat-icon">🟡</div>
+        <div>
+          <div class="stat-num" id="countEng">0</div>
+          <div class="stat-label">Engagement details tracked</div>
+        </div>
+      </div>
+      <div class="stat-card stat-unm">
+        <div class="stat-icon">🔵</div>
+        <div>
+          <div class="stat-num" id="countUnm">0</div>
+          <div class="stat-label">Unmanaged · no owner · engaged</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Search accounts, contacts, pages…" oninput="applyFilters()">
+    </div>
+
+    <div class="divider"></div>
+    <span class="filter-label">Signal</span>
+    <div class="chip active" data-signal="all" onclick="toggleSignal(this)">All</div>
+    <div class="chip" data-signal="mqa"  onclick="toggleSignal(this)"><span class="cdot" style="background:var(--mqa-dot)"></span>MQA</div>
+      <div class="chip" data-signal="lost" onclick="toggleSignal(this)"><span class="cdot" style="background:var(--lost-dot)"></span>Being Worked</div>
+    <div class="chip" data-signal="new"  onclick="toggleSignal(this)"><span class="cdot" style="background:var(--new-dot)"></span>New Contact</div>
+    <div class="chip" data-signal="eng"  onclick="toggleSignal(this)"><span class="cdot" style="background:var(--eng-dot)"></span>Engagement</div>
+
+    <div class="divider"></div>
+    <span class="filter-label">Ownership</span>
+    <div class="chip" id="unmChip" onclick="toggleUnmanaged(this)"><span class="cdot" style="background:var(--unm-dot)"></span>Unmanaged</div>
+
+    <div class="divider"></div>
+    <span class="filter-label">Region</span>
+    <div class="chip active" data-region="all" onclick="toggleRegion(this)">All</div>
+    <div class="chip" data-region="ANZ"   onclick="toggleRegion(this)">🇦🇺 ANZ</div>
+    <div class="chip" data-region="Japan" onclick="toggleRegion(this)">🇯🇵 Japan</div>
+    <div class="chip" data-region="GCR"   onclick="toggleRegion(this)">🇨🇳 GCR</div>
+    <div class="chip" data-region="SEA"   onclick="toggleRegion(this)">🌏 SEA</div>
+    <div class="chip" data-region="India" onclick="toggleRegion(this)">🇮🇳 India</div>
+
+    <div class="divider"></div>
+    <span class="filter-label">Segment</span>
+    <div class="chip active" data-segment="all" onclick="toggleSegment(this)">All</div>
+    <div class="chip" data-segment="LA"  onclick="toggleSegment(this)">🏢 Large Account</div>
+    <div class="chip" data-segment="MM"  onclick="toggleSegment(this)">📈 Mid-Market</div>
+    <div class="chip" data-segment="SMB" onclick="toggleSegment(this)">🛍️ SMB</div>
+
+    <div class="divider"></div>
+    <select class="ae-select" id="aeFilter" onchange="applyFilters()">
+      <option value="">Rep: All</option>
+    </select>
+
+    <span class="results-info">Showing <strong id="visibleCount">0</strong> of <strong id="totalCount">0</strong></span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="how-to">
+    <div class="how-to-icon">💡</div>
+    <div class="how-to-body">
+      <strong>How to use this report</strong>
+      Filter by your name using the AE dropdown above to see only your accounts. Each card tells you <em>who</em> is signalling, <em>what</em> they did, and <em>why</em> to reach out now. Click "Reach Out" to draft a personalised message.
+    </div>
+  </div>
+
+  <!-- NEW CONTACT SECTION -->
+  <div class="section-block" id="section-new">
+    <div class="section-header">
+      <span class="section-dot" style="background:var(--new-dot)"></span>
+      <span class="section-title" style="color:var(--new-text)">🟣 New Buying Contact · First Engagement</span>
+      <span class="section-count" style="background:var(--new-bg);color:var(--new-text)" id="new-section-count"></span>
+      <span class="section-desc">Brand new contacts at target accounts engaging for the first time</span>
+    </div>
+    <div class="cards" id="cards-new"></div>
+  </div>
+
+  <!-- MQA SECTION -->
+  <div class="section-block" id="section-mqa">
+    <div class="section-header">
+      <span class="section-dot" style="background:var(--mqa-dot)"></span>
+      <span class="section-title" style="color:var(--mqa-text)">🟢 MQA Hit · Zero Sales Touch</span>
+      <span class="section-count" style="background:var(--mqa-bg);color:var(--mqa-text)" id="mqa-section-count"></span>
+      <span class="section-desc">Reached MQA threshold this week with no AE contact yet</span>
+    </div>
+    <div class="cards" id="cards-mqa"></div>
+  </div>
+
+  <!-- LOST OPP SECTION -->
+  <div class="section-block" id="section-lost">
+    <div class="section-header">
+      <span class="section-dot" style="background:var(--lost-dot)"></span>
+      <span class="section-title" style="color:var(--lost-text)">🔴 Being Worked · Back on Shopify.com This Week</span>
+      <span class="section-count" style="background:var(--lost-bg);color:var(--lost-text)" id="lost-section-count"></span>
+      <span class="section-desc">Active pipeline accounts visiting Shopify pages again this week</span>
+    </div>
+    <div class="cards" id="cards-lost"></div>
+  </div>
+
+  <!-- ENGAGEMENT SECTION -->
+  <div class="section-block" id="section-eng">
+    <div class="section-header">
+      <span class="section-dot" style="background:var(--eng-dot)"></span>
+      <span class="section-title" style="color:var(--eng-text)">🟡 Engagement Detail · What They Viewed</span>
+      <span class="section-count" style="background:var(--eng-bg);color:var(--eng-text)" id="eng-section-count"></span>
+      <span class="section-desc">Specific pages, content and assets engaged with this week</span>
+    </div>
+    <div class="cards" id="cards-eng"></div>
+  </div>
+
+  <!-- UNMANAGED · ENGAGED SECTION -->
+  <div class="section-block" id="section-unm">
+    <div class="section-header">
+      <span class="section-dot" style="background:var(--unm-dot)"></span>
+      <span class="section-title" style="color:var(--unm-text)">🔵 Unmanaged · No Account Owner · Engaged</span>
+      <span class="section-count" style="background:var(--unm-bg);color:var(--unm-text)" id="unm-section-count"></span>
+      <span class="section-desc">Engaging accounts with no assigned AE — flag for coverage or territory assignment</span>
+    </div>
+    <div class="cards" id="cards-unm"></div>
+  </div>
+
+  <div class="empty" id="emptyState">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c9cdd1" stroke-width="1.5" style="margin-bottom:12px"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <p style="font-size:15px;font-weight:600;color:#6d7175;margin-bottom:4px">No signals match your filters</p>
+    <p style="font-size:13px;color:#9ca3af">Try adjusting the region, signal type, or AE filter above</p>
+  </div>
+
+</div>
+
+<!-- SHOPIFY CONNECT VIC VIEW -->
+<div id="vic-view">
+  <div class="vic-main">
+
+    <div class="vic-banner">
+      <div class="vic-banner-icon">🏟️</div>
+      <div class="vic-banner-text">
+        <h3>Shopify Connect VIC — DM Account Intelligence</h3>
+        <p>April 29, Hyde Melbourne · 12 target accounts · sorted by AI/agentic commerce intent score.<br>
+        <strong>Every account is actively researching AI and agentic commerce.</strong> Use intent keywords to personalise Touch 2 + 3. Filter by SDR to see your book.</p>
+      </div>
+    </div>
+
+    <div class="vic-filter-row">
+      <span class="vic-filter-label">SDR</span>
+      <div class="vic-chip active" data-sdr="all" onclick="filterVic(this)">All SDRs</div>
+      <div class="vic-chip" data-sdr="Gurj Singh" onclick="filterVic(this)">Gurj Singh</div>
+      <div class="vic-chip" data-sdr="Shina Alayon" onclick="filterVic(this)">Shina Alayon</div>
+      <div class="vic-chip" data-sdr="Lane Pedersen" onclick="filterVic(this)">Lane Pedersen</div>
+    </div>
+
+    <div class="vic-grid" id="vicGrid"></div>
+  </div>
+</div>
+
+<div id="toast">✓ Copied to clipboard</div>
+
+<script>
+// ─────────────────────────────────────────────────
+// DATA — replace with real weekly CSV pull
+// ─────────────────────────────────────────────────
+const WEEK = "April 20, 2026";
+
+const signals = [
+  {
+    "type": "new",
+    "account": "Hisense International",
+    "website": "",
+    "ae": "Rae Chang",
+    "sdr": "Sophia Wu",
+    "industry": "",
+    "region": "GCR",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 5 pts. (7 days)",
+      "Qualification score: 17%",
+      "Pipeline predict score: 45%"
+    ],
+    "note": "冯 劲业 (分公司副总) engaging for the first time this week. Engagement: 5 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 1
+  },
+  {
+    "type": "new",
+    "account": "Giordano HK",
+    "website": "",
+    "ae": "Rae Chang",
+    "sdr": "Sophia Wu",
+    "industry": "",
+    "region": "GCR",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 25%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Khloe Sim engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 2
+  },
+  {
+    "type": "new",
+    "account": "PROYA Cosmetics., Ltd. 珀莱雅化妆品股份有限公司",
+    "website": "",
+    "ae": "Rae Chang",
+    "sdr": "Sophia Wu",
+    "industry": "",
+    "region": "GCR",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 69%",
+      "Pipeline predict score: 4%"
+    ],
+    "note": "12 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 3
+  },
+  {
+    "type": "new",
+    "account": "Vital First Aid",
+    "website": "",
+    "ae": "Morris Bray",
+    "sdr": "",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "SMB",
+    "engagement": [
+      "Engagement score: 4 pts. (7 days)",
+      "Qualification score: 65%",
+      "Pipeline predict score: 3%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 4 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 4
+  },
+  {
+    "type": "new",
+    "account": "K&f Concept",
+    "website": "",
+    "ae": "Sally Xin",
+    "sdr": "Alvin Pek",
+    "industry": "",
+    "region": "GCR",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 1 pts. (7 days)",
+      "Qualification score: 61%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 1 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 5
+  },
+  {
+    "type": "new",
+    "account": "Nefertiti Group",
+    "website": "",
+    "ae": "Sally Xin",
+    "sdr": "Alvin Pek",
+    "industry": "",
+    "region": "GCR",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 27%",
+      "Pipeline predict score: 6%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 6
+  },
+  {
+    "type": "new",
+    "account": "Mankeel",
+    "website": "",
+    "ae": "Sally Xin",
+    "sdr": "Alvin Pek",
+    "industry": "",
+    "region": "GCR",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 29%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Simon Lau engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 7
+  },
+  {
+    "type": "new",
+    "account": "Wowebony",
+    "website": "",
+    "ae": "Sally Xin",
+    "sdr": "Alvin Pek",
+    "industry": "",
+    "region": "GCR",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 8
+  },
+  {
+    "type": "new",
+    "account": "Soldini",
+    "website": "",
+    "ae": "Sally Xin",
+    "sdr": "Alvin Pek",
+    "industry": "",
+    "region": "GCR",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 90%",
+      "Pipeline predict score: 31%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 9
+  },
+  {
+    "type": "new",
+    "account": "Outback Beef",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 1 pts. (7 days)",
+      "Qualification score: 67%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 1 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 10
+  },
+  {
+    "type": "new",
+    "account": "Mr Supplement",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 1 pts. (7 days)",
+      "Qualification score: 78%",
+      "Pipeline predict score: 12%"
+    ],
+    "note": "Greg Mate (Director) engaging for the first time this week. Engagement: 1 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 11
+  },
+  {
+    "type": "new",
+    "account": "Elite Fitness",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 83%",
+      "Pipeline predict score: 14%"
+    ],
+    "note": "4 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 12
+  },
+  {
+    "type": "new",
+    "account": "Zanui",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 93%",
+      "Pipeline predict score: 15%"
+    ],
+    "note": "Warren Tam (Manager, Human Resources) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 13
+  },
+  {
+    "type": "new",
+    "account": "Slipstream Brewing",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 77%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Elisa Stanley-Hunt engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 14
+  },
+  {
+    "type": "new",
+    "account": "Bundaberg Distilling Company",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 73%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Roger Dunn (Global Retail Media Lead) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 15
+  },
+  {
+    "type": "new",
+    "account": "Adairs Retail Group",
+    "website": "",
+    "ae": "Lauren Critten",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 1 pts. (7 days)",
+      "Qualification score: 43%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Julian Fogarty (Chief Information Officer) engaging for the first time this week. Engagement: 1 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 16
+  },
+  {
+    "type": "new",
+    "account": "Metcash",
+    "website": "",
+    "ae": "Lauren Critten",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 40%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Claudia van de Tonnekreek (Head of Marketing Strategy Loyalty) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 17
+  },
+  {
+    "type": "new",
+    "account": "Carpet Court Australia",
+    "website": "",
+    "ae": "Lauren Critten",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 51%",
+      "Pipeline predict score: 99%"
+    ],
+    "note": "6 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 18
+  },
+  {
+    "type": "new",
+    "account": "Van Heusen",
+    "website": "",
+    "ae": "Lauren Critten",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 44%",
+      "Pipeline predict score: 12%"
+    ],
+    "note": "9 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 19
+  },
+  {
+    "type": "new",
+    "account": "courts.com.my",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 16%",
+      "Pipeline predict score: 86%"
+    ],
+    "note": "11 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 20
+  },
+  {
+    "type": "new",
+    "account": "Focus Point Holdings Bhd",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 1%",
+      "Pipeline predict score: 10%"
+    ],
+    "note": "Jayden Loo (Group Chief Sustainability Officer) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 21
+  },
+  {
+    "type": "new",
+    "account": "4(IDN) Paul Bakery, Patisserie, Café & Restaurant Canada - BC",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 84%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 22
+  },
+  {
+    "type": "new",
+    "account": "Fashion Bug",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 9%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "FASHION BUG ONLINE STORE engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 23
+  },
+  {
+    "type": "new",
+    "account": "Apnafurniture.PK",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 83%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Apna Furniture engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 24
+  },
+  {
+    "type": "new",
+    "account": "Bruno Premi Indonesia",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 75%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "SWIFT Hub Billing engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 25
+  },
+  {
+    "type": "new",
+    "account": "4(SGP) Aura Prestige",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 66%",
+      "Pipeline predict score: 10%"
+    ],
+    "note": "Velancia Ng (Brand Manager, (Consumer Luxury) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 26
+  },
+  {
+    "type": "new",
+    "account": "Bata Indonesia",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 34%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "hades gabut engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 27
+  },
+  {
+    "type": "new",
+    "account": "YaMe",
+    "website": "",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 32%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Nguyen Duy Minh engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 28
+  },
+  {
+    "type": "new",
+    "account": "Christian Louboutin Japan Inc",
+    "website": "",
+    "ae": "Yuki Tokunaga",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 73%",
+      "Pipeline predict score: 2%"
+    ],
+    "note": "7 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 29
+  },
+  {
+    "type": "new",
+    "account": "mandom corp.",
+    "website": "",
+    "ae": "Yuki Tokunaga",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 79%",
+      "Pipeline predict score: 76%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 30
+  },
+  {
+    "type": "new",
+    "account": "GungHo Online Entertainment",
+    "website": "",
+    "ae": "Yuki Tokunaga",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 22%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 31
+  },
+  {
+    "type": "new",
+    "account": "Japan Tobacco Inc",
+    "website": "",
+    "ae": "Yuki Tokunaga",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 9%",
+      "Pipeline predict score: 29%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 32
+  },
+  {
+    "type": "new",
+    "account": "Swan Plumbing Supplies",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 70%",
+      "Pipeline predict score: 10%"
+    ],
+    "note": "5 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 33
+  },
+  {
+    "type": "new",
+    "account": "Le Cake",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 63%",
+      "Pipeline predict score: 11%"
+    ],
+    "note": "Patrick Coldwell (Managing Director) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 34
+  },
+  {
+    "type": "new",
+    "account": "Roof Racks Galore",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 45%",
+      "Pipeline predict score: 68%"
+    ],
+    "note": "4 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 35
+  },
+  {
+    "type": "new",
+    "account": "INSKIN COSMEDICS",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 78%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Nicola Clement engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 36
+  },
+  {
+    "type": "new",
+    "account": "Beds 4 Backs",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 91%",
+      "Pipeline predict score: 14%"
+    ],
+    "note": "Sean Dixon (Chief Executive Officer & Managing Director) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 37
+  },
+  {
+    "type": "new",
+    "account": "Solid Gold Diamonds",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 74%",
+      "Pipeline predict score: 99%"
+    ],
+    "note": "3 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 38
+  },
+  {
+    "type": "new",
+    "account": "Vaibhav Jewellers",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 31%",
+      "Pipeline predict score: 19%"
+    ],
+    "note": "3 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 39
+  },
+  {
+    "type": "new",
+    "account": "Intec Group",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 25%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Ankit Dhyani (Sales Manager, Tender & Government) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 40
+  },
+  {
+    "type": "new",
+    "account": "Frontier Raas Pvt. Ltd.",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 50%",
+      "Pipeline predict score: 60%"
+    ],
+    "note": "Disha Walia (Designer and Merchandiser) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 41
+  },
+  {
+    "type": "new",
+    "account": "Abitex Designs",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 55%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "7 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 42
+  },
+  {
+    "type": "new",
+    "account": "Pepe Jeans India",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 88%",
+      "Pipeline predict score: 12%"
+    ],
+    "note": "Anjali Parab (General Manager) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 43
+  },
+  {
+    "type": "new",
+    "account": "vivo India",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 11%",
+      "Pipeline predict score: 11%"
+    ],
+    "note": "Pankaj Gandhi (Chief Business Officer) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 44
+  },
+  {
+    "type": "new",
+    "account": "SSIPL Retail LTD",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 64%",
+      "Pipeline predict score: 13%"
+    ],
+    "note": "Mohit Narang (Manager, Taxation) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 45
+  },
+  {
+    "type": "new",
+    "account": "Hof Furniture Pvt",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 35%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "My Store Admin engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 46
+  },
+  {
+    "type": "new",
+    "account": "Jay Shree",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 2%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Jayshree Tea engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 47
+  },
+  {
+    "type": "new",
+    "account": "T10Sports",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 65%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "T10 Store engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 48
+  },
+  {
+    "type": "new",
+    "account": "MamaEarth",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 69%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Mamaearth . engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 49
+  },
+  {
+    "type": "new",
+    "account": "Ziva Maternity Wear",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "may joy engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 50
+  },
+  {
+    "type": "new",
+    "account": "Jogger footwear",
+    "website": "",
+    "ae": "Nikhil Sareen",
+    "sdr": "",
+    "industry": "",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Jogger Footwear engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 51
+  },
+  {
+    "type": "new",
+    "account": "GiftBox",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 61%",
+      "Pipeline predict score: 17%"
+    ],
+    "note": "Kristy Altmann (Area Manager) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 52
+  },
+  {
+    "type": "new",
+    "account": "Enko Group",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 35%",
+      "Pipeline predict score: 12%"
+    ],
+    "note": "Keith Lemon (Manager, Warehouse) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 53
+  },
+  {
+    "type": "new",
+    "account": "Custom Neon USA",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 42%",
+      "Pipeline predict score: 20%"
+    ],
+    "note": "4 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 54
+  },
+  {
+    "type": "new",
+    "account": "QTCo",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 4%",
+      "Pipeline predict score: 22%"
+    ],
+    "note": "Zoie Hite (Graphic Designer) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 55
+  },
+  {
+    "type": "new",
+    "account": "Silver Fleece",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 73%",
+      "Pipeline predict score: 18%"
+    ],
+    "note": "Dean Flintoft (Managing Director) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 56
+  },
+  {
+    "type": "new",
+    "account": "Aimwell Pty Ltd",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 81%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Eric Fu (Founder and Managing Director) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 57
+  },
+  {
+    "type": "new",
+    "account": "Marlborough Wine Ltd",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 85%",
+      "Pipeline predict score: 26%"
+    ],
+    "note": "Kevin Joyce (Owner) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 58
+  },
+  {
+    "type": "new",
+    "account": "Rocket Industries",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 19%",
+      "Pipeline predict score: 15%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 59
+  },
+  {
+    "type": "new",
+    "account": "Flagworld",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 12%",
+      "Pipeline predict score: 37%"
+    ],
+    "note": "3 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 60
+  },
+  {
+    "type": "new",
+    "account": "Johnny Bigg Pty. Limited",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 63%",
+      "Pipeline predict score: 13%"
+    ],
+    "note": "Renee Price (Area Manager) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 61
+  },
+  {
+    "type": "new",
+    "account": "Terrace Floors + Furnishings",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 82%",
+      "Pipeline predict score: 17%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 62
+  },
+  {
+    "type": "new",
+    "account": "Homemakers Furniture & Bedding",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 11%",
+      "Pipeline predict score: 8%"
+    ],
+    "note": "Elena Colaneri (Logistics & eCommerce Platform Project Lead) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 63
+  },
+  {
+    "type": "new",
+    "account": "Polyflor",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 16%",
+      "Pipeline predict score: 17%"
+    ],
+    "note": "Ian Harkin (Sales Manager) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 64
+  },
+  {
+    "type": "new",
+    "account": "all4kidsonline.com.au",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 51%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Elva Wang engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 65
+  },
+  {
+    "type": "new",
+    "account": "QIS Packaging",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 31%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Jack Hammond engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 66
+  },
+  {
+    "type": "new",
+    "account": "PSW",
+    "website": "",
+    "ae": "Chachi Apolinario",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 82%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "lawa raj engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 67
+  },
+  {
+    "type": "new",
+    "account": "ECCO's One-Year",
+    "website": "",
+    "ae": "Amaly Khairallah",
+    "sdr": "",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "SMB",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 88%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Jakob Hedensted (Vice President, Financial Planning & Analysis) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 68
+  },
+  {
+    "type": "new",
+    "account": "Bras N Things",
+    "website": "",
+    "ae": "Shane Kilgour",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 73%",
+      "Pipeline predict score: 11%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 69
+  },
+  {
+    "type": "new",
+    "account": "McWilliam's Wines",
+    "website": "",
+    "ae": "Shane Kilgour",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 73%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Max McWilliam (Director) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 70
+  },
+  {
+    "type": "new",
+    "account": "Paspaley-duplicate",
+    "website": "",
+    "ae": "Shane Kilgour",
+    "sdr": "Gurj Singh",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 74%",
+      "Pipeline predict score: 8%"
+    ],
+    "note": "6 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 71
+  },
+  {
+    "type": "new",
+    "account": "MARK'S Inc.",
+    "website": "",
+    "ae": "Jio Sotoyama",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 51%",
+      "Pipeline predict score: 13%"
+    ],
+    "note": "2 new contacts engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 72
+  },
+  {
+    "type": "new",
+    "account": "Interior office one Inc.",
+    "website": "",
+    "ae": "Jio Sotoyama",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Pipeline predict score: 13%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 73
+  },
+  {
+    "type": "new",
+    "account": "SHIPS LTD.",
+    "website": "",
+    "ae": "Jio Sotoyama",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 30%",
+      "Pipeline predict score: 22%"
+    ],
+    "note": "崇弘 三瀬 (運営支援部CRM課課長クラス) engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 74
+  },
+  {
+    "type": "new",
+    "account": "WORKMAN CO.,LTD.",
+    "website": "",
+    "ae": "Eiji Hasegawa",
+    "sdr": "Ryoya Tamaishi",
+    "industry": "",
+    "region": "Japan",
+    "segment": "LA",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Qualification score: 57%",
+      "Pipeline predict score: 14%"
+    ],
+    "note": "健輔 堀 engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 75
+  },
+  {
+    "type": "new",
+    "account": "hkbretail.com - Pepperland PK",
+    "website": "",
+    "ae": "Weijie Neo",
+    "sdr": "",
+    "industry": "",
+    "region": "SEA",
+    "segment": "SMB",
+    "engagement": [
+      "Engagement score: 0 pts. (7 days)",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "Account engaging for the first time this week. Engagement: 0 pts.",
+    "days": 0,
+    "open_opp": false,
+    "id": 76
+  },
+  {
+    "type": "mqa",
+    "account": "Handelnine Global",
+    "website": "handelnine.com",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "Other",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Pipeline predict score: 99%",
+      "Searching for: credit management, dropshipping, large language models"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: credit management.",
+    "days": 0,
+    "open_opp": false,
+    "id": 77
+  },
+  {
+    "type": "mqa",
+    "account": "Bewakoof Brands Pvt. Ltd.",
+    "website": "bewakoof.com",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "Apparel & Accessories",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Pipeline predict score: 97%",
+      "Searching for: ai chatbot"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: ai chatbot.",
+    "days": 0,
+    "open_opp": false,
+    "id": 78
+  },
+  {
+    "type": "mqa",
+    "account": "Parry Agro Industries Limited",
+    "website": "parryagro.com",
+    "ae": "Nikhil Sareen",
+    "sdr": "Eunice Gwee",
+    "industry": "Food & Beverage (excl. Alcohol)",
+    "region": "India",
+    "segment": [
+      "LA",
+      "MM",
+      "SMB"
+    ],
+    "engagement": [
+      "Pipeline predict score: 39%"
+    ],
+    "note": "Hit MQA with zero sales touches.",
+    "days": 0,
+    "open_opp": false,
+    "id": 79
+  },
+  {
+    "type": "mqa",
+    "account": "2(ROA) Khaadi",
+    "website": "khaadi.com",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "Apparel & Accessories",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Pipeline predict score: 96%",
+      "Searching for: import and export, dropshipping"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: import and export.",
+    "days": 0,
+    "open_opp": false,
+    "id": 80
+  },
+  {
+    "type": "mqa",
+    "account": "Carsome",
+    "website": "http://carsome.my",
+    "ae": "Karim Lalji",
+    "sdr": "Eunice Gwee",
+    "industry": "Vehicles & Parts",
+    "region": "SEA",
+    "segment": [
+      "LA",
+      "MM"
+    ],
+    "engagement": [
+      "Pipeline predict score: 17%",
+      "Searching for: large language models, customer lifetime value, business financing"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: large language models.",
+    "days": 0,
+    "open_opp": false,
+    "id": 81
+  },
+  {
+    "type": "mqa",
+    "account": "King Living Australia (Main brand)",
+    "website": "http://kingliving.com.au",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "Furniture",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Pipeline predict score: 54%",
+      "Searching for: ai chatbot"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: ai chatbot.",
+    "days": 0,
+    "open_opp": false,
+    "id": 82
+  },
+  {
+    "type": "mqa",
+    "account": "Bathroom Sales Direct",
+    "website": "bathroomsalesdirect.com.au",
+    "ae": "Amaly Khairallah",
+    "sdr": "",
+    "industry": "Other",
+    "region": "ANZ",
+    "segment": "SMB",
+    "engagement": [
+      "Pipeline predict score: 70%"
+    ],
+    "note": "Hit MQA with zero sales touches.",
+    "days": 0,
+    "open_opp": false,
+    "id": 83
+  },
+  {
+    "type": "mqa",
+    "account": "PAL Co.,ltd",
+    "website": "http://palgroup.co.jp",
+    "ae": "Yuki Tokunaga",
+    "sdr": "Tamaki Yoshikawa",
+    "industry": "Apparel & Accessories",
+    "region": "Japan",
+    "segment": "MM",
+    "engagement": [
+      "Pipeline predict score: 27%",
+      "Searching for: large language models"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: large language models.",
+    "days": 0,
+    "open_opp": false,
+    "id": 84
+  },
+  {
+    "type": "mqa",
+    "account": "Hill-Smith Family Estates",
+    "website": "hsfe.com",
+    "ae": "Lauren Critten",
+    "sdr": "Gurj Singh",
+    "industry": "Food & Beverage (excl. Alcohol)",
+    "region": "ANZ",
+    "segment": "LA",
+    "engagement": [
+      "Pipeline predict score: 36%",
+      "Searching for: large language models, import and export"
+    ],
+    "note": "Hit MQA with zero sales touches. Primary intent: large language models.",
+    "days": 0,
+    "open_opp": false,
+    "id": 85
+  },
+  {
+    "type": "eng",
+    "account": "Vital First Aid",
+    "website": "",
+    "ae": "Morris Bray",
+    "sdr": "",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "SMB",
+    "engagement": [
+      "Engagement score: 4 pts. (7 days) · 4 pts. (3 months)",
+      "Pages visited: shopify.com/au/free-trial",
+      "Qualification score: 65%",
+      "Pipeline predict score: 3%"
+    ],
+    "note": "1 Shopify page(s) visited this week.",
+    "days": 0,
+    "open_opp": false,
+    "id": 86
+  },
+  {
+    "type": "eng",
+    "account": "INSKIN COSMEDICS",
+    "website": "",
+    "ae": "Kole Mahan",
+    "sdr": "Lane Pedersen",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 5 pts. (7 days) · 29 pts. (3 months)",
+      "Pages visited: shopify.com/au/free-trial",
+      "Qualification score: 78%",
+      "Pipeline predict score: 21%"
+    ],
+    "note": "1 Shopify page(s) visited this week.",
+    "days": 0,
+    "open_opp": false,
+    "id": 87
+  },
+  {
+    "type": "eng",
+    "account": "Outback Beef",
+    "website": "",
+    "ae": "Bronte Hogarth",
+    "sdr": "Shina Alayon",
+    "industry": "",
+    "region": "ANZ",
+    "segment": "MM",
+    "engagement": [
+      "Engagement score: 1 pts. (7 days) · 1 pts. (3 months)",
+      "Pages visited: shopify.com/au/free-trial",
+      "Qualification score: 67%",
+      "Pipeline predict score: 1%"
+    ],
+    "note": "1 Shopify page(s) visited this week.",
+    "days": 0,
+    "open_opp": false,
+    "id": 88
+  }
+];
+
+// ─────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────
+let activeSignals  = new Set(["all"]);
+let activeRegions  = new Set(["all"]);
+let activeSegments = new Set(["all"]);
+let showUnmanagedOnly = false;
+const STORAGE_KEY = "apac_insights_ae";
+
+// AE roster with signal counts (derived from data)
+const AE_ROSTER = [
+  { name: "Amaly Khairallah",  region: "ANZ" },
+  { name: "Anwei Sun",         region: "GCR" },
+  { name: "Bronte Hogarth",    region: "ANZ" },
+  { name: "Chachi Apolinario", region: "ANZ" },
+  { name: "Eiji Hasegawa",     region: "Japan" },
+  { name: "Jio Sotoyama",      region: "Japan" },
+  { name: "Karim Lalji",       region: "SEA/ROA" },
+  { name: "Kole Mahan",        region: "ANZ" },
+  { name: "Lauren Critten",    region: "ANZ" },
+  { name: "Morris Bray",       region: "ANZ" },
+  { name: "Nikhil Sareen",     region: "India" },
+  { name: "Rae Chang",         region: "GCR" },
+  { name: "Sally Xin",         region: "GCR" },
+  { name: "Shane Kilgour",     region: "ANZ" },
+  { name: "Tanabe Rika",       region: "Japan" },
+  { name: "Weijie Neo",        region: "GCR" },
+  { name: "Yuki Kataoka",      region: "Japan" },
+  { name: "Yuki Tokunaga",     region: "Japan" },
+];
+
+// ─────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────
+function buildRepDropdown() {
+  const select = document.getElementById("aeFilter");
+
+  // AEs — sorted by signal count desc
+  const aeCounts = {};
+  signals.forEach(s => { if (s.ae && s.ae.trim()) aeCounts[s.ae] = (aeCounts[s.ae] || 0) + 1; });
+  const aes = Object.entries(aeCounts).sort((a,b) => b[1]-a[1]).map(([name]) => name);
+
+  // SDRs — sorted by signal count desc
+  const sdrCounts = {};
+  signals.forEach(s => { if (s.sdr && s.sdr.trim()) sdrCounts[s.sdr] = (sdrCounts[s.sdr] || 0) + 1; });
+  const sdrs = Object.entries(sdrCounts).sort((a,b) => b[1]-a[1]).map(([name]) => name);
+
+  let html = '<option value="">Rep: All</option>';
+
+  if (aes.length) {
+    html += '<optgroup label="── AEs ──">';
+    aes.forEach(ae => {
+      html += `<option value="${ae}">${ae} (${aeCounts[ae]})</option>`;
+    });
+    html += '</optgroup>';
+  }
+
+  if (sdrs.length) {
+    html += '<optgroup label="── SDRs ──">';
+    sdrs.forEach(sdr => {
+      html += `<option value="sdr:${sdr}">${sdr} · SDR (${sdrCounts[sdr]})</option>`;
+    });
+    html += '</optgroup>';
+  }
+
+  select.innerHTML = html;
+}
+
+function validateFilters() {
+  const issues = [];
+  const validRegions   = new Set([...document.querySelectorAll("[data-region]")].map(el => el.dataset.region));
+  const validSegments  = new Set([...document.querySelectorAll("[data-segment]")].map(el => el.dataset.segment));
+  const validTypes = new Set(
+    [...document.querySelectorAll("[data-signal]")].map(el => el.dataset.signal)
+  );
+  const sectionIds  = new Set([...document.querySelectorAll("[id^='section-']")].map(el => el.id.replace("section-","")));
+  const cardIds     = new Set([...document.querySelectorAll("[id^='cards-']")].map(el => el.id.replace("cards-","")));
+
+  const dataTypes   = [...new Set(signals.map(s => s.type))];
+  const dataRegions = [...new Set(signals.map(s => s.region).filter(Boolean))];
+
+  dataTypes.forEach(t => {
+    if (t === "unm") return;
+    if (!validTypes.has(t))   issues.push(`Signal type "${t}" has no filter chip`);
+    if (!sectionIds.has(t))   issues.push(`Signal type "${t}" has no section-${t} div`);
+    if (!cardIds.has(t))      issues.push(`Signal type "${t}" has no cards-${t} div`);
+  });
+
+  dataRegions.forEach(r => {
+    if (r === "APAC") return; // APAC is intentionally a cross-region catch-all
+    if (!validRegions.has(r)) issues.push(`Region "${r}" in data has no filter chip`);
+  });
+
+  if (issues.length > 0) {
+    console.warn("⚠️ Pi Hub filter issues detected:\n" + issues.map(i => "  • " + i).join("\n"));
+  } else {
+    console.log("✅ Pi Hub filters: all checks passed");
+  }
+  return issues;
+}
+
+function init() {
+  document.getElementById("weekLabel").textContent = WEEK;
+  buildRepDropdown();
+  buildAeGrid();
+  validateFilters();
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved === "__manager__") {
+    applyManager(false);     // restore manager view
+  } else if (saved) {
+    applyAe(saved, false);   // restore saved AE silently
+  } else {
+    showOnboard();           // first visit — show overlay
+  }
+
+  renderAll();
+  updateStats();
+}
+
+// ─────────────────────────────────────────────────
+// ONBOARDING
+// ─────────────────────────────────────────────────
+function buildAeGrid() {
+  // Set total count on manager button
+  document.getElementById("totalSignalCount").textContent = signals.length;
+
+  const grid = document.getElementById("aeGrid");
+  grid.innerHTML = AE_ROSTER.map(ae => {
+    const count = signals.filter(s => s.ae === ae.name).length;
+    const initials = ae.name.split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase();
+    return `
+      <button class="ae-btn" onclick="selectAe('${ae.name}')">
+        <div class="ae-btn-avatar">${initials}</div>
+        <div class="ae-btn-info">
+          <span class="ae-btn-name">${ae.name}</span>
+          <span class="ae-btn-count">${count} signal${count !== 1 ? "s" : ""} · ${ae.region}</span>
+        </div>
+      </button>`;
+  }).join("");
+}
+
+function showOnboard() {
+  document.getElementById("overlay").classList.remove("hidden");
+}
+
+function selectAe(name) {
+  localStorage.setItem(STORAGE_KEY, name);
+  applyAe(name, true);
+  document.getElementById("overlay").classList.add("hidden");
+}
+
+function selectManager() {
+  localStorage.setItem(STORAGE_KEY, "__manager__");
+  applyManager(true);
+  document.getElementById("overlay").classList.add("hidden");
+}
+
+function skipOnboard() {
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById("overlay").classList.add("hidden");
+  clearAe();
+}
+
+function applyAe(name, scroll) {
+  document.getElementById("aeFilter").value = name;
+  document.getElementById("teamBar").classList.remove("visible");
+
+  const initials = name.split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase();
+  document.getElementById("vaAvatar").textContent = initials;
+  document.getElementById("vaLabel").textContent  = name;
+  document.getElementById("viewingAs").classList.remove("hidden");
+
+  const sub = document.querySelector(".hero-sub");
+  if (sub) sub.innerHTML = `Personalised for <strong>${name}</strong> · ${WEEK}. Your accounts moving this week — act before someone else does.`;
+
+  renderAll();
+  if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function applyManager(scroll) {
+  document.getElementById("aeFilter").value = "";
+
+  // Topbar pill
+  document.getElementById("vaAvatar").textContent = "👥";
+  document.getElementById("vaAvatar").style.fontSize = "12px";
+  document.getElementById("vaLabel").textContent  = "Full team view";
+  document.getElementById("viewingAs").classList.remove("hidden");
+
+  // Hero
+  const sub = document.querySelector(".hero-sub");
+  if (sub) sub.innerHTML = `<strong>Manager view</strong> · Full team · ${WEEK}. All ${signals.length} signals across every AE in APAC.`;
+
+  // Team bar
+  buildTeamBar();
+  document.getElementById("teamBar").classList.add("visible");
+
+  renderAll();
+  if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function buildTeamBar() {
+  const inner = document.getElementById("teamBarInner");
+  const bySeller = {};
+  let unmCount = 0;
+  signals.forEach(s => {
+    if (!s.ae || s.ae.trim() === "") { unmCount++; return; }
+    bySeller[s.ae] = (bySeller[s.ae] || 0) + 1;
+  });
+  const sorted = Object.entries(bySeller).sort((a,b) => b[1]-a[1]);
+  const unmChip = unmCount > 0
+    ? `<div class="team-chip" onclick="drillToUnmanaged()" style="border-color:var(--unm-dot);color:var(--unm-dot)">
+        <span>⚪</span><span>Unmanaged</span>
+        <span class="tc-count">${unmCount}</span>
+      </div>`
+    : "";
+  inner.innerHTML = `<span class="team-bar-label">Jump to AE →</span>` +
+    sorted.map(([ae, count]) => {
+      const initials = ae.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+      return `<div class="team-chip" onclick="drillToAe('${ae}')">
+        <span>${initials}</span><span>${ae.split(" ")[0]}</span>
+        <span class="tc-count">${count}</span>
+      </div>`;
+    }).join("") + unmChip;
+}
+
+function drillToUnmanaged() {
+  showUnmanagedOnly = true;
+  document.getElementById("unmChip").classList.add("active");
+  document.getElementById("aeFilter").value = "";
+  renderAll();
+  window.scrollTo({ top: 300, behavior: "smooth" });
+}
+
+function drillToAe(name) {
+  document.getElementById("aeFilter").value = name;
+  renderAll();
+  // Scroll to first matching card
+  window.scrollTo({ top: 300, behavior: "smooth" });
+}
+
+function clearAe() {
+  document.getElementById("aeFilter").value = "";
+  document.getElementById("viewingAs").classList.add("hidden");
+  document.getElementById("teamBar").classList.remove("visible");
+  renderAll();
+}
+
+// ─────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────
+function renderAll() {
+  const q      = document.getElementById("search").value.toLowerCase();
+  const repVal = document.getElementById("aeFilter").value;
+  const isSdr  = repVal.startsWith("sdr:");
+  const aeVal  = isSdr ? "" : repVal;
+  const sdrVal = isSdr ? repVal.slice(4) : "";
+
+  const types = ["new", "mqa", "lost", "eng"];
+  let total = 0;
+
+  // Typed sections — hidden when "Unmanaged only" chip is active
+  types.forEach(type => {
+    const filtered = showUnmanagedOnly ? [] : signals.filter(s => {
+      if (s.type !== type) return false;
+      if (!s.ae || s.ae.trim() === "") return false; // unmanaged go to their own section
+      if (!activeSignals.has("all")  && !activeSignals.has(s.type))    return false;
+      if (!activeRegions.has("all")  && !activeRegions.has(s.region))  return false;
+      if (!activeSegments.has("all")) {
+        const segs = Array.isArray(s.segment) ? s.segment : [s.segment];
+        if (!segs.some(sg => activeSegments.has(sg))) return false;
+      }
+      if (aeVal  && s.ae  !== aeVal)  return false;
+      if (sdrVal && s.sdr !== sdrVal) return false;
+      if (q) {
+        const blob = [s.account, s.website, s.industry, s.region, s.ae, s.sdr, s.note, ...s.engagement].join(" ").toLowerCase();
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+
+    const container = document.getElementById(`cards-${type}`);
+    const section   = document.getElementById(`section-${type}`);
+    const count     = document.getElementById(`${type}-section-count`);
+
+    container.innerHTML = filtered.map(cardHTML).join("");
+    count.textContent = filtered.length;
+    section.classList.toggle("hidden", filtered.length === 0);
+    total += filtered.length;
+  });
+
+  // Unmanaged section — hidden when a specific AE is selected (unless Unmanaged chip is on)
+  const unmFiltered = signals.filter(s => {
+    if (s.ae && s.ae.trim() !== "") return false;
+    if (repVal && !showUnmanagedOnly) return false; // specific rep selected, hide unmanaged
+    if (!activeSignals.has("all")  && !activeSignals.has(s.type))    return false;
+    if (!activeRegions.has("all")  && !activeRegions.has(s.region))  return false;
+    if (!activeSegments.has("all")) {
+      const segs = Array.isArray(s.segment) ? s.segment : [s.segment];
+      if (!segs.some(sg => activeSegments.has(sg))) return false;
+    }
+    if (q) {
+      const blob = [s.account, s.website, s.industry, s.region, s.sdr, s.note, ...s.engagement].join(" ").toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  });
+  const unmContainer = document.getElementById("cards-unm");
+  const unmSection   = document.getElementById("section-unm");
+  const unmCount     = document.getElementById("unm-section-count");
+  unmContainer.innerHTML = unmFiltered.map(s => cardHTML(s, true)).join("");
+  unmCount.textContent = unmFiltered.length;
+  unmSection.classList.toggle("hidden", unmFiltered.length === 0);
+  total += unmFiltered.length;
+
+  document.getElementById("visibleCount").textContent = total;
+  document.getElementById("totalCount").textContent = signals.length;
+  document.getElementById("emptyState").classList.toggle("visible", total === 0);
+}
+
+function cardHTML(s, isUnmanaged) {
+  const unmanaged = isUnmanaged || !s.ae || s.ae.trim() === "";
+  const badgeClass = unmanaged
+    ? "badge-unm"
+    : { mqa: "badge-mqa", lost: "badge-lost", new: "badge-new", eng: "badge-eng" }[s.type];
+  const badgeLabel = unmanaged
+    ? "Unmanaged · No Owner"
+    : { mqa: "MQA · No Touch", lost: "Being Worked · Re-engaging", new: "New Contact", eng: "Engagement" }[s.type];
+  const cardType = unmanaged ? "unm" : s.type;
+  const aeName   = s.ae && s.ae.trim() ? s.ae : "Unmanaged";
+  const initials = aeName === "Unmanaged" ? "?" : aeName.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const avatarStyle = aeName === "Unmanaged" ? `style="background:var(--unm-dot)"` : "";
+  const sdrName  = s.sdr && s.sdr.trim() ? s.sdr : null;
+  const sdrInitials = sdrName ? sdrName.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() : null;
+  const freshness = s.days === 0 ? "Today" : s.days === 1 ? "Yesterday" : `${s.days}d ago`;
+  const engItems = s.engagement.map(e => `<div class="eng-item">${e}</div>`).join("");
+
+  return `
+  <div class="card ${cardType}" data-id="${s.id}">
+    <div class="card-top">
+      <div>
+        <div class="card-account">${s.account}</div>
+        <div class="card-website">${s.website}</div>
+      </div>
+      <div class="signal-badge ${badgeClass}">
+        <span class="bdot"></span>${badgeLabel}
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag region">${s.region}</span>
+      ${s.industry ? `<span class="meta-tag">${s.industry}</span>` : ""}
+      <span class="meta-tag freshness-tag">Last 7 days · Demandbase</span>
+    </div>
+    <div class="card-engagement">
+      <span class="eng-label">What they did this week</span>
+      ${engItems}
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.5;padding: 4px 0">${s.note}</div>
+    <details class="hook-preview">
+      <summary>Preview outreach hook</summary>
+      <div class="hook-text">${generateOutreachHook(s)}</div>
+    </details>
+    <div class="card-footer">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="ae-info">
+          <div class="ae-avatar" ${avatarStyle}>${initials}</div>
+          <span class="ae-name">${aeName}</span>
+        </div>
+        ${unmanaged && sdrName ? `
+        <div class="ae-info">
+          <div class="ae-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">${sdrInitials}</div>
+          <span style="font-size:10px;color:var(--muted)">SDR</span>
+          <span class="ae-name">${sdrName}</span>
+        </div>` : ""}
+      </div>
+      <button class="outreach-btn" onclick="copyOutreach(${s.id})">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Copy outreach hook
+      </button>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────────
+// STATS
+// ─────────────────────────────────────────────────
+function updateStats() {
+  const counts = { mqa: 0, lost: 0, new: 0, eng: 0, unm: 0 };
+  signals.forEach(s => {
+    if (!s.ae || s.ae.trim() === "") { counts.unm++; return; }
+    if (counts[s.type] !== undefined) counts[s.type]++;
+  });
+  document.getElementById("countMqa").textContent  = counts.mqa;
+  document.getElementById("countLost").textContent = counts.lost;
+  document.getElementById("countNew").textContent  = counts.new;
+  document.getElementById("countEng").textContent  = counts.eng;
+  document.getElementById("countUnm").textContent  = counts.unm;
+}
+
+// ─────────────────────────────────────────────────
+// FILTERS
+// ─────────────────────────────────────────────────
+function toggleFilter(el, activeSet, attr) {
+  const val = el.dataset[attr];
+  if (val === "all") {
+    activeSet.clear();
+    activeSet.add("all");
+    document.querySelectorAll(`[data-${attr}]`).forEach(c => c.classList.remove("active"));
+    el.classList.add("active");
+  } else {
+    activeSet.delete("all");
+    document.querySelector(`[data-${attr}="all"]`).classList.remove("active");
+    if (activeSet.has(val)) {
+      activeSet.delete(val);
+      el.classList.remove("active");
+      if (activeSet.size === 0) {
+        activeSet.add("all");
+        document.querySelector(`[data-${attr}="all"]`).classList.add("active");
+      }
+    } else {
+      activeSet.add(val);
+      el.classList.add("active");
+    }
+  }
+  applyFilters();
+}
+
+function toggleSignal(el)  { toggleFilter(el, activeSignals,  "signal"); }
+function toggleRegion(el)  { toggleFilter(el, activeRegions,  "region"); }
+function toggleSegment(el) { toggleFilter(el, activeSegments, "segment"); }
+
+function toggleUnmanaged(el) {
+  showUnmanagedOnly = !showUnmanagedOnly;
+  el.classList.toggle("active", showUnmanagedOnly);
+  // Clear AE filter when switching to unmanaged-only view
+  if (showUnmanagedOnly) document.getElementById("aeFilter").value = "";
+  applyFilters();
+}
+
+function applyFilters() { renderAll(); }
+
+// ─────────────────────────────────────────────────
+// OUTREACH COPY
+// ─────────────────────────────────────────────────
+// ── OUTREACH HOOK GENERATOR ─────────────────────────────────────────────
+// Applies the Content Sharpener + ANZ Enterprise Messaging Framework 2026.
+//
+// Principles (content-sharpener.md):
+//   - Specific over generic: named signals, named proof points, metric-led
+//   - Confident, not arrogant: facts speak louder than adjectives
+//   - Urgent, not alarmist: productive tension, frame the opportunity
+//   - Transformative, not transactional: outcomes before features
+//   - Writing for C-suite: lead with insight they haven't considered,
+//     objective/observation-based language, never imply past decisions were wrong
+//   - No em dashes. Every sentence earns its place.
+//
+// Challenge mapping:
+//   AI keywords           → CH4 (AI/automation gaps)   + AI-First Commerce pillar
+//   Enterprise/Plus pages → CH1 (Legacy scalability)   + Growth pillar
+//   Pricing + free trial  → CH2 (Migration risk)       + Efficiency pillar
+//   POS page              → CH3 (Fragmentation)        + Unified commerce pillar
+//   Contact sales page    → CH2 (Migration, high intent)
+//   Pricing only          → CH5 (Conversion/ROI clarity)
+
+function generateOutreachHook(s) {
+  const acct     = s.account.length <= 4 ? s.account.toUpperCase() : s.account;
+  const pages    = s.engagement.filter(e => e.startsWith("Viewed:")).map(e => e.replace("Viewed: ","").trim());
+  const pageLow  = pages.map(p => p.toLowerCase());
+  const kwLine   = s.engagement.find(e => e.startsWith("Searching for:"));
+  const keywords = kwLine ? kwLine.replace("Searching for: ","").split(",").map(k => k.trim().toLowerCase()) : [];
+  const pageRef  = pages.length > 0 ? pages.slice(0,2).map(p => p.toLowerCase()).join(" and ") : "Shopify.com";
+  const kwRef    = keywords.length > 0 ? keywords[0] : null;
+
+  // Signal detectors
+  const hasPlus      = pageLow.some(p => p.includes("plus") || p.includes("enterprise"));
+  const hasPricing   = pageLow.some(p => p.includes("pricing"));
+  const hasFreeTrial = pageLow.some(p => p.includes("free trial"));
+  const hasPOS       = pageLow.some(p => p.includes("point of sale") || p.includes("pos"));
+  const hasContact   = pageLow.some(p => p.includes("contact"));
+  const hasAI        = keywords.some(k => ["ai ", "llm", "large language", "agentic", "ai chatbot",
+                         "ai search", "ai commerce", "ai driven", "ai shopping"].some(ai => k.includes(ai)));
+
+  // Named, metric-led proof points (Shopify voice: specific, confident, outcome-first)
+  const proof = {
+    ch1: "JB Hi-Fi handled nearly twice their BFCM traffic without a single outage — in their first year on Shopify. No heroics required.",
+    ch2: "The Good Guys ran a 3-month proof-of-concept before committing. Conversion rate doubled post-launch.",
+    ch3: "Brand Collective went from 20 people running fragmented systems to 6 people running 19 stores on one platform.",
+    ch4: "JB Hi-Fi built a 90-minute Store-to-Door delivery service in 12 weeks using Shopify's APIs.",
+    ch5: "Brand Collective saw 15-25% checkout conversion lift. The Good Guys doubled theirs.",
+    ai:  "Shopify merchants are seeing AI-attributed orders up 11x and AI-driven traffic up 7x since January.",
+    uc:  "Nutrition Warehouse onboarded 120+ stores to Shopify POS in 6 months. 15 minutes of staff training per location."
+  };
+
+  let hook = "";
+
+  if (s.type === "mqa") {
+    // Cold outreach: open with the observation, close with the opportunity
+    if (hasAI) {
+      const aiKws = keywords.filter(k => k.includes("ai") || k.includes("agentic") || k.includes("llm")).slice(0,2).join(" and ");
+      hook = `Hi [Name], ${acct} has been researching ${aiKws || "AI commerce"} on Shopify.com this week, with no contact from our team yet. ${proof.ai} The retailers moving fastest on this are building for AI-driven discovery, not just AI-powered recommendations. Worth 20 minutes to share what that looks like in practice?`;
+    } else if (hasPOS) {
+      hook = `Hi [Name], ${acct} has been looking at Shopify POS this week. ${proof.uc} The gap most retailers hit isn't technology — it's running two separate systems that can't share customer data. Happy to show you how that plays out for a business your size. Worth a look?`;
+    } else if (hasContact) {
+      hook = `Hi [Name], someone at ${acct} has been on our contact page this week. I wanted to make sure you reached the right person. What are you looking to solve? I can point you to the clearest path forward.`;
+    } else if (hasFreeTrial && hasPricing) {
+      hook = `Hi [Name], ${acct} has been on our free trial and pricing pages this week. That combination usually means someone's building an internal business case. ${proof.ch2} Happy to put together a clear picture of what migration looks like for a business your size. Worth a conversation?`;
+    } else if (hasPlus || hasFreeTrial) {
+      hook = `Hi [Name], ${acct} has been researching ${pageRef} on Shopify.com and no one from our team has connected yet. ${proof.ch1} Happy to share what the evaluation process looks like for retailers in your space. Worth 20 minutes?`;
+    } else if (hasPricing) {
+      hook = `Hi [Name], ${acct} has been on our pricing page this week${kwRef ? `, alongside researching "${kwRef}"` : ""}. That's usually the point where an ROI case is being built internally. ${proof.ch5} Worth a quick chat?`;
+    } else {
+      hook = `Hi [Name], ${acct} has been researching ${pageRef} on Shopify.com with no contact from our team yet. That kind of specific research usually signals an active evaluation. What's prompting the interest? Happy to share what the process looks like for retailers in your space.`;
+    }
+
+  } else if (s.type === "lost") {
+    // Warm re-engage: surface the signal, frame as opportunity, ask a real question
+    if (hasAI) {
+      hook = `Hi [Name], ${acct} has been researching ${kwRef || "AI commerce"} on Shopify.com this week. ${proof.ai} Given where your evaluation stands, I'd love to walk through what this looks like in practice. What questions have come up?`;
+    } else if (hasPricing || hasFreeTrial) {
+      hook = `Hi [Name], ${acct} has been back on ${pageRef} this week. That's usually a sign the internal conversation is moving. Happy to address any open questions on pricing, timelines, or how the migration works. What's top of mind right now?`;
+    } else {
+      hook = `Hi [Name], ${acct} has been active on Shopify.com this week, including ${pageRef}. That kind of activity usually means questions are building. Worth a quick call to see where things stand?`;
+    }
+
+  } else if (s.type === "new") {
+    // New contact: first-ever engagement, frame as opportunity not cold pitch
+    const newLine   = s.engagement.find(e => e.startsWith("New contact:"));
+    const contactRef = newLine ? newLine.replace("New contact: ","").split("(")[0].trim() : null;
+    if (hasAI) {
+      hook = `Hi [Name], ${acct} has just started engaging with Shopify for the first time this week, researching ${kwRef || "AI commerce"}. ${proof.ai} The conversation most retailers in your space are having right now isn't "should we use AI" — it's "how do we build for AI-driven discovery before our competitors do." Happy to share what that looks like in practice. Is this an active evaluation or early-stage exploration?`;
+    } else if (pages.length > 0) {
+      hook = `Hi [Name], ${acct} has just started engaging with Shopify for the first time this week${contactRef ? ` and ${contactRef}'s name came across my desk` : ""}. Someone's looking at ${pageRef}. Rather than wait, I wanted to reach out directly. Are you leading a platform evaluation or still exploring at this stage?`;
+    } else {
+      hook = `Hi [Name], ${acct} has just started engaging with Shopify for the first time this week${contactRef ? ` and ${contactRef}'s name came across my desk` : ""}. Rather than wait, I wanted to reach out directly. What's prompting the interest? Happy to point you to the most relevant examples for your space.`;
+    }
+
+  } else {
+    // eng: MQA account doing specific page research — frame the opportunity
+    if (hasAI) {
+      hook = `Hi [Name], ${acct} has been researching ${kwRef || "AI commerce"} on Shopify.com this week${pages.length > 0 ? `, alongside ${pageRef}` : ""}. ${proof.ai} The retailers moving fastest on this are treating AI as a distribution channel, not just a feature. Happy to share what that looks like for businesses in your space. Have 20 minutes?`;
+    } else if (hasPOS) {
+      hook = `Hi [Name], ${acct} has been looking at ${pageRef} on Shopify.com this week. ${proof.ch3} The shift usually starts when teams realise the cost of fragmentation isn't just operational — it's in the customer experience. Worth seeing how that plays out for a business your size?`;
+    } else {
+      hook = `Hi [Name], ${acct} has been researching ${pageRef} on Shopify.com this week${kwRef ? `, including "${kwRef}"` : ""}. That level of specific activity usually means an evaluation is underway. Happy to share examples from retailers in your space. Have 20 minutes?`;
+    }
+  }
+
+  return hook;
+}
+
+function copyOutreach(id) {
+  const s = signals.find(x => x.id === id);
+  const text = generateOutreachHook(s);
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById("toast");
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+  });
+}
+
+// ─────────────────────────────────────────────────
+// SHOPIFY CONNECT VIC — ACCOUNT DATA
+// Sources: BigQuery (IDs), Google Doc (AE/SDR),
+//          Demandbase heatmap (intent), activity CSVs
+// ─────────────────────────────────────────────────
+const vicAccounts = [
+  {
+    name: "Kmart Australia Limited",
+    id: "0018V00002d0KHPQA2",
+    ae: "TBC", sdr: "",
+    industry: "Apparel & Accessories", state: "VIC",
+    journey: "MQA", days: 66,
+    eng3mo: 348, predict: 0.65, qual: 0.75,
+    intent: 4.19,
+    keywords: ["agentic commerce", "ai chatbot", "large language models", "ai search"],
+    contacts: [],
+    pages: ["shopify.com/au", "shopify.com/plus"],
+    note: "Highest intent score of all accounts. Geo + keyword intent trending across team. No AE assigned — flag for coverage."
+  },
+  {
+    name: "Officeworks",
+    id: "0018V00002d0KHkQAM",
+    ae: "Lauren Critten", sdr: "Gurj Singh",
+    industry: "Stationery & Office Supplies", state: "VIC",
+    journey: "MQA", days: 190,
+    eng3mo: 338, predict: 0.97, qual: 0.66,
+    intent: 3.53,
+    keywords: ["agentic commerce", "ai chatbot", "digital transformation strategy"],
+    contacts: [],
+    pages: [],
+    note: "Predict score 0.97 — highest conviction account in the list. 190 days in MQA. Searching agentic commerce directly. Overdue for a move."
+  },
+  {
+    name: "David Jones Limited",
+    id: "0018V00002kQJInQAO",
+    ae: "Lauren Critten", sdr: "Gurj Singh",
+    industry: "Home Decor", state: "VIC",
+    journey: "SAL Opportunity", days: 55,
+    eng3mo: 300, predict: 0.74, qual: 0.41,
+    intent: 2.56,
+    keywords: ["ai search", "agentic commerce", "ai search visibility", "large language models"],
+    contacts: [{ name: "Natasha Poneros", title: "", email: "", isNew: true }, { name: "David Seeby", title: "GM Product & Digital Experience", email: "d.seeby@davidjones.com" }, { name: "Bevan Morris", title: "GM Ecommerce", email: "b.morris@davidjones.com.au" }],
+    pages: ["shopify.com/au/free-trial"],
+    note: "Active SAL Opp. Natasha Poneros newly engaged this week — not yet in your sequence. 16 sales touches in 14 days, account is live."
+  },
+  {
+    name: "Harley Heaven",
+    id: "0018V00002eBNPcQAO",
+    ae: "Bronte Hogarth", sdr: "Shina Alayon",
+    industry: "Services", state: "VIC",
+    journey: "MQA", days: 66,
+    eng3mo: 181, predict: 0.81, qual: 0.56,
+    intent: 2.16,
+    keywords: ["ai powered shopping", "large language models", "ai search", "ai chatbot"],
+    contacts: [{ name: "Amanda Duscher", title: "Head of eCommerce & Paid Digital", email: "amanda.duscher@peterstevens.com.au" }, { name: "Scott Ryan", title: "Executive General Manager", email: "scott@peterstevens.com.au" }],
+    pages: [],
+    note: "On Adobe Commerce (Magento). Predict 0.81. Searching AI-powered shopping specifically — strong angle for ACR pitch. Jason McKenzie no longer in role; use Amanda Duscher."
+  },
+  {
+    name: "Rodd & Gunn",
+    id: "0018V00002d0GaJQAU",
+    ae: "Lauren Critten", sdr: "Gurj Singh",
+    industry: "Apparel & Accessories", state: "NZ",
+    journey: "MQA", days: 190,
+    eng3mo: 203, predict: 0.89, qual: 0.30,
+    intent: 0,
+    keywords: ["customer lifetime value", "ai chatbot", "large language models"],
+    contacts: [{ name: "Cormack O'Connor", title: "Head of Digital", email: "cormackc@roddandgunn.com" }],
+    pages: [],
+    note: "Predict 0.89 despite zero agentic intent score. Searching customer lifetime value — retention angle. On Salesforce Commerce Cloud. 190 days in MQA."
+  },
+  {
+    name: "North Melbourne Football Club",
+    id: "001OG00000kHXVRYA4",
+    ae: "Bronte Hogarth", sdr: "Shina Alayon",
+    industry: "Sports & Recreation", state: "VIC",
+    journey: "MQA", days: 66,
+    eng3mo: 177, predict: 0.11, qual: 0.35,
+    intent: 1.86,
+    keywords: ["large language models", "import and export", "ai chatbot"],
+    contacts: [{ name: "Michael Tormey", title: "GM Digital Content & Comms", email: "michael.tormey@nmfc.com.au" }],
+    pages: ["shopify.com/au/free-trial"],
+    note: "Intent signal strong. Predict low (0.11) — no active opp, clean target. International commerce intent spike alongside AI. Michael Tormey is the right primary contact."
+  },
+  {
+    name: "Vinomofo",
+    id: "0018V00002d0IknQAE",
+    ae: "Lauren Critten", sdr: "Gurj Singh",
+    industry: "Alcohol", state: "VIC",
+    journey: "MQA", days: 190,
+    eng3mo: 180, predict: 0.97, qual: 0.60,
+    intent: 1.13,
+    keywords: ["large language models", "ai chatbot", "dropshipping"],
+    contacts: [{ name: "Justin Dry", title: "Co-Founder & CEO", email: "justin@vinomofo.com" }, { name: "Bryn Thomas", title: "Product Manager eCommerce", email: "bryn.thomas@vinomofo.com" }],
+    pages: [],
+    note: "Predict 0.97. On BigCommerce (headless). Searching LLMs and AI — angle: AI-driven discovery reshaping DTC beverage. 190 days in MQA means they're due."
+  },
+  {
+    name: "Office Choice",
+    id: "0018V00002d0IpbQAE",
+    ae: "Kole Mahan", sdr: "Lane Pedersen",
+    industry: "Stationery & Office Supplies", state: "VIC",
+    journey: "MQA", days: 66,
+    eng3mo: 126, predict: 0.58, qual: 0.47,
+    intent: 1.85,
+    keywords: ["large language models", "ai chatbot"],
+    contacts: [{ name: "Teresa Thompson", title: "Interim CEO", email: "teresa.thompson@officechoice.com.au" }],
+    pages: [],
+    note: "Leadership in flux — Brad O'Brien resigned, Jasmine Maniquis left. Teresa Thompson interim CEO. On Custom Build. Open window for platform conversation — reach carefully."
+  },
+  {
+    name: "PHE International",
+    id: "0018V00002dH9g5QAC",
+    ae: "Bronte Hogarth", sdr: "Shina Alayon",
+    industry: "Apparel & Accessories", state: "VIC",
+    journey: "MQA", days: 5,
+    eng3mo: 54, predict: 0.12, qual: 0.50,
+    intent: 0.51,
+    keywords: ["ai chatbot"],
+    contacts: [{ name: "Will Dobbyn", title: "General Manager", email: "wdobbyn@pheinternational.com.au" }, { name: "Max Stanford", title: "Marketing Coordinator", email: "mstanford@pheinternational.com.au" }],
+    pages: [],
+    note: "Max Stanford newly engaged this week — fresh door. Only 5 days in MQA. Closed Lost. Will Dobbyn is primary — Max is the in. Note: adult product category may affect Payments."
+  },
+  {
+    name: "Zimmermann",
+    id: "0018V00002d0IaHQAU",
+    ae: "Shane Kilgour", sdr: "Gurj Singh",
+    industry: "Apparel & Accessories", state: "NSW",
+    journey: "All Other", days: 66,
+    eng3mo: 38, predict: 0.33, qual: 0.63,
+    intent: 0.63,
+    keywords: ["agentic commerce", "ai chatbot", "large language models"],
+    contacts: [{ name: "Rebecca Jourdan", title: "Global Head of Digital", email: "rebecca.jourdan@zimmermann.com" }, { name: "Emma Kirwan", title: "Digital Delivery Sr Manager", email: "emma.kirwan@zimmermann.com" }],
+    pages: [],
+    note: "Went with SFCC, intel suggests it went sideways. Back on Shopify.com. Searching agentic commerce. Qual 0.63 = strong fit. Use the ACR score as the wedge."
+  },
+  {
+    name: "Milwaukee Tools Australia",
+    id: "0018V00002eoSjsQAE",
+    ae: "Chachi Apolinario", sdr: "Shina Alayon",
+    industry: "Electronics & Gadgets", state: "VIC",
+    journey: "Engaged", days: 172,
+    eng3mo: 29, predict: 0.05, qual: 0.74,
+    intent: 0.61,
+    keywords: ["large language models", "ai search"],
+    contacts: [{ name: "Ayman Harrak", title: "Head of Digital & Brand Marketing", email: "ayman.harrak@milwaukeetools.com.au" }, { name: "Andreas Wenzel", title: "Manager Digital Delivery", email: "andreas.wenzel@milwaukeetools.com.au" }],
+    pages: [],
+    note: "172 days engaged, predict low (0.05). Qual 0.74 = strong fit score. Not ready to buy yet but fit is there. Ayman Harrak is active and award-winning. Warm but patient."
+  },
+  {
+    name: "Melbourne Storm",
+    id: "0018V00002ieSY2QAM",
+    ae: "Kole Mahan", sdr: "Lane Pedersen",
+    industry: "Sports & Entertainment", state: "VIC",
+    journey: "MQA", days: 45,
+    eng3mo: 37, predict: 0.45, qual: 0.35,
+    intent: 0,
+    keywords: ["ai chatbot"],
+    contacts: [{ name: "Jonathan Demos", title: "GM Digital", email: "jdemos@melbournestorm.com.au" }, { name: "Brittany Bell", title: "Head of Marketing & PR", email: "bbell@melbournestorm.com.au" }, { name: "Kiandra Langdon", title: "Manager, Digital", email: "klangdon@melbournestorm.com.au", isNew: true }, { name: "Rhylee Kealy", title: "", email: "", isNew: true }],
+    pages: [],
+    note: "Signed long-term deal with Fanatics (Nov 2024). Fanatics Cloud Commerce runs their store. Jonathan Demos recently promoted to GM Digital. Keep warm, low urgency."
+  },
+  {
+    name: "Centre Com",
+    id: "0018V00002kQJJoQAO",
+    ae: "Bronte Hogarth", sdr: "Shina Alayon",
+    industry: "Services", state: "VIC",
+    journey: "All Other", days: 256,
+    eng3mo: 5, predict: 0.34, qual: 0.26,
+    intent: 0,
+    keywords: ["large language models", "ai chatbot"],
+    contacts: [{ name: "Janto Lim", title: "MD", email: "janto.l@centrecom.com.au" }, { name: "Bee Tran", title: "Marketing Manager", email: "bee.t@centrecom.com.au" }],
+    pages: [],
+    note: "On Custom Build, no opp. 256 days in All Other. Lowest engagement of the group. Janto Lim confirmed contact. Event is the best way in — low cold approach priority."
+  }
+];
+
+let activeVicSdr = "all";
+
+function intentClass(score) {
+  if (score >= 2.5) return "intent-high";
+  if (score >= 1.0) return "intent-medium";
+  if (score > 0)   return "intent-low";
+  return "intent-none";
+}
+function intentLabel(score) {
+  if (score >= 2.5) return `🔴 Intent ${score}`;
+  if (score >= 1.0) return `🟡 Intent ${score}`;
+  if (score > 0)   return `⚪ Intent ${score}`;
+  return "No intent signal";
+}
+function priorityClass(acc) {
+  if (acc.intent >= 2.5 || acc.predict >= 0.90) return "p-high";
+  if (acc.intent >= 1.0  || acc.predict >= 0.60) return "p-medium";
+  return "p-low";
+}
+function journeyClass(j) {
+  const jl = j.toLowerCase();
+  if (jl.includes("sal") || jl.includes("opp")) return "sal";
+  if (jl.includes("mqa")) return "mqa";
+  if (jl.includes("engaged")) return "engaged";
+  return "other";
+}
+function predictColor(v) {
+  if (v >= 0.80) return "green";
+  if (v >= 0.50) return "amber";
+  return "red";
+}
+
+function renderVicGrid() {
+  const grid = document.getElementById("vicGrid");
+  const filtered = activeVicSdr === "all"
+    ? vicAccounts
+    : vicAccounts.filter(a => a.sdr === activeVicSdr);
+
+  grid.innerHTML = filtered.map(a => {
+    const pc = priorityClass(a);
+    const ic = intentClass(a.intent);
+    const il = intentLabel(a.intent);
+    const jc = journeyClass(a.journey);
+    const sfdc = `https://banff.lightning.force.com/lightning/r/Account/${a.id}/view`;
+
+    const kwHtml = a.keywords.map(k =>
+      `<span class="vic-kw">${k}</span>`
+    ).join("");
+
+    const contactsHtml = a.contacts.length ? `
+      <div class="vic-contacts-block">
+        <div class="vic-contacts-label">Contacts</div>
+        ${a.contacts.map(c => `
+          <div class="vic-contact-row">
+            <div style="flex:1">
+              <span class="vic-contact-name">${c.name}</span>
+              ${c.isNew ? `<span style="display:inline-flex;align-items:center;margin-left:6px;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;background:rgba(139,92,246,0.12);color:#7c3aed;border:1px solid rgba(139,92,246,0.25);">NEW</span>` : ""}
+              ${c.title ? `<span class="vic-contact-title"> · ${c.title}</span>` : ""}
+              ${c.email ? `<br><a class="vic-contact-email" href="mailto:${c.email}">${c.email}</a>` : ""}
+            </div>
+          </div>`).join("")}
+      </div>` : "";
+
+    return `
+    <div class="vic-card ${pc}">
+      <div class="vic-card-top">
+        <div>
+          <div class="vic-account-name">${a.name}</div>
+          <div class="vic-account-meta">${a.industry} · ${a.state}</div>
+        </div>
+        <span class="intent-badge ${ic}">${il}</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span class="vic-journey ${jc}">${a.journey} · ${a.days}d</span>
+      </div>
+
+      <div class="vic-stats">
+        <div class="vic-stat">
+          <div class="vic-stat-val">${a.eng3mo}</div>
+          <div class="vic-stat-lbl">Eng 3mo</div>
+        </div>
+        <div class="vic-stat">
+          <div class="vic-stat-val ${predictColor(a.predict)}">${Math.round(a.predict * 100)}%</div>
+          <div class="vic-stat-lbl">Predict</div>
+        </div>
+        <div class="vic-stat">
+          <div class="vic-stat-val">${Math.round(a.qual * 100)}%</div>
+          <div class="vic-stat-lbl">Qual Score</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:5px;">Intent Keywords</div>
+        <div class="vic-keywords">${kwHtml}</div>
+      </div>
+
+      ${contactsHtml}
+
+      <div style="font-size:12px;color:var(--muted);line-height:1.55;padding:8px 10px;background:var(--bg);border-radius:7px;border:1px solid var(--border);">${a.note}</div>
+
+      <div class="vic-footer">
+        <div class="vic-owner">
+          <span>AE: <strong>${a.ae || "TBC"}</strong></span>
+          ${a.sdr ? `<span>SDR: <strong>${a.sdr}</strong></span>` : ""}
+        </div>
+        <a class="vic-sfdc-link" href="${sfdc}" target="_blank">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open in Salesforce
+        </a>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function filterVic(chip) {
+  document.querySelectorAll(".vic-chip").forEach(c => c.classList.remove("active"));
+  chip.classList.add("active");
+  activeVicSdr = chip.dataset.sdr;
+  renderVicGrid();
+}
+
+function switchView(view) {
+  const mainEl    = document.querySelector(".main");
+  const heroEl    = document.querySelector(".hero");
+  const filterEl  = document.querySelector(".filter-bar");
+  const teamBar   = document.getElementById("teamBar");
+  const vicView   = document.getElementById("vic-view");
+  const tabSig    = document.getElementById("tab-signals");
+  const tabVic    = document.getElementById("tab-vic");
+
+  if (view === "vic") {
+    mainEl.style.display   = "none";
+    heroEl.style.display   = "none";
+    filterEl.style.display = "none";
+    teamBar.style.display  = "none";
+    vicView.classList.add("visible");
+    tabSig.classList.remove("active");
+    tabVic.classList.add("active");
+    renderVicGrid();
+  } else {
+    mainEl.style.display   = "";
+    heroEl.style.display   = "";
+    filterEl.style.display = "";
+    vicView.classList.remove("visible");
+    tabSig.classList.add("active");
+    tabVic.classList.remove("active");
+    // Restore team bar if manager mode
+    if (document.getElementById("teamBar").dataset.managerMode === "true") {
+      teamBar.style.display = "";
+    }
+  }
+}
+
+// Update weekly signals tab badge after init
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    const total = document.getElementById("totalCount");
+    const badge = document.getElementById("tab-signals-badge");
+    if (total && badge) badge.textContent = total.textContent;
+  }, 300);
+});
+
+// Hash-based deep linking — #vic goes straight to VIC tab
+function handleHash() {
+  if (window.location.hash === "#vic") {
+    switchView("vic");
+  }
+}
+window.addEventListener("hashchange", handleHash);
+
+// Update hash when switching views
+const _origSwitchView = switchView;
+switchView = function(view) {
+  _origSwitchView(view);
+  history.replaceState(null, "", view === "vic" ? "#vic" : "#");
+};
+
+init();
+handleHash();
+</script>
+
+<div style="text-align:center;padding:32px 16px 40px;font-size:12px;color:#999;">
+  Have an idea or feedback? Reach out to
+  <a href="mailto:shalini.keyan@shopify.com" style="color:#666;font-weight:600;text-decoration:none;">@Shalini Keyan</a>
+</div>
+
+</body>
+</html>
