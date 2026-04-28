@@ -1058,10 +1058,9 @@
     <div class="viewing-as hidden" id="viewingAs" title="Current view">
       <div class="va-avatar" id="vaAvatar"></div>
       <span class="va-label" id="vaLabel"></span>
-      <span class="va-change">· switch</span>
     </div>
-    <a href="https://apacinsights-apr13.quick.shopify.io" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8b949e;text-decoration:none;padding:6px 12px;border:1px solid #30363d;border-radius:6px;transition:all 0.15s;white-space:nowrap;background:#161b22" onmouseover="this.style.color='#c9d1d9';this.style.borderColor='#58a6ff';this.style.background='#1c2128'" onmouseout="this.style.color='#8b949e';this.style.borderColor='#30363d';this.style.background='#161b22'">← Previous week: Apr 13</a>
-    <span class="week-label">Week of <strong id="weekLabel"></strong></span>
+    <a id="prevWeekLink" href="https://apacinsights-apr20.quick.shopify.io" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#8b949e;text-decoration:none;padding:6px 12px;border:1px solid #30363d;border-radius:6px;transition:all 0.15s;white-space:nowrap;background:#161b22" onmouseover="this.style.color='#c9d1d9';this.style.borderColor='#58a6ff';this.style.background='#1c2128'" onmouseout="this.style.color='#8b949e';this.style.borderColor='#30363d';this.style.background='#161b22'">← Previous week: Apr 20</a>
+    <span class="week-label"><strong id="weekLabel"></strong></span>
   </div>
 </div>
 
@@ -1299,7 +1298,7 @@
   <div class="weekly-main">
     <div class="weekly-head">
       <div>
-        <div class="weekly-title">Week of 27 Apr, Regional Account Tabs</div>
+        <div class="weekly-title" id="weeklyTitle">Regional Account Tabs</div>
         <div class="weekly-sub">High + medium priority only, Education removed, context + campaign keywords + SDR retained.</div>
       </div>
       <div class="weekly-sub" id="weekly-sub-count"></div>
@@ -1353,7 +1352,7 @@
 // ─────────────────────────────────────────────────
 // DATA — replace with real weekly CSV pull
 // ─────────────────────────────────────────────────
-const WEEK = "April 20, 2026";
+const WEEK = ((window.WEEKLY_TABS_DATA && window.WEEKLY_TABS_DATA.week) || "Week of 27 Apr 2026").replace(/^Week of\s*/i, "");
 
 const signals = [
   {
@@ -4178,7 +4177,20 @@ function updateWeeklyCounts() {
   set("tab-count-gcr", gcr);
   set("tab-count-roa", roa);
   set("tab-count-enable", enable);
-  set("weekLabel", `${WEEK} · ${total} accounts`);
+  set("weekLabel", `Week of ${WEEK} · ${total} accounts`);
+  const title = document.getElementById("weeklyTitle");
+  if (title) title.textContent = `Week of ${WEEK}, Regional Account Tabs`;
+
+  const prevLink = document.getElementById("prevWeekLink");
+  if (prevLink && weeklyData.weekStart) {
+    const parsed = new Date(`${weeklyData.weekStart}T00:00:00`);
+    if (!Number.isNaN(parsed.getTime())) {
+      const prev = new Date(parsed.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const month = prev.toLocaleString("en-AU", { month: "short" });
+      const day = String(prev.getDate()).padStart(2, "0");
+      prevLink.textContent = `← Previous week: ${month} ${day}`;
+    }
+  }
 }
 
 function intentClass(score) {
