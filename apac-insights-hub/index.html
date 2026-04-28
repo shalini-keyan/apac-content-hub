@@ -634,6 +634,115 @@
     transition: all 0.15s; flex-shrink: 0;
   }
   .vic-sfdc-link:hover { color: var(--green); border-color: var(--green); }
+
+  /* ── WEEKLY REGION + ENABLEMENT VIEW ── */
+  #weekly-view {
+    display: none;
+    padding: 22px 26px 34px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  #weekly-view.visible { display: block; }
+  .weekly-main {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .weekly-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .weekly-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .weekly-sub { font-size: 12px; color: var(--muted); }
+  .weekly-subtabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .weekly-chip {
+    padding: 6px 11px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    cursor: pointer;
+  }
+  .weekly-chip.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  .weekly-chip-badge {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 5px;
+  }
+  .weekly-chip.active .weekly-chip-badge { color: #d1fae5; }
+  .weekly-table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
+  .weekly-table { width: 100%; border-collapse: collapse; min-width: 1080px; }
+  .weekly-table th {
+    text-align: left;
+    background: #f3f4f6;
+    color: #374151;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .weekly-table td {
+    font-size: 12px;
+    color: var(--text);
+    padding: 10px;
+    border-bottom: 1px solid #eef0f2;
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  .weekly-priority {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 20px;
+    padding: 2px 9px;
+    border: 1px solid;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .weekly-priority.high { color: #065f46; background: #d1fae5; border-color: #6ee7b7; }
+  .weekly-priority.medium { color: #92400e; background: #fef3c7; border-color: #fcd34d; }
+  .weekly-context details { margin-top: 3px; }
+  .weekly-context summary { cursor: pointer; color: #2563eb; font-size: 11px; }
+  .weekly-enable-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 10px;
+  }
+  .weekly-enable-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 10px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .weekly-enable-sec { font-size: 10px; font-weight: 700; letter-spacing: 0.45px; text-transform: uppercase; color: #6b7280; }
+  .weekly-enable-topic { font-size: 13px; font-weight: 700; color: #111827; }
+  .weekly-enable-line { font-size: 12px; color: #374151; line-height: 1.45; }
 </style>
 </head>
 <body>
@@ -697,6 +806,10 @@
   <div class="view-tab" id="tab-vic" onclick="switchView('vic')">
     🏟️ Shopify Connect VIC
     <span class="tab-badge">12</span>
+  </div>
+  <div class="view-tab" id="tab-weekly" onclick="switchView('weekly')">
+    📊 Weekly Account Tabs
+    <span class="tab-badge" id="tab-weekly-badge">—</span>
   </div>
 </div>
 
@@ -905,8 +1018,30 @@
   </div>
 </div>
 
+<!-- WEEKLY REGION + ENABLEMENT VIEW -->
+<div id="weekly-view">
+  <div class="weekly-main">
+    <div class="weekly-head">
+      <div>
+        <div class="weekly-title">Week of 27 Apr, Regional Account Tabs</div>
+        <div class="weekly-sub">High + medium priority only, Education removed, context + campaign keywords + SDR retained.</div>
+      </div>
+      <div class="weekly-sub" id="weekly-sub-count"></div>
+    </div>
+    <div class="weekly-subtabs">
+      <button class="weekly-chip active" data-weekly-tab="ANZ" onclick="switchWeeklyTab('ANZ', this)">ANZ <span class="weekly-chip-badge" id="wk-count-anz"></span></button>
+      <button class="weekly-chip" data-weekly-tab="Japan" onclick="switchWeeklyTab('Japan', this)">Japan <span class="weekly-chip-badge" id="wk-count-japan"></span></button>
+      <button class="weekly-chip" data-weekly-tab="GCR" onclick="switchWeeklyTab('GCR', this)">GCR <span class="weekly-chip-badge" id="wk-count-gcr"></span></button>
+      <button class="weekly-chip" data-weekly-tab="Rest of Asia" onclick="switchWeeklyTab('Rest of Asia', this)">Rest of Asia <span class="weekly-chip-badge" id="wk-count-roa"></span></button>
+      <button class="weekly-chip" data-weekly-tab="Enablement" onclick="switchWeeklyTab('Enablement', this)">Enablement <span class="weekly-chip-badge" id="wk-count-enable"></span></button>
+    </div>
+    <div id="weekly-content"></div>
+  </div>
+</div>
+
 <div id="toast">✓ Copied to clipboard</div>
 
+<script src="data/weekly-tabs.js"></script>
 <script>
 // ─────────────────────────────────────────────────
 // DATA — replace with real weekly CSV pull
@@ -3410,6 +3545,141 @@ const vicAccounts = [
 ];
 
 let activeVicSdr = "all";
+const weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablement: [] };
+let activeWeeklyTab = "ANZ";
+
+function escHtml(v) {
+  return String(v || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function shortText(v, max = 180) {
+  const text = String(v || "").trim();
+  if (text.length <= max) return text;
+  return `${text.slice(0, max).trim()}...`;
+}
+
+function buildWeeklyTable(regionName) {
+  const rows = (weeklyData.regions && weeklyData.regions[regionName]) || [];
+  if (!rows.length) return '<div class="weekly-sub">No accounts found for this tab.</div>';
+
+  const body = rows.map(r => {
+    const priorityClass = String(r.priority || "").toLowerCase() === "high" ? "high" : "medium";
+    const sfUrl = r.accountId ? `https://banff.lightning.force.com/lightning/r/Account/${r.accountId}/view` : "";
+
+    return `
+      <tr>
+        <td>
+          <div style="font-weight:600">${escHtml(r.account)}</div>
+          <div style="font-size:11px;color:#6b7280">${escHtml(r.country || "")}${r.industry ? ` · ${escHtml(r.industry)}` : ""}</div>
+        </td>
+        <td><span class="weekly-priority ${priorityClass}">${escHtml(r.priority)}</span></td>
+        <td>${escHtml(r.accountOwner || "—")}</td>
+        <td>${escHtml(r.sdrOwner || "—")}</td>
+        <td>
+          <div>Eng 7d: <strong>${escHtml(r.engagement7d || "—")}</strong></div>
+          <div>Eng 3m: <strong>${escHtml(r.engagement3m || "—")}</strong></div>
+          <div>Predict: <strong>${escHtml(r.pipelinePredictScore || "—")}</strong> · Qual: <strong>${escHtml(r.qualificationScore || "—")}</strong></div>
+          <div style="font-size:11px;color:#6b7280">${escHtml(r.journeyStage || "")}${r.lastActivity ? ` · ${escHtml(r.lastActivity)}` : ""}</div>
+        </td>
+        <td class="weekly-context">
+          <div>${escHtml(shortText(r.engagedContext, 210) || "—")}</div>
+          ${r.engagedContext && r.engagedContext.length > 210 ? `<details><summary>View full context</summary><div>${escHtml(r.engagedContext)}</div></details>` : ""}
+        </td>
+        <td class="weekly-context">
+          <div>${escHtml(shortText(r.campaignKeywords, 210) || "—")}</div>
+          ${r.campaignKeywords && r.campaignKeywords.length > 210 ? `<details><summary>View all keywords/campaigns</summary><div>${escHtml(r.campaignKeywords)}</div></details>` : ""}
+        </td>
+        <td>${sfUrl ? `<a href="${sfUrl}" target="_blank" style="font-size:12px;color:#2563eb;text-decoration:none;">Open</a>` : "—"}</td>
+      </tr>
+    `;
+  }).join("");
+
+  return `
+    <div class="weekly-table-wrap">
+      <table class="weekly-table">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Priority</th>
+            <th>Account Owner</th>
+            <th>SDR</th>
+            <th>Scores & Stage</th>
+            <th>Engagement Context</th>
+            <th>Salesforce Campaign / Keywords</th>
+            <th>SFDC</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function buildEnablementCards() {
+  const rows = weeklyData.enablement || [];
+  if (!rows.length) return '<div class="weekly-sub">No enablement content found.</div>';
+  return `
+    <div class="weekly-enable-grid">
+      ${rows.map(r => `
+      <div class="weekly-enable-card">
+        <div class="weekly-enable-sec">${escHtml(r.section)}</div>
+        <div class="weekly-enable-topic">${escHtml(r.topic)}</div>
+        <div class="weekly-enable-line"><strong>What it means:</strong> ${escHtml(r.whatItMeans)}</div>
+        <div class="weekly-enable-line"><strong>Platform limit:</strong> ${escHtml(r.platformLimit)}</div>
+        <div class="weekly-enable-line"><strong>Rep action:</strong> ${escHtml(r.repAction)}</div>
+        <div class="weekly-enable-line"><strong>Outreach trigger:</strong> ${escHtml(r.outreachTrigger)}</div>
+        <div class="weekly-enable-line"><strong>Do not overreact:</strong> ${escHtml(r.dontOverreact)}</div>
+        <div class="weekly-enable-line"><strong>Suggested motion:</strong> ${escHtml(r.suggestedMotion)}</div>
+      </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderWeeklyView() {
+  const content = document.getElementById("weekly-content");
+  const countEl = document.getElementById("weekly-sub-count");
+  if (!content || !countEl) return;
+
+  if (activeWeeklyTab === "Enablement") {
+    content.innerHTML = buildEnablementCards();
+    countEl.textContent = `${(weeklyData.enablement || []).length} enablement topics`;
+    return;
+  }
+
+  const rows = (weeklyData.regions && weeklyData.regions[activeWeeklyTab]) || [];
+  content.innerHTML = buildWeeklyTable(activeWeeklyTab);
+  countEl.textContent = `${rows.length} accounts · ${activeWeeklyTab}`;
+}
+
+function switchWeeklyTab(tabName, chipEl) {
+  activeWeeklyTab = tabName;
+  document.querySelectorAll("[data-weekly-tab]").forEach(el => el.classList.remove("active"));
+  if (chipEl) chipEl.classList.add("active");
+  renderWeeklyView();
+}
+
+function updateWeeklyCounts() {
+  const regions = weeklyData.regions || {};
+  const anz = (regions["ANZ"] || []).length;
+  const jpn = (regions["Japan"] || []).length;
+  const gcr = (regions["GCR"] || []).length;
+  const roa = (regions["Rest of Asia"] || []).length;
+  const enable = (weeklyData.enablement || []).length;
+  const total = anz + jpn + gcr + roa;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set("wk-count-anz", anz);
+  set("wk-count-japan", jpn);
+  set("wk-count-gcr", gcr);
+  set("wk-count-roa", roa);
+  set("wk-count-enable", enable);
+  set("tab-weekly-badge", total);
+}
 
 function intentClass(score) {
   if (score >= 2.5) return "intent-high";
@@ -3537,8 +3807,10 @@ function switchView(view) {
   const filterEl  = document.querySelector(".filter-bar");
   const teamBar   = document.getElementById("teamBar");
   const vicView   = document.getElementById("vic-view");
+  const weeklyView = document.getElementById("weekly-view");
   const tabSig    = document.getElementById("tab-signals");
   const tabVic    = document.getElementById("tab-vic");
+  const tabWeekly = document.getElementById("tab-weekly");
 
   if (view === "vic") {
     mainEl.style.display   = "none";
@@ -3546,16 +3818,31 @@ function switchView(view) {
     filterEl.style.display = "none";
     teamBar.style.display  = "none";
     vicView.classList.add("visible");
+    weeklyView.classList.remove("visible");
     tabSig.classList.remove("active");
     tabVic.classList.add("active");
+    tabWeekly.classList.remove("active");
     renderVicGrid();
+  } else if (view === "weekly") {
+    mainEl.style.display   = "none";
+    heroEl.style.display   = "none";
+    filterEl.style.display = "none";
+    teamBar.style.display  = "none";
+    vicView.classList.remove("visible");
+    weeklyView.classList.add("visible");
+    tabSig.classList.remove("active");
+    tabVic.classList.remove("active");
+    tabWeekly.classList.add("active");
+    renderWeeklyView();
   } else {
     mainEl.style.display   = "";
     heroEl.style.display   = "";
     filterEl.style.display = "";
     vicView.classList.remove("visible");
+    weeklyView.classList.remove("visible");
     tabSig.classList.add("active");
     tabVic.classList.remove("active");
+    tabWeekly.classList.remove("active");
     // Restore team bar if manager mode
     if (document.getElementById("teamBar").dataset.managerMode === "true") {
       teamBar.style.display = "";
@@ -3569,6 +3856,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = document.getElementById("totalCount");
     const badge = document.getElementById("tab-signals-badge");
     if (total && badge) badge.textContent = total.textContent;
+    updateWeeklyCounts();
   }, 300);
 });
 
@@ -3576,6 +3864,8 @@ document.addEventListener("DOMContentLoaded", () => {
 function handleHash() {
   if (window.location.hash === "#vic") {
     switchView("vic");
+  } else if (window.location.hash === "#weekly") {
+    switchView("weekly");
   }
 }
 window.addEventListener("hashchange", handleHash);
@@ -3584,7 +3874,9 @@ window.addEventListener("hashchange", handleHash);
 const _origSwitchView = switchView;
 switchView = function(view) {
   _origSwitchView(view);
-  history.replaceState(null, "", view === "vic" ? "#vic" : "#");
+  if (view === "vic") history.replaceState(null, "", "#vic");
+  else if (view === "weekly") history.replaceState(null, "", "#weekly");
+  else history.replaceState(null, "", "#");
 };
 
 init();
