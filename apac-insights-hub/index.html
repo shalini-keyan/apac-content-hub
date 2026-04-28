@@ -690,28 +690,123 @@
     margin-left: 5px;
   }
   .weekly-chip.active .weekly-chip-badge { color: #d1fae5; }
-  .weekly-table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
-  .weekly-table { width: 100%; border-collapse: collapse; min-width: 1080px; }
-  .weekly-table th {
-    text-align: left;
-    background: #f3f4f6;
-    color: #374151;
+  .weekly-guide {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .weekly-guide-title { font-size: 12px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+  .weekly-guide-copy { font-size: 12px; color: #4b5563; line-height: 1.45; }
+  .weekly-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0 12px;
+  }
+  .weekly-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .weekly-search-wrap {
+    position: relative;
+    flex: 1 1 320px;
+    min-width: 220px;
+  }
+  .weekly-search-wrap input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+  }
+  .weekly-search-wrap input:focus { border-color: var(--green); }
+  .weekly-result-note { font-size: 12px; color: var(--muted); }
+  .weekly-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+  }
+  .weekly-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .weekly-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .weekly-card-name { font-size: 14px; font-weight: 700; color: #111827; line-height: 1.3; }
+  .weekly-card-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .weekly-chip-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .weekly-mini-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 20px;
+    padding: 2px 8px;
     font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    color: #374151;
+    background: #f9fafb;
+  }
+  .weekly-block {
+    border: 1px solid #eef0f2;
+    border-radius: 8px;
+    background: #f9fafb;
+    padding: 7px 8px;
+  }
+  .weekly-block-title {
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.45px;
-    padding: 10px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 2;
+    color: #6b7280;
+    font-weight: 700;
+    margin-bottom: 4px;
   }
-  .weekly-table td {
-    font-size: 12px;
-    color: var(--text);
-    padding: 10px;
-    border-bottom: 1px solid #eef0f2;
-    vertical-align: top;
-    line-height: 1.45;
+  .weekly-block-copy { font-size: 12px; color: #374151; line-height: 1.45; }
+  .weekly-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .weekly-owner-row { font-size: 11px; color: #6b7280; display: flex; gap: 9px; flex-wrap: wrap; }
+  .weekly-owner-row strong { color: #111827; }
+  .weekly-sfdc-link {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+  .weekly-sfdc-link:hover { border-color: var(--green); color: var(--green); }
+  .weekly-empty {
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    background: #fff;
   }
   .weekly-priority {
     display: inline-flex;
@@ -1035,6 +1130,23 @@
         <div class="weekly-sub">High + medium priority only, Education removed, context + campaign keywords + SDR retained.</div>
       </div>
       <div class="weekly-sub" id="weekly-sub-count"></div>
+    </div>
+    <div class="weekly-guide">
+      <div class="weekly-guide-title">How to use this view</div>
+      <div class="weekly-guide-copy">Pick a country tab, scan <strong>High priority</strong> first, then review engagement context and campaign/keyword signals before outreach.</div>
+    </div>
+    <div class="weekly-legend">
+      <span class="weekly-priority high">High priority</span>
+      <span class="weekly-priority medium">Medium priority</span>
+      <span class="weekly-mini-chip">Context retained</span>
+      <span class="weekly-mini-chip">Campaign/keyword retained</span>
+      <span class="weekly-mini-chip">SDR shown where available</span>
+    </div>
+    <div class="weekly-toolbar" id="weekly-toolbar">
+      <div class="weekly-search-wrap">
+        <input id="weekly-search" type="text" placeholder="Search account, owner, SDR, context or keywords" oninput="onWeeklySearch(this.value)">
+      </div>
+      <div class="weekly-result-note" id="weekly-result-note"></div>
     </div>
     <div id="weekly-content"></div>
   </div>
@@ -3548,6 +3660,7 @@ const vicAccounts = [
 let activeVicSdr = "all";
 const weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablement: [] };
 let activeWeeklyTab = "ANZ";
+let weeklySearchQuery = "";
 
 function escHtml(v) {
   return String(v || "")
@@ -3564,59 +3677,65 @@ function shortText(v, max = 180) {
   return `${text.slice(0, max).trim()}...`;
 }
 
-function buildWeeklyTable(regionName) {
-  const rows = (weeklyData.regions && weeklyData.regions[regionName]) || [];
-  if (!rows.length) return '<div class="weekly-sub">No accounts found for this tab.</div>';
+function filterWeeklyRows(rows) {
+  const q = weeklySearchQuery.trim().toLowerCase();
+  if (!q) return rows;
+  return rows.filter(r => {
+    const blob = [
+      r.account, r.accountOwner, r.sdrOwner, r.country, r.industry,
+      r.priority, r.journeyStage, r.engagedContext, r.campaignKeywords
+    ].join(" ").toLowerCase();
+    return blob.includes(q);
+  });
+}
 
-  const body = rows.map(r => {
-    const priorityClass = String(r.priority || "").toLowerCase() === "high" ? "high" : "medium";
-    const sfUrl = r.accountId ? `https://banff.lightning.force.com/lightning/r/Account/${r.accountId}/view` : "";
-
-    return `
-      <tr>
-        <td>
-          <div style="font-weight:600">${escHtml(r.account)}</div>
-          <div style="font-size:11px;color:#6b7280">${escHtml(r.country || "")}${r.industry ? ` · ${escHtml(r.industry)}` : ""}</div>
-        </td>
-        <td><span class="weekly-priority ${priorityClass}">${escHtml(r.priority)}</span></td>
-        <td>${escHtml(r.accountOwner || "—")}</td>
-        <td>${escHtml(r.sdrOwner || "—")}</td>
-        <td>
-          <div>Eng 7d: <strong>${escHtml(r.engagement7d || "—")}</strong></div>
-          <div>Eng 3m: <strong>${escHtml(r.engagement3m || "—")}</strong></div>
-          <div>Predict: <strong>${escHtml(r.pipelinePredictScore || "—")}</strong> · Qual: <strong>${escHtml(r.qualificationScore || "—")}</strong></div>
-          <div style="font-size:11px;color:#6b7280">${escHtml(r.journeyStage || "")}${r.lastActivity ? ` · ${escHtml(r.lastActivity)}` : ""}</div>
-        </td>
-        <td class="weekly-context">
-          <div>${escHtml(shortText(r.engagedContext, 210) || "—")}</div>
-          ${r.engagedContext && r.engagedContext.length > 210 ? `<details><summary>View full context</summary><div>${escHtml(r.engagedContext)}</div></details>` : ""}
-        </td>
-        <td class="weekly-context">
-          <div>${escHtml(shortText(r.campaignKeywords, 210) || "—")}</div>
-          ${r.campaignKeywords && r.campaignKeywords.length > 210 ? `<details><summary>View all keywords/campaigns</summary><div>${escHtml(r.campaignKeywords)}</div></details>` : ""}
-        </td>
-        <td>${sfUrl ? `<a href="${sfUrl}" target="_blank" style="font-size:12px;color:#2563eb;text-decoration:none;">Open</a>` : "—"}</td>
-      </tr>
-    `;
-  }).join("");
+function buildWeeklyCards(regionName) {
+  const allRows = (weeklyData.regions && weeklyData.regions[regionName]) || [];
+  const rows = filterWeeklyRows(allRows);
+  if (!rows.length) return '<div class="weekly-empty">No accounts match this tab and search.</div>';
 
   return `
-    <div class="weekly-table-wrap">
-      <table class="weekly-table">
-        <thead>
-          <tr>
-            <th>Account</th>
-            <th>Priority</th>
-            <th>Account Owner</th>
-            <th>SDR</th>
-            <th>Scores & Stage</th>
-            <th>Engagement Context</th>
-            <th>Salesforce Campaign / Keywords</th>
-            <th>SFDC</th>
-          </tr>
-        </thead>
-        <tbody>${body}</tbody>
-      </table>
+    <div class="weekly-cards">
+      ${rows.map(r => {
+        const priorityClass = String(r.priority || "").toLowerCase() === "high" ? "high" : "medium";
+        const sfUrl = r.accountId ? `https://banff.lightning.force.com/lightning/r/Account/${r.accountId}/view` : "";
+        return `
+          <div class="weekly-card">
+            <div class="weekly-card-top">
+              <div>
+                <div class="weekly-card-name">${escHtml(r.account)}</div>
+                <div class="weekly-card-meta">${escHtml(r.country || "")}${r.industry ? ` · ${escHtml(r.industry)}` : ""}</div>
+              </div>
+              <span class="weekly-priority ${priorityClass}">${escHtml(r.priority)}</span>
+            </div>
+
+            <div class="weekly-chip-row">
+              <span class="weekly-mini-chip">${escHtml(r.journeyStage || "Journey n/a")}</span>
+              <span class="weekly-mini-chip">Eng 7d: ${escHtml(r.engagement7d || "—")}</span>
+              <span class="weekly-mini-chip">Predict: ${escHtml(r.pipelinePredictScore || "—")}</span>
+              <span class="weekly-mini-chip">Qual: ${escHtml(r.qualificationScore || "—")}</span>
+            </div>
+
+            <div class="weekly-block">
+              <div class="weekly-block-title">What they engaged in</div>
+              <div class="weekly-block-copy">${escHtml(shortText(r.engagedContext, 260) || "—")}</div>
+            </div>
+
+            <div class="weekly-block">
+              <div class="weekly-block-title">Salesforce campaign / keywords</div>
+              <div class="weekly-block-copy">${escHtml(shortText(r.campaignKeywords, 260) || "—")}</div>
+            </div>
+
+            <div class="weekly-footer">
+              <div class="weekly-owner-row">
+                <span>Account owner: <strong>${escHtml(r.accountOwner || "—")}</strong></span>
+                <span>SDR: <strong>${escHtml(r.sdrOwner || "—")}</strong></span>
+              </div>
+              ${sfUrl ? `<a class="weekly-sfdc-link" href="${sfUrl}" target="_blank">Open Salesforce</a>` : ""}
+            </div>
+          </div>
+        `;
+      }).join("")}
     </div>
   `;
 }
@@ -3650,12 +3769,22 @@ function renderWeeklyView() {
   if (activeWeeklyTab === "Enablement") {
     content.innerHTML = buildEnablementCards();
     countEl.textContent = `${(weeklyData.enablement || []).length} enablement topics`;
+    const toolbar = document.getElementById("weekly-toolbar");
+    const resultNote = document.getElementById("weekly-result-note");
+    if (toolbar) toolbar.style.display = "none";
+    if (resultNote) resultNote.textContent = "";
     return;
   }
 
+  const toolbar = document.getElementById("weekly-toolbar");
+  const resultNote = document.getElementById("weekly-result-note");
+  if (toolbar) toolbar.style.display = "";
+
   const rows = (weeklyData.regions && weeklyData.regions[activeWeeklyTab]) || [];
-  content.innerHTML = buildWeeklyTable(activeWeeklyTab);
-  countEl.textContent = `${rows.length} accounts · ${activeWeeklyTab}`;
+  const filteredRows = filterWeeklyRows(rows);
+  content.innerHTML = buildWeeklyCards(activeWeeklyTab);
+  countEl.textContent = `${filteredRows.length} of ${rows.length} accounts · ${activeWeeklyTab}`;
+  if (resultNote) resultNote.textContent = weeklySearchQuery ? `Filtered by "${weeklySearchQuery}"` : "";
 }
 
 function switchWeeklyTab(tabName, chipEl) {
@@ -3672,6 +3801,11 @@ function switchWeeklyTab(tabName, chipEl) {
 
 function switchCountryTab(tabName, chipEl) {
   switchWeeklyTab(tabName, chipEl);
+}
+
+function onWeeklySearch(value) {
+  weeklySearchQuery = value || "";
+  renderWeeklyView();
 }
 
 function showCountryMode(defaultTab = "ANZ") {
