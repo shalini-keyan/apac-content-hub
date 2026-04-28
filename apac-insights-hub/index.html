@@ -1366,6 +1366,9 @@
 // DATA — replace with real weekly CSV pull
 // ─────────────────────────────────────────────────
 const WEEK = ((window.WEEKLY_TABS_DATA && window.WEEKLY_TABS_DATA.week) || "Week of 27 Apr 2026").replace(/^Week of\s*/i, "");
+const AVAILABLE_WEEK_SNAPSHOTS = {
+  "Apr 13": "https://apacinsights-apr13.quick.shopify.io"
+};
 
 const signals = [
   {
@@ -4240,7 +4243,19 @@ function updateWeeklyCounts() {
       const prev = new Date(parsed.getTime() - 7 * 24 * 60 * 60 * 1000);
       const month = prev.toLocaleString("en-AU", { month: "short" });
       const day = String(prev.getDate()).padStart(2, "0");
-      prevLink.textContent = `← Previous week: ${month} ${day}`;
+      const prevLabel = `${month} ${day}`;
+      const snapshotUrl = AVAILABLE_WEEK_SNAPSHOTS[prevLabel];
+      if (snapshotUrl) {
+        prevLink.href = snapshotUrl;
+        prevLink.textContent = `← Previous week: ${prevLabel}`;
+        prevLink.style.opacity = "1";
+        prevLink.style.pointerEvents = "auto";
+      } else {
+        prevLink.removeAttribute("href");
+        prevLink.textContent = `← Previous week: ${prevLabel} (snapshot unavailable)`;
+        prevLink.style.opacity = "0.65";
+        prevLink.style.pointerEvents = "none";
+      }
     }
   }
 }
