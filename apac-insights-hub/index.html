@@ -799,17 +799,25 @@
 
 <!-- VIEW TABS -->
 <div class="view-tabs">
-  <div class="view-tab active" id="tab-signals" onclick="switchView('signals')">
-    Weekly Signals
-    <span class="tab-badge" id="tab-signals-badge">—</span>
+  <div class="view-tab active" data-weekly-tab="ANZ" onclick="switchCountryTab('ANZ', this)">
+    🇦🇺 ANZ
+    <span class="tab-badge" id="tab-count-anz">—</span>
   </div>
-  <div class="view-tab" id="tab-vic" onclick="switchView('vic')">
-    🏟️ Shopify Connect VIC
-    <span class="tab-badge">12</span>
+  <div class="view-tab" data-weekly-tab="Japan" onclick="switchCountryTab('Japan', this)">
+    🇯🇵 Japan
+    <span class="tab-badge" id="tab-count-japan">—</span>
   </div>
-  <div class="view-tab" id="tab-weekly" onclick="switchView('weekly')">
-    📊 Weekly Account Tabs
-    <span class="tab-badge" id="tab-weekly-badge">—</span>
+  <div class="view-tab" data-weekly-tab="GCR" onclick="switchCountryTab('GCR', this)">
+    🇨🇳 GCR
+    <span class="tab-badge" id="tab-count-gcr">—</span>
+  </div>
+  <div class="view-tab" data-weekly-tab="Rest of Asia" onclick="switchCountryTab('Rest of Asia', this)">
+    🌏 Rest of Asia
+    <span class="tab-badge" id="tab-count-roa">—</span>
+  </div>
+  <div class="view-tab" data-weekly-tab="Enablement" onclick="switchCountryTab('Enablement', this)">
+    🎓 Enablement
+    <span class="tab-badge" id="tab-count-enable">—</span>
   </div>
 </div>
 
@@ -1027,13 +1035,6 @@
         <div class="weekly-sub">High + medium priority only, Education removed, context + campaign keywords + SDR retained.</div>
       </div>
       <div class="weekly-sub" id="weekly-sub-count"></div>
-    </div>
-    <div class="weekly-subtabs">
-      <button class="weekly-chip active" data-weekly-tab="ANZ" onclick="switchWeeklyTab('ANZ', this)">ANZ <span class="weekly-chip-badge" id="wk-count-anz"></span></button>
-      <button class="weekly-chip" data-weekly-tab="Japan" onclick="switchWeeklyTab('Japan', this)">Japan <span class="weekly-chip-badge" id="wk-count-japan"></span></button>
-      <button class="weekly-chip" data-weekly-tab="GCR" onclick="switchWeeklyTab('GCR', this)">GCR <span class="weekly-chip-badge" id="wk-count-gcr"></span></button>
-      <button class="weekly-chip" data-weekly-tab="Rest of Asia" onclick="switchWeeklyTab('Rest of Asia', this)">Rest of Asia <span class="weekly-chip-badge" id="wk-count-roa"></span></button>
-      <button class="weekly-chip" data-weekly-tab="Enablement" onclick="switchWeeklyTab('Enablement', this)">Enablement <span class="weekly-chip-badge" id="wk-count-enable"></span></button>
     </div>
     <div id="weekly-content"></div>
   </div>
@@ -3660,8 +3661,28 @@ function renderWeeklyView() {
 function switchWeeklyTab(tabName, chipEl) {
   activeWeeklyTab = tabName;
   document.querySelectorAll("[data-weekly-tab]").forEach(el => el.classList.remove("active"));
-  if (chipEl) chipEl.classList.add("active");
+  if (chipEl) {
+    chipEl.classList.add("active");
+  } else {
+    const target = document.querySelector(`[data-weekly-tab="${tabName}"]`);
+    if (target) target.classList.add("active");
+  }
   renderWeeklyView();
+}
+
+function switchCountryTab(tabName, chipEl) {
+  switchWeeklyTab(tabName, chipEl);
+}
+
+function showCountryMode(defaultTab = "ANZ") {
+  const hideSelectors = [".team-bar", ".hero", ".filter-bar", ".main", "#vic-view"];
+  hideSelectors.forEach(sel => {
+    const node = document.querySelector(sel);
+    if (node) node.style.display = "none";
+  });
+  const weeklyView = document.getElementById("weekly-view");
+  if (weeklyView) weeklyView.classList.add("visible");
+  switchWeeklyTab(defaultTab, document.querySelector(`.view-tab[data-weekly-tab="${defaultTab}"]`));
 }
 
 function updateWeeklyCounts() {
@@ -3673,12 +3694,12 @@ function updateWeeklyCounts() {
   const enable = (weeklyData.enablement || []).length;
   const total = anz + jpn + gcr + roa;
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  set("wk-count-anz", anz);
-  set("wk-count-japan", jpn);
-  set("wk-count-gcr", gcr);
-  set("wk-count-roa", roa);
-  set("wk-count-enable", enable);
-  set("tab-weekly-badge", total);
+  set("tab-count-anz", anz);
+  set("tab-count-japan", jpn);
+  set("tab-count-gcr", gcr);
+  set("tab-count-roa", roa);
+  set("tab-count-enable", enable);
+  set("weekLabel", `${WEEK} · ${total} accounts`);
 }
 
 function intentClass(score) {
@@ -3801,83 +3822,33 @@ function filterVic(chip) {
   renderVicGrid();
 }
 
-function switchView(view) {
-  const mainEl    = document.querySelector(".main");
-  const heroEl    = document.querySelector(".hero");
-  const filterEl  = document.querySelector(".filter-bar");
-  const teamBar   = document.getElementById("teamBar");
-  const vicView   = document.getElementById("vic-view");
-  const weeklyView = document.getElementById("weekly-view");
-  const tabSig    = document.getElementById("tab-signals");
-  const tabVic    = document.getElementById("tab-vic");
-  const tabWeekly = document.getElementById("tab-weekly");
-
-  if (view === "vic") {
-    mainEl.style.display   = "none";
-    heroEl.style.display   = "none";
-    filterEl.style.display = "none";
-    teamBar.style.display  = "none";
-    vicView.classList.add("visible");
-    weeklyView.classList.remove("visible");
-    tabSig.classList.remove("active");
-    tabVic.classList.add("active");
-    tabWeekly.classList.remove("active");
-    renderVicGrid();
-  } else if (view === "weekly") {
-    mainEl.style.display   = "none";
-    heroEl.style.display   = "none";
-    filterEl.style.display = "none";
-    teamBar.style.display  = "none";
-    vicView.classList.remove("visible");
-    weeklyView.classList.add("visible");
-    tabSig.classList.remove("active");
-    tabVic.classList.remove("active");
-    tabWeekly.classList.add("active");
-    renderWeeklyView();
-  } else {
-    mainEl.style.display   = "";
-    heroEl.style.display   = "";
-    filterEl.style.display = "";
-    vicView.classList.remove("visible");
-    weeklyView.classList.remove("visible");
-    tabSig.classList.add("active");
-    tabVic.classList.remove("active");
-    tabWeekly.classList.remove("active");
-    // Restore team bar if manager mode
-    if (document.getElementById("teamBar").dataset.managerMode === "true") {
-      teamBar.style.display = "";
-    }
-  }
+function switchView() {
+  showCountryMode(activeWeeklyTab || "ANZ");
 }
 
 // Update weekly signals tab badge after init
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
-    const total = document.getElementById("totalCount");
-    const badge = document.getElementById("tab-signals-badge");
-    if (total && badge) badge.textContent = total.textContent;
     updateWeeklyCounts();
+    showCountryMode("ANZ");
   }, 300);
 });
 
-// Hash-based deep linking — #vic goes straight to VIC tab
+// Hash-based deep linking for country tabs
 function handleHash() {
-  if (window.location.hash === "#vic") {
-    switchView("vic");
-  } else if (window.location.hash === "#weekly") {
-    switchView("weekly");
+  const map = {
+    "#anz": "ANZ",
+    "#japan": "Japan",
+    "#gcr": "GCR",
+    "#roa": "Rest of Asia",
+    "#enablement": "Enablement"
+  };
+  const target = map[window.location.hash.toLowerCase()];
+  if (target) {
+    switchWeeklyTab(target, document.querySelector(`.view-tab[data-weekly-tab="${target}"]`));
   }
 }
 window.addEventListener("hashchange", handleHash);
-
-// Update hash when switching views
-const _origSwitchView = switchView;
-switchView = function(view) {
-  _origSwitchView(view);
-  if (view === "vic") history.replaceState(null, "", "#vic");
-  else if (view === "weekly") history.replaceState(null, "", "#weekly");
-  else history.replaceState(null, "", "#");
-};
 
 init();
 handleHash();
