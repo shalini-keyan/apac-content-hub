@@ -850,6 +850,20 @@
     color: #374151;
     background: #f9fafb;
   }
+  .weekly-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .weekly-stat-box {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px 7px;
+    text-align: center;
+  }
+  .weekly-stat-value { font-size: 13px; font-weight: 800; color: #111827; line-height: 1.1; }
+  .weekly-stat-label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.35px; margin-top: 2px; }
   .weekly-block {
     border: 1px solid #eef0f2;
     border-radius: 8px;
@@ -865,6 +879,42 @@
     margin-bottom: 4px;
   }
   .weekly-block-copy { font-size: 12px; color: #374151; line-height: 1.45; }
+  .weekly-list {
+    margin: 0;
+    padding-left: 16px;
+    display: grid;
+    gap: 4px;
+  }
+  .weekly-list li { font-size: 12px; color: #334155; line-height: 1.35; }
+  .weekly-keyword-wrap { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .weekly-keyword-chip {
+    border: 1px solid #ddd6fe;
+    background: #f5f3ff;
+    color: #5b21b6;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .weekly-action {
+    border: 1px solid #bae6fd;
+    background: #f0f9ff;
+    color: #0c4a6e;
+    border-radius: 8px;
+    padding: 7px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .weekly-action strong { color: #075985; }
+  .weekly-confidence {
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #475569;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
   .weekly-footer {
     display: flex;
     align-items: center;
@@ -891,6 +941,9 @@
     color: var(--muted);
     text-align: center;
     background: #fff;
+  }
+  @media (max-width: 980px) {
+    .weekly-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   .weekly-priority {
     display: inline-flex;
@@ -3819,6 +3872,29 @@ function shortText(v, max = 180) {
   return `${text.slice(0, max).trim()}...`;
 }
 
+function splitSignalItems(text, maxItems = 4) {
+  const raw = String(text || "");
+  if (!raw.trim()) return [];
+  const items = raw
+    .split("|")
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(s => s.replace(/^https?:\/\//, ""))
+    .map(s => s.replace(/^shopify\.com\//, "shopify/"))
+    .filter(s => !/^www\.shopify\.com$/i.test(s))
+    .filter(s => !/^shopify\.com$/i.test(s));
+  const uniq = [...new Set(items)];
+  return uniq.slice(0, maxItems);
+}
+
+function confidenceLabel(r) {
+  const ctx = `${r.engagedContext || ""} ${r.campaignKeywords || ""}`.toLowerCase();
+  if (ctx.includes("new contact") || ctx.includes("first time") || ctx.includes("director") || ctx.includes("manager")) {
+    return "Person-level signal";
+  }
+  return "Account-level signal";
+}
+
 function classifyWeeklySignal(r) {
   const journey = String(r.journeyStage || "").toLowerCase();
   const context = String(r.engagedContext || "").toLowerCase();
@@ -3849,6 +3925,16 @@ function signalBadgeLabel(signal) {
   }[signal] || "Engagement detail";
 }
 
+function nextActionHint(signal, r) {
+  const predict = Number(r.pipelinePredictScore || 0);
+  if (signal === "salesready") return "Prioritise this account this week and send a tailored outreach within 24 hours.";
+  if (signal === "mqa") return "No touch yet: send first outreach with one clear business problem and one proof point.";
+  if (signal === "reengaging") return "Re-open with context: reference prior thread/opportunity and ask what changed.";
+  if (signal === "newcontact") return "Map buying role and send a light intro tied to the exact topic they engaged with.";
+  if (predict >= 0.7) return "High predict score: move this from monitor to active outreach.";
+  return "Keep warm with short, relevant follow-up and watch for repeat commercial activity.";
+}
+
 function filterWeeklyRows(rows) {
   const q = weeklySearchQuery.trim().toLowerCase();
   return rows.filter(r => {
@@ -3875,6 +3961,10 @@ function buildWeeklyCards(regionName) {
         const sfUrl = r.accountId ? `https://banff.lightning.force.com/lightning/r/Account/${r.accountId}/view` : "";
         const signalType = classifyWeeklySignal(r);
         const signalLabel = signalBadgeLabel(signalType);
+        const engagementItems = splitSignalItems(r.engagedContext, 3);
+        const keywordItems = splitSignalItems(r.campaignKeywords, 5);
+        const confidence = confidenceLabel(r);
+        const actionHint = nextActionHint(signalType, r);
         return `
           <div class="weekly-card ${signalType}">
             <div class="weekly-card-top">
@@ -3888,20 +3978,47 @@ function buildWeeklyCards(regionName) {
             <div class="weekly-chip-row">
               <span class="weekly-signal-badge ${signalType}">${escHtml(signalLabel)}</span>
               <span class="weekly-mini-chip">${escHtml(r.journeyStage || "Journey n/a")}</span>
-              <span class="weekly-mini-chip">Eng 7d: ${escHtml(r.engagement7d || "—")}</span>
-              <span class="weekly-mini-chip">Predict: ${escHtml(r.pipelinePredictScore || "—")}</span>
-              <span class="weekly-mini-chip">Qual: ${escHtml(r.qualificationScore || "—")}</span>
+              <span class="weekly-confidence">${escHtml(confidence)}</span>
+            </div>
+
+            <div class="weekly-stats-row">
+              <div class="weekly-stat-box">
+                <div class="weekly-stat-value">${escHtml(r.engagement7d || "—")}</div>
+                <div class="weekly-stat-label">Eng 7d</div>
+              </div>
+              <div class="weekly-stat-box">
+                <div class="weekly-stat-value">${escHtml(r.engagement3m || "—")}</div>
+                <div class="weekly-stat-label">Eng 3m</div>
+              </div>
+              <div class="weekly-stat-box">
+                <div class="weekly-stat-value">${escHtml(r.pipelinePredictScore || "—")}</div>
+                <div class="weekly-stat-label">Predict</div>
+              </div>
+              <div class="weekly-stat-box">
+                <div class="weekly-stat-value">${escHtml(r.qualificationScore || "—")}</div>
+                <div class="weekly-stat-label">Qual</div>
+              </div>
             </div>
 
             <div class="weekly-block">
-              <div class="weekly-block-title">What they engaged in</div>
-              <div class="weekly-block-copy">${escHtml(shortText(r.engagedContext, 260) || "—")}</div>
+              <div class="weekly-block-title">Top engagement signals</div>
+              ${
+                engagementItems.length
+                  ? `<ul class="weekly-list">${engagementItems.map(item => `<li>${escHtml(shortText(item, 85))}</li>`).join("")}</ul>`
+                  : `<div class="weekly-block-copy">No specific signal detail provided.</div>`
+              }
             </div>
 
             <div class="weekly-block">
-              <div class="weekly-block-title">Salesforce campaign / keywords</div>
-              <div class="weekly-block-copy">${escHtml(shortText(r.campaignKeywords, 260) || "—")}</div>
+              <div class="weekly-block-title">Keywords / campaigns</div>
+              ${
+                keywordItems.length
+                  ? `<div class="weekly-keyword-wrap">${keywordItems.map(item => `<span class="weekly-keyword-chip">${escHtml(shortText(item, 46))}</span>`).join("")}</div>`
+                  : `<div class="weekly-block-copy">No keyword/campaign data.</div>`
+              }
             </div>
+
+            <div class="weekly-action"><strong>Now what:</strong> ${escHtml(actionHint)}</div>
 
             <div class="weekly-footer">
               <div class="weekly-owner-row">
