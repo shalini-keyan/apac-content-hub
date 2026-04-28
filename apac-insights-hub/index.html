@@ -785,6 +785,19 @@
     outline: none;
   }
   .weekly-search-wrap input:focus { border-color: var(--green); }
+  .weekly-owner-select {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+    min-width: 190px;
+    outline: none;
+    cursor: pointer;
+  }
+  .weekly-owner-select:focus { border-color: var(--green); }
   .weekly-result-note { font-size: 12px; color: var(--muted); }
   .weekly-cards {
     display: grid;
@@ -1351,6 +1364,9 @@
       <div class="weekly-search-wrap">
         <input id="weekly-search" type="text" placeholder="Search account, owner, SDR, context or keywords" oninput="onWeeklySearch(this.value)">
       </div>
+      <select id="weekly-owner-filter" class="weekly-owner-select" onchange="onWeeklyOwnerChange(this.value)">
+        <option value="all">Account owner: All</option>
+      </select>
       <div class="weekly-result-note" id="weekly-result-note"></div>
     </div>
     <div id="weekly-content"></div>
@@ -3870,6 +3886,7 @@ const weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablemen
 let activeWeeklyTab = "ANZ";
 let weeklySearchQuery = "";
 let activeWeeklySignals = new Set(["all"]);
+let activeWeeklyOwner = "all";
 
 function escHtml(v) {
   return String(v || "")
@@ -3985,6 +4002,9 @@ function filterWeeklyRows(rows) {
   return rows.filter(r => {
     const signal = classifyWeeklySignal(r);
     if (!activeWeeklySignals.has("all") && !activeWeeklySignals.has(signal)) return false;
+    const owner = String(r.accountOwner || "").trim();
+    if (activeWeeklyOwner === "__unassigned__" && owner) return false;
+    if (activeWeeklyOwner !== "all" && activeWeeklyOwner !== "__unassigned__" && owner !== activeWeeklyOwner) return false;
     if (!q) return true;
     const blob = [
       r.account, r.accountOwner, r.sdrOwner, r.country, r.industry,
@@ -3992,6 +4012,40 @@ function filterWeeklyRows(rows) {
     ].join(" ").toLowerCase();
     return blob.includes(q);
   });
+}
+
+function refreshOwnerFilterOptions(rows) {
+  const select = document.getElementById("weekly-owner-filter");
+  if (!select) return;
+
+  const ownerCounts = {};
+  let unassignedCount = 0;
+  rows.forEach(r => {
+    const owner = String(r.accountOwner || "").trim();
+    if (!owner) {
+      unassignedCount += 1;
+      return;
+    }
+    ownerCounts[owner] = (ownerCounts[owner] || 0) + 1;
+  });
+
+  const owners = Object.entries(ownerCounts).sort((a, b) => b[1] - a[1]).map(([name]) => name);
+  const previousValue = activeWeeklyOwner;
+
+  let html = `<option value="all">Account owner: All (${rows.length})</option>`;
+  owners.forEach(owner => {
+    html += `<option value="${escHtml(owner)}">${escHtml(owner)} (${ownerCounts[owner]})</option>`;
+  });
+  if (unassignedCount > 0) {
+    html += `<option value="__unassigned__">Unassigned (${unassignedCount})</option>`;
+  }
+  select.innerHTML = html;
+
+  const validValues = new Set(["all", ...owners, ...(unassignedCount > 0 ? ["__unassigned__"] : [])]);
+  if (!validValues.has(previousValue)) {
+    activeWeeklyOwner = "all";
+  }
+  select.value = activeWeeklyOwner;
 }
 
 function buildWeeklyCards(regionName) {
@@ -4151,10 +4205,18 @@ function renderWeeklyView() {
   if (legend) legend.style.display = "";
 
   const rows = (weeklyData.regions && weeklyData.regions[activeWeeklyTab]) || [];
+  refreshOwnerFilterOptions(rows);
   const filteredRows = filterWeeklyRows(rows);
   content.innerHTML = buildWeeklyCards(activeWeeklyTab);
   countEl.textContent = `${filteredRows.length} of ${rows.length} accounts · ${activeWeeklyTab}`;
-  if (resultNote) resultNote.textContent = weeklySearchQuery ? `Filtered by "${weeklySearchQuery}"` : "";
+  if (resultNote) {
+    const parts = [];
+    if (weeklySearchQuery) parts.push(`search: "${weeklySearchQuery}"`);
+    if (activeWeeklyOwner !== "all") {
+      parts.push(activeWeeklyOwner === "__unassigned__" ? "owner: Unassigned" : `owner: ${activeWeeklyOwner}`);
+    }
+    resultNote.textContent = parts.length ? `Filtered by ${parts.join(" · ")}` : "";
+  }
 }
 
 function switchWeeklyTab(tabName, chipEl) {
@@ -4175,6 +4237,11 @@ function switchCountryTab(tabName, chipEl) {
 
 function onWeeklySearch(value) {
   weeklySearchQuery = value || "";
+  renderWeeklyView();
+}
+
+function onWeeklyOwnerChange(value) {
+  activeWeeklyOwner = value || "all";
   renderWeeklyView();
 }
 
