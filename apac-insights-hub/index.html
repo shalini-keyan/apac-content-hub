@@ -706,6 +706,44 @@
     flex-wrap: wrap;
     margin: 10px 0 12px;
   }
+  .weekly-signal-filters {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0 0 12px;
+  }
+  .weekly-signal-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+  }
+  .weekly-signal-chip:hover { border-color: #9ca3af; }
+  .weekly-signal-chip.active {
+    background: #111827;
+    color: #fff;
+    border-color: #111827;
+  }
+  .weekly-signal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .weekly-signal-dot.salesready { background: #10b981; }
+  .weekly-signal-dot.mqa { background: #16a34a; }
+  .weekly-signal-dot.reengaging { background: #ef4444; }
+  .weekly-signal-dot.newcontact { background: #8b5cf6; }
+  .weekly-signal-dot.engagement { background: #eab308; }
   .weekly-toolbar {
     display: flex;
     align-items: center;
@@ -746,6 +784,20 @@
     gap: 8px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
+  .weekly-signal-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid;
+  }
+  .weekly-signal-badge.salesready { color: #065f46; background: #d1fae5; border-color: #6ee7b7; }
+  .weekly-signal-badge.mqa { color: #166534; background: #dcfce7; border-color: #86efac; }
+  .weekly-signal-badge.reengaging { color: #991b1b; background: #fee2e2; border-color: #fca5a5; }
+  .weekly-signal-badge.newcontact { color: #5b21b6; background: #ede9fe; border-color: #c4b5fd; }
+  .weekly-signal-badge.engagement { color: #854d0e; background: #fef9c3; border-color: #fde047; }
   .weekly-card-top {
     display: flex;
     align-items: flex-start;
@@ -1141,6 +1193,23 @@
       <span class="weekly-mini-chip">Context retained</span>
       <span class="weekly-mini-chip">Campaign/keyword retained</span>
       <span class="weekly-mini-chip">SDR shown where available</span>
+    </div>
+    <div class="weekly-signal-filters" id="weekly-signal-filters">
+      <div class="weekly-signal-chip active" data-weekly-signal="all" onclick="toggleWeeklySignal(this)">
+        <span class="weekly-signal-dot engagement"></span>All
+      </div>
+      <div class="weekly-signal-chip" data-weekly-signal="salesready" onclick="toggleWeeklySignal(this)">
+        <span class="weekly-signal-dot salesready"></span>New Sales Ready
+      </div>
+      <div class="weekly-signal-chip" data-weekly-signal="mqa" onclick="toggleWeeklySignal(this)">
+        <span class="weekly-signal-dot mqa"></span>MQA · No touch
+      </div>
+      <div class="weekly-signal-chip" data-weekly-signal="reengaging" onclick="toggleWeeklySignal(this)">
+        <span class="weekly-signal-dot reengaging"></span>Being worked · Re-engaging
+      </div>
+      <div class="weekly-signal-chip" data-weekly-signal="newcontact" onclick="toggleWeeklySignal(this)">
+        <span class="weekly-signal-dot newcontact"></span>New buying contact
+      </div>
     </div>
     <div class="weekly-toolbar" id="weekly-toolbar">
       <div class="weekly-search-wrap">
@@ -3661,6 +3730,7 @@ let activeVicSdr = "all";
 const weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablement: [] };
 let activeWeeklyTab = "ANZ";
 let weeklySearchQuery = "";
+let activeWeeklySignals = new Set(["all"]);
 
 function escHtml(v) {
   return String(v || "")
@@ -3677,10 +3747,42 @@ function shortText(v, max = 180) {
   return `${text.slice(0, max).trim()}...`;
 }
 
+function classifyWeeklySignal(r) {
+  const journey = String(r.journeyStage || "").toLowerCase();
+  const context = String(r.engagedContext || "").toLowerCase();
+  const keywords = String(r.campaignKeywords || "").toLowerCase();
+  const predict = Number(r.pipelinePredictScore || 0);
+  const qual = Number(r.qualificationScore || 0);
+  const eng7 = Number(r.engagement7d || 0);
+
+  if (journey.includes("mqa")) return "mqa";
+  if (journey.includes("sal") || journey.includes("opp") || journey.includes("re-engag") || journey.includes("reengag")) return "reengaging";
+  if (
+    context.includes("first time") ||
+    context.includes("new contact") ||
+    context.includes("new contacts") ||
+    keywords.includes("first time")
+  ) return "newcontact";
+  if (predict >= 0.8 && (qual >= 0.4 || eng7 >= 20)) return "salesready";
+  return "engagement";
+}
+
+function signalBadgeLabel(signal) {
+  return {
+    salesready: "New Sales Ready",
+    mqa: "MQA · No touch",
+    reengaging: "Being worked · Re-engaging",
+    newcontact: "New buying contact",
+    engagement: "Engagement detail",
+  }[signal] || "Engagement detail";
+}
+
 function filterWeeklyRows(rows) {
   const q = weeklySearchQuery.trim().toLowerCase();
-  if (!q) return rows;
   return rows.filter(r => {
+    const signal = classifyWeeklySignal(r);
+    if (!activeWeeklySignals.has("all") && !activeWeeklySignals.has(signal)) return false;
+    if (!q) return true;
     const blob = [
       r.account, r.accountOwner, r.sdrOwner, r.country, r.industry,
       r.priority, r.journeyStage, r.engagedContext, r.campaignKeywords
@@ -3699,6 +3801,8 @@ function buildWeeklyCards(regionName) {
       ${rows.map(r => {
         const priorityClass = String(r.priority || "").toLowerCase() === "high" ? "high" : "medium";
         const sfUrl = r.accountId ? `https://banff.lightning.force.com/lightning/r/Account/${r.accountId}/view` : "";
+        const signalType = classifyWeeklySignal(r);
+        const signalLabel = signalBadgeLabel(signalType);
         return `
           <div class="weekly-card">
             <div class="weekly-card-top">
@@ -3710,6 +3814,7 @@ function buildWeeklyCards(regionName) {
             </div>
 
             <div class="weekly-chip-row">
+              <span class="weekly-signal-badge ${signalType}">${escHtml(signalLabel)}</span>
               <span class="weekly-mini-chip">${escHtml(r.journeyStage || "Journey n/a")}</span>
               <span class="weekly-mini-chip">Eng 7d: ${escHtml(r.engagement7d || "—")}</span>
               <span class="weekly-mini-chip">Predict: ${escHtml(r.pipelinePredictScore || "—")}</span>
@@ -3764,6 +3869,7 @@ function buildEnablementCards() {
 function renderWeeklyView() {
   const content = document.getElementById("weekly-content");
   const countEl = document.getElementById("weekly-sub-count");
+  const signalFilter = document.getElementById("weekly-signal-filters");
   if (!content || !countEl) return;
 
   if (activeWeeklyTab === "Enablement") {
@@ -3772,6 +3878,7 @@ function renderWeeklyView() {
     const toolbar = document.getElementById("weekly-toolbar");
     const resultNote = document.getElementById("weekly-result-note");
     if (toolbar) toolbar.style.display = "none";
+    if (signalFilter) signalFilter.style.display = "none";
     if (resultNote) resultNote.textContent = "";
     return;
   }
@@ -3779,6 +3886,7 @@ function renderWeeklyView() {
   const toolbar = document.getElementById("weekly-toolbar");
   const resultNote = document.getElementById("weekly-result-note");
   if (toolbar) toolbar.style.display = "";
+  if (signalFilter) signalFilter.style.display = "";
 
   const rows = (weeklyData.regions && weeklyData.regions[activeWeeklyTab]) || [];
   const filteredRows = filterWeeklyRows(rows);
@@ -3805,6 +3913,34 @@ function switchCountryTab(tabName, chipEl) {
 
 function onWeeklySearch(value) {
   weeklySearchQuery = value || "";
+  renderWeeklyView();
+}
+
+function toggleWeeklySignal(el) {
+  const val = el.dataset.weeklySignal;
+  if (val === "all") {
+    activeWeeklySignals.clear();
+    activeWeeklySignals.add("all");
+    document.querySelectorAll("[data-weekly-signal]").forEach(c => c.classList.remove("active"));
+    el.classList.add("active");
+  } else {
+    activeWeeklySignals.delete("all");
+    const allChip = document.querySelector('[data-weekly-signal="all"]');
+    if (allChip) allChip.classList.remove("active");
+
+    if (activeWeeklySignals.has(val)) {
+      activeWeeklySignals.delete(val);
+      el.classList.remove("active");
+    } else {
+      activeWeeklySignals.add(val);
+      el.classList.add("active");
+    }
+
+    if (activeWeeklySignals.size === 0) {
+      activeWeeklySignals.add("all");
+      if (allChip) allChip.classList.add("active");
+    }
+  }
   renderWeeklyView();
 }
 
