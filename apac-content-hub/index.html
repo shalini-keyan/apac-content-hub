@@ -1,0 +1,3041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Set your OpenAI/LLM proxy URL (empty = offline catalog ranking only) -->
+<meta name="anz-sales-ai-endpoint" content="">
+<title>APAC Content Hub — Shopify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #008060;
+    --green-light: #00a877;
+    --green-dim: #003d2e;
+    --bg: #f6f6f7;
+    --surface: #ffffff;
+    --border: #e1e3e5;
+    --text: #202223;
+    --muted: #6d7175;
+    --tag-bg: #f1f8f6;
+    --tag-border: #b3d9ce;
+    --tofu: #fef3c7;
+    --tofu-text: #92400e;
+    --mofu: #dbeafe;
+    --mofu-text: #1e40af;
+    --bofu: #ede9fe;
+    --bofu-text: #5b21b6;
+    --both: #fce7f3;
+    --both-text: #9d174d;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ─────────────────────────────────────────── */
+  .topbar {
+    background: #1a1a2e;
+    padding: 0 32px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #2d2d4e;
+  }
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+  .topbar-logo .bag {
+    width: 28px;
+    height: 28px;
+    background: var(--green);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .topbar-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: #a0aec0;
+    background: #2d2d4e;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #a0aec0;
+    font-size: 13px;
+  }
+  .topbar-right a {
+    color: #a0aec0;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .topbar-right a:hover { color: #fff; }
+
+  /* ── HOT THIS WEEK ──────────────────────────────────── */
+  .hot-section {
+    background: linear-gradient(135deg, #0f0f24 0%, #0d1f14 100%);
+    border-bottom: 1px solid #1e3a2e;
+    padding: 20px 32px 24px;
+  }
+  .hot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .hot-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #f59e0b;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hot-week {
+    font-size: 11px;
+    color: #6b7280;
+    font-family: 'Inter', sans-serif;
+  }
+  .hot-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) { .hot-cards { grid-template-columns: 1fr; } }
+  .hot-card {
+    background: #16162e;
+    border: 1px solid #252545;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.15s;
+  }
+  .hot-card:hover { border-color: #f59e0b44; }
+  .hot-card-rank {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #f59e0b;
+    font-family: 'Inter', sans-serif;
+  }
+  .hot-card-topic {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.3;
+  }
+  .hot-card-why {
+    font-size: 11px;
+    color: #9ca3af;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.4;
+  }
+  .hot-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+  .hot-btn {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .hot-btn-post {
+    background: #f59e0b18;
+    border-color: #f59e0b55;
+    color: #f59e0b;
+  }
+  .hot-btn-post:hover { background: #f59e0b30; }
+  .hot-btn-post.copied { background: #00a87720; border-color: var(--green); color: var(--green); }
+  .hot-btn-find {
+    background: #00a87710;
+    border-color: #00a87740;
+    color: #00a877;
+  }
+  .hot-btn-find:hover { background: #00a87720; }
+
+  /* LinkedIn draft modal */
+  .li-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .li-modal.open { display: flex; }
+  .li-modal-box {
+    background: #16162e;
+    border: 1px solid #252545;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .li-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #252545;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .li-modal-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+  }
+  .li-modal-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 6px;
+  }
+  .li-modal-close:hover { color: #fff; }
+  .li-modal-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .li-modal-post {
+    background: #0f0f24;
+    border: 1px solid #252545;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #e5e7eb;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+  .li-modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid #252545;
+    display: flex;
+    gap: 10px;
+  }
+  .li-copy-btn {
+    flex: 1;
+    padding: 10px;
+    background: #f59e0b;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .li-copy-btn:hover { background: #d97706; }
+  .li-copy-btn.copied { background: var(--green); color: #fff; }
+
+  /* ── SCENARIO TOGGLES ───────────────────────────────── */
+  .scenario-bar {
+    background: #0f0f24;
+    border-bottom: 1px solid #1e1e3f;
+    padding: 14px 32px;
+  }
+  .scenario-bar-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+  }
+  .scenario-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .scenario-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #2d2d4e;
+    background: #16162e;
+    color: #d1d5db;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .scenario-chip:hover {
+    border-color: var(--green);
+    color: #fff;
+    background: #0d2b1e;
+  }
+  .scenario-chip.active {
+    background: #003d2e;
+    border-color: var(--green);
+    color: #fff;
+  }
+  .scenario-chip .s-icon { font-size: 15px; }
+  .natural-agent {
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px solid #2d2d4e;
+    border-radius: 10px;
+    background: #12122a;
+  }
+  .natural-agent-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8ea0b8;
+    margin-bottom: 8px;
+    font-family: 'Inter', sans-serif;
+  }
+  .natural-agent-row {
+    display: flex;
+    gap: 8px;
+  }
+  #naturalAgentInput {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #2d2d4e;
+    background: #0f0f24;
+    color: #fff;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+  #naturalAgentInput::placeholder { color: #7c869a; }
+  #naturalAgentInput:focus {
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(0,168,119,0.18);
+  }
+  .natural-agent-btn {
+    border: 1px solid #00a87755;
+    background: #00a87720;
+    color: #4ade80;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .natural-agent-btn:hover { background: #00a87730; }
+  .natural-agent-status {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #9ca3af;
+    font-family: 'Inter', sans-serif;
+  }
+  .natural-agent-status.error { color: #fca5a5; }
+  @media (max-width: 700px) {
+    .scenario-bar { padding: 12px 16px; }
+    .natural-agent-row { flex-direction: column; }
+    .natural-agent-btn { width: 100%; }
+  }
+
+  /* ── TAB NAV ─────────────────────────────────────────── */
+  .tab-nav {
+    background: #12122a;
+    border-bottom: 1px solid #252545;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 4px;
+  }
+  .tab-nav a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #9ca3af;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tab-nav a:hover { color: #fff; border-bottom-color: #4b5563; }
+  .tab-nav a.tab-active {
+    color: #fff;
+    border-bottom-color: var(--green);
+  }
+  .tab-nav a .tab-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* ── HERO ──────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0d2b1e 60%, #003d2e 100%);
+    padding: 48px 32px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(0,128,96,0.35) 0%, transparent 70%);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+  .hero h1 {
+    font-size: 34px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.8px;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .hero h1 span { color: #4ade80; }
+  .hero p {
+    color: #94a3b8;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 15px;
+    pointer-events: none;
+  }
+  #search {
+    width: 100%;
+    padding: 12px 14px 12px 40px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    backdrop-filter: blur(8px);
+  }
+  #search::placeholder { color: #64748b; }
+  #search:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(0,168,119,0.2);
+  }
+
+  /* ── FILTERS ───────────────────────────────────────────── */
+  .filter-section {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    position: sticky;
+    top: 52px;
+    z-index: 90;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .filter-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    margin: 0 6px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--green); color: var(--green); }
+  .chip.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  /* Multi-select hint: subtle checkmark on active non-All chips */
+  .chip.active:not([data-val="all"])::before {
+    content: '✓ ';
+    font-size: 10px;
+    opacity: 0.85;
+  }
+  .chip .count {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 0 5px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .chip:not(.active) .count {
+    background: #e8eaec;
+    color: var(--muted);
+  }
+
+  /* ── MAIN CONTENT ──────────────────────────────────────── */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px 60px;
+  }
+
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .results-count {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .results-count strong { color: var(--text); }
+
+  .sort-select {
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* ── GRID ──────────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  /* ── CARD ──────────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    cursor: default;
+    position: relative;
+  }
+  .card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    border-color: #c4e8df;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .card-type {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--green);
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .card-credibility {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cred-HIGH, .cred-VERY { background: #d1fae5; color: #065f46; }
+  .cred-MED { background: #fef3c7; color: #92400e; }
+  .cred-LOW { background: #fee2e2; color: #991b1b; }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+
+  .card-summary {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 2px;
+  }
+
+  .meta-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+
+  /* Funnel stage colors */
+  .stage-TOFU { background: var(--tofu); color: var(--tofu-text); border-color: #fcd34d; }
+  .stage-MOFU { background: var(--mofu); color: var(--mofu-text); border-color: #93c5fd; }
+  .stage-BOFU { background: var(--bofu); color: var(--bofu-text); border-color: #c4b5fd; }
+  .stage-BOTH { background: var(--both); color: var(--both-text); border-color: #f9a8d4; }
+
+  /* ── DRAFT / COMING SOON ─────────────────────────────────── */
+  .card.is-draft {
+    opacity: 0.75;
+    border-left: 3px solid #f59e0b;
+  }
+  .coming-soon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-bottom: 6px;
+  }
+
+  .meta-geo {
+    background: #f0fdf4;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+  .meta-effort {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #e2e8f0;
+  }
+
+  /* Segment tags */
+  .meta-segment { font-size: 10px; font-weight: 700; letter-spacing: 0.4px; }
+  .seg-SMB  { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; }
+  .seg-MM   { background: #fff7ed; color: #c2410c; border-color: #fdba74; }
+  .seg-LA   { background: #faf5ff; color: #7e22ce; border-color: #d8b4fe; }
+
+  /* Segment filter chips */
+  .chip.seg-chip-SMB.active { background: #1d4ed8; border-color: #1d4ed8; }
+  .chip.seg-chip-MM.active  { background: #c2410c; border-color: #c2410c; }
+  .chip.seg-chip-LA.active  { background: #7e22ce; border-color: #7e22ce; }
+
+  /* Status filter chips */
+  .chip.status-chip-published.active { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .chip.status-chip-draft.active     { background: #b45309; border-color: #b45309; color: #fff; }
+  .chip.status-chip-gated.active     { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+
+  /* Gated badge on card */
+  .gated-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-bottom: 6px;
+  }
+
+  /* Pipeline matrix button */
+  .pipeline-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #b45309;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .pipeline-btn:hover { background: #fde68a; }
+
+  /* Pipeline modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    width: min(900px, 95vw);
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .modal-header h2 { font-size: 18px; font-weight: 700; color: var(--text); }
+  .modal-header p  { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* Matrix table */
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .matrix-table th {
+    background: #f6f6f7;
+    padding: 8px 12px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .matrix-table th.row-header { text-align: left; min-width: 140px; }
+  .matrix-table td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+  }
+  .matrix-table td.row-label { text-align: left; font-weight: 500; color: var(--text); background: #fafafa; }
+  .matrix-cell-count {
+    display: inline-block;
+    min-width: 28px;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .matrix-cell-count.zero { color: #d1d5db; font-weight: 400; font-size: 13px; }
+  .matrix-cell-bar {
+    height: 4px;
+    background: #fcd34d;
+    border-radius: 2px;
+    margin: 4px auto 0;
+    transition: width 0.3s;
+  }
+  .matrix-total-row td { background: #fef3c7; font-weight: 700; }
+
+  /* Source breakdown */
+  .source-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .source-card {
+    background: #f6f6f7;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .source-card .src-name { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+  .source-card .src-count { font-size: 22px; font-weight: 700; color: #b45309; }
+
+  /* Theme filter chips */
+  .chip.theme-chip { border-style: dashed; }
+  .chip.theme-chip.active {
+    background: #0f172a;
+    border-color: #0f172a;
+    border-style: solid;
+    color: #fff;
+  }
+  .chip.theme-chip:hover:not(.active) { border-color: #0f172a; color: #0f172a; border-style: solid; }
+
+  /* Multi-row filter section */
+  .filter-rows { display: flex; flex-direction: column; gap: 10px; }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    gap: 8px;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green);
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid var(--tag-border);
+    border-radius: 6px;
+    background: var(--tag-bg);
+    transition: all 0.15s;
+  }
+  .card-link:hover {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .card-internal {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .card-notes-toggle {
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s;
+  }
+  .card-notes-toggle:hover { color: var(--green); }
+
+  .card-notes {
+    display: none;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #374151;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    padding: 10px 12px;
+    margin-top: -4px;
+  }
+  .card-notes.open { display: block; }
+
+  /* ── EMPTY STATE ───────────────────────────────────────── */
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty svg { margin-bottom: 16px; opacity: 0.4; }
+  .empty h3 { font-size: 16px; margin-bottom: 6px; color: var(--text); }
+  .empty p { font-size: 13px; }
+
+  /* ── CLEAR BTN ─────────────────────────────────────────── */
+  .clear-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border: 1px solid #fca5a5;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .clear-btn:hover { background: #dc2626; color: #fff; }
+  .clear-btn.visible { display: inline-block; }
+
+  /* ── TOOLTIP ───────────────────────────────────────────── */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #f8fafc;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  /* ── CONTENT COPILOT (Sales AI) ────────────────────────── */
+  #salesAiPanel {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  #salesAiPanel.open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .sales-ai-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+  }
+  .sales-ai-drawer {
+    position: relative;
+    width: min(440px, 100vw);
+    max-width: 100%;
+    background: #0f0f1a;
+    border-left: 1px solid #252545;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.35);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+  }
+  #salesAiPanel.open .sales-ai-drawer { transform: translateX(0); }
+  .sales-ai-head {
+    padding: 16px 18px;
+    border-bottom: 1px solid #252545;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .sales-ai-head h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .sales-ai-head p {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 0;
+    line-height: 1.4;
+  }
+  .sales-ai-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #4ade80;
+    background: #00a87718;
+    border: 1px solid #00a87744;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .sales-ai-pill.offline { color: #fbbf24; border-color: #f59e0b55; background: #f59e0b12; }
+  .sales-ai-head-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .sales-ai-icon-btn {
+    background: #1a1a2e;
+    border: 1px solid #2d2d4e;
+    color: #9ca3af;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .sales-ai-icon-btn:hover { color: #fff; border-color: #4b5563; }
+  [data-sales-ai-messages] {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sales-ai-welcome { font-size: 13px; line-height: 1.55; color: #d1d5db; }
+  .sales-ai-welcome p { margin: 0 0 10px 0; }
+  .sales-ai-welcome-sub { color: #9ca3af; font-size: 12px; }
+  .sales-ai-welcome code { font-size: 11px; background: #1a1a2e; padding: 2px 6px; border-radius: 4px; }
+  .sales-ai-msg { display: flex; }
+  .sales-ai-msg--user { justify-content: flex-end; }
+  .sales-ai-bubble {
+    max-width: 92%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .sales-ai-msg--user .sales-ai-bubble {
+    background: #003d2e;
+    border: 1px solid #00a87755;
+    color: #ecfdf5;
+  }
+  .sales-ai-msg--assistant .sales-ai-bubble {
+    background: #16162e;
+    border: 1px solid #2d2d4e;
+    color: #e5e7eb;
+  }
+  .sales-ai-bubble a { color: #4ade80; }
+  .sales-ai-bubble strong { color: #fff; }
+  .sales-ai-foot {
+    padding: 12px 18px 18px;
+    border-top: 1px solid #252545;
+    background: #0a0a14;
+  }
+  .sales-ai-composer {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  [data-sales-ai-input] {
+    flex: 1;
+    min-height: 44px;
+    max-height: 120px;
+    resize: vertical;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #2d2d4e;
+    background: #12122a;
+    color: #fff;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+  [data-sales-ai-input]:focus {
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(0,168,119,0.2);
+  }
+  [data-sales-ai-send] {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid #00a87755;
+    background: #00a877;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+  [data-sales-ai-send]:disabled { opacity: 0.5; cursor: not-allowed; }
+  [data-sales-ai-status] {
+    min-height: 18px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .sales-ai-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9990;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid #00a87766;
+    background: linear-gradient(135deg, #003d2e, #0d2b1e);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .sales-ai-fab:hover { border-color: #4ade80; }
+  .topbar-copilot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #3d3d5c;
+    background: #252545;
+    color: #e5e7eb;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+  .topbar-copilot:hover { border-color: var(--green-light); color: #fff; }
+  .natural-agent-copilot {
+    margin-top: 10px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+  }
+  .natural-agent-copilot button {
+    background: none;
+    border: none;
+    color: #4ade80;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    padding: 0;
+    font-size: 12px;
+  }
+  .natural-agent-copilot button:hover { color: #86efac; }
+  @media (max-width: 768px) {
+    .sales-ai-fab { right: 16px; bottom: 16px; padding: 10px 14px; font-size: 13px; }
+    .hero { padding: 32px 16px 36px; }
+    .hero h1 { font-size: 24px; }
+    .filter-section { padding: 12px 16px; }
+    .main { padding: 20px 16px 40px; }
+    .grid { grid-template-columns: 1fr; }
+    .topbar { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <div class="bag">🛍</div>
+    APAC Content Hub
+    <span class="topbar-badge">Internal</span>
+  </div>
+  <div class="topbar-right">
+    <button type="button" class="topbar-copilot" data-open-sales-ai aria-label="Open Content Copilot">
+      ✨ Content Copilot
+    </button>
+    <span id="lastUpdated" style="display:none;font-size:11px;color:#a0aec0"></span>
+    <a href="https://docs.google.com/spreadsheets/d/1kUt_4iUk_g7mi5I6yV_I68VD29fZ9ho2DfpPmc-5veM/edit" target="_blank">↗ Source Sheet</a>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <a href="#" id="tab-content" class="tab-active" onclick="switchTab('content',event)">
+    <span class="tab-dot"></span>
+    APAC Content Hub
+  </a>
+</nav>
+
+<!-- CONTACT BAR -->
+<div style="
+  background: #0a0a1a;
+  border-bottom: 1px solid #1e3a2e;
+  text-align: center;
+  padding: 7px 20px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: #9ca3af;
+  letter-spacing: 0.01em;
+">
+  For questions about this content library, reach out to
+  <a href="mailto:shalini.keyan@shopify.com" style="color:#00a877;text-decoration:none;font-weight:600;">Shalini Keyan</a>
+  &nbsp;|&nbsp;
+  <a href="mailto:shalini.keyan@shopify.com" style="color:#6b7280;text-decoration:none;">shalini.keyan@shopify.com</a>
+</div>
+
+<div id="panel-content">
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>APAC Content <span>Hub</span></h1>
+    <p>Find the right asset for any account, persona, or campaign stage. Unified Commerce &amp; AI programme — owned+paid and ABM.</p>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search by title, brand, stat, theme…" autocomplete="off">
+    </div>
+  </div>
+</section>
+
+<!-- HOT THIS WEEK -->
+<div class="hot-section" id="hotSection" style="display:none">
+  <div class="hot-header">
+    <div class="hot-title">🔥 Hot this week</div>
+    <div class="hot-week" id="hotWeek"></div>
+  </div>
+  <div class="hot-cards" id="hotCards"></div>
+</div>
+
+<!-- LINKEDIN DRAFT MODAL -->
+<div class="li-modal" id="liModal">
+  <div class="li-modal-box">
+    <div class="li-modal-header">
+      <div class="li-modal-title" id="liModalTitle">LinkedIn Draft</div>
+      <button class="li-modal-close" id="liModalClose">✕</button>
+    </div>
+    <div class="li-modal-body">
+      <div class="li-modal-post" id="liModalPost"></div>
+    </div>
+    <div class="li-modal-footer">
+      <button class="li-copy-btn" id="liCopyBtn">📋 Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCENARIO TOGGLES -->
+<div class="scenario-bar">
+  <div class="scenario-bar-label">I need content for…</div>
+  <div class="scenario-chips">
+    <button class="scenario-chip" data-scenario="prospect-meeting">
+      <span class="s-icon">🤝</span> Prospect meeting
+    </button>
+    <button class="scenario-chip" data-scenario="outbound">
+      <span class="s-icon">📧</span> Outbound prospecting
+    </button>
+    <button class="scenario-chip" data-scenario="active-deal">
+      <span class="s-icon">💼</span> Active deal
+    </button>
+    <button class="scenario-chip" data-scenario="ai-campaign">
+      <span class="s-icon">🤖</span> AI campaign
+    </button>
+    <button class="scenario-chip" data-scenario="unified-commerce">
+      <span class="s-icon">🏪</span> Unified Commerce pitch
+    </button>
+    <button class="scenario-chip" data-scenario="b2b">
+      <span class="s-icon">🏢</span> B2B pitch
+    </button>
+    <button class="scenario-chip" data-scenario="anz-only">
+      <span class="s-icon">🇦🇺</span> ANZ-specific only
+    </button>
+    <button class="scenario-chip" data-scenario="case-studies">
+      <span class="s-icon">⭐</span> Case studies only
+    </button>
+    <button class="scenario-chip" data-scenario="shopify-connect">
+      <span class="s-icon">🔗</span> Shopify Connect posts
+    </button>
+    <button class="scenario-chip" data-scenario="coming-soon">
+      <span class="s-icon">🕐</span> Pipeline / Coming Soon
+    </button>
+  </div>
+  <div class="natural-agent">
+    <div class="natural-agent-label">Natural Agent</div>
+    <div class="natural-agent-row">
+      <input type="text" id="naturalAgentInput" placeholder="Ask in plain English, e.g. need a BOFU ANZ case study for a large retail account">
+      <button class="natural-agent-btn" id="naturalAgentGo">Find template</button>
+    </div>
+    <div class="natural-agent-status" id="naturalAgentStatus">Ask in plain English and I will find the right template.</div>
+    <div class="natural-agent-copilot">
+      <button type="button" data-open-sales-ai>Open Content Copilot</button>
+      <span style="color:#6b7280"> · deeper answers + asset picks</span>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-section">
+  <div class="filter-rows">
+    <div class="filter-row">
+      <span class="filter-label">Stage</span>
+      <button class="chip active" data-group="stage" data-val="all">All</button>
+      <button class="chip" data-group="stage" data-val="TOFU">TOFU</button>
+      <button class="chip" data-group="stage" data-val="MOFU">MOFU</button>
+      <button class="chip" data-group="stage" data-val="BOFU">BOFU</button>
+
+      <div class="filter-divider"></div>
+      <span class="filter-label">Type</span>
+      <button class="chip active" data-group="type" data-val="all">All</button>
+      <button class="chip" data-group="type" data-val="Case Study">Case Study</button>
+      <button class="chip" data-group="type" data-val="Report">Report</button>
+      <button class="chip" data-group="type" data-val="Blog">Blog</button>
+      <button class="chip" data-group="type" data-val="Buyer Guide">Buyer Guide</button>
+      <button class="chip" data-group="type" data-val="Deck">Deck</button>
+      <button class="chip" data-group="type" data-val="Webinar">Webinar</button>
+      <button class="chip" data-group="type" data-val="Social / LinkedIn">LinkedIn Post</button>
+
+      <div class="filter-divider"></div>
+      <span class="filter-label">Relevant to</span>
+      <button class="chip active" data-group="geo" data-val="all">All regions</button>
+      <button class="chip" data-group="geo" data-val="ANZ">🇦🇺 ANZ only</button>
+      <button class="chip" data-group="geo" data-val="AMER">🌎 AMER</button>
+      <button class="chip" data-group="geo" data-val="EMEA">🌍 EMEA</button>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Theme</span>
+      <button class="chip theme-chip active" data-group="theme" data-val="all">All</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Unified Commerce">Unified Commerce</button>
+      <button class="chip theme-chip" data-group="theme" data-val="AI">AI</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Innovation">Innovation</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Fragmentation">Fragmentation</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Scalability">Scalability</button>
+      <button class="chip theme-chip" data-group="theme" data-val="B2B">B2B</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Composability">Composability</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Security">Security</button>
+      <button class="chip theme-chip" data-group="theme" data-val="BFCM">BFCM</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Crossborder">Crossborder</button>
+      <button class="chip theme-chip" data-group="theme" data-val="Fashion">Fashion</button>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Segment</span>
+      <button class="chip active" data-group="segment" data-val="all">All</button>
+      <button class="chip seg-chip-SMB" data-group="segment" data-val="SMB">SMB</button>
+      <button class="chip seg-chip-MM"  data-group="segment" data-val="MM">Mid-Market</button>
+      <button class="chip seg-chip-LA"  data-group="segment" data-val="LA">Large</button>
+
+      <div class="filter-divider"></div>
+      <span class="filter-label">Status</span>
+      <button class="chip active" data-group="status" data-val="all">All</button>
+      <button class="chip status-chip-published" data-group="status" data-val="published">✅ Published</button>
+      <button class="chip status-chip-draft"     data-group="status" data-val="draft">🕐 Coming Soon</button>
+      <button class="chip status-chip-gated"     data-group="status" data-val="gated">🔒 Gated</button>
+
+      <div class="filter-divider"></div>
+      <button class="pipeline-btn" id="pipelineBtn">📋 Coming Soon pipeline</button>
+      <button class="clear-btn" id="clearBtn">✕ Clear filters</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMING SOON PIPELINE MODAL -->
+<div class="modal-overlay" id="pipelineModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2>🕐 Coming Soon Pipeline</h2>
+        <p>Unpublished assets by theme and funnel stage — note interest with your content team.</p>
+      </div>
+      <button class="modal-close" id="pipelineClose">×</button>
+    </div>
+    <table class="matrix-table" id="matrixTable"></table>
+    <h3 style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">By Source Tab</h3>
+    <div class="source-grid" id="sourceGrid"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="results-bar">
+    <div class="results-count">Showing <strong id="countVisible">0</strong> of <strong id="countTotal">0</strong> assets<span id="geoNote" style="margin-left:10px;font-size:11px;color:#b45309;font-style:italic;"></span></div>
+    <select class="sort-select" id="sortSelect">
+      <option value="default">Sort: Default</option>
+      <option value="cred-high">Credibility: High → Low</option>
+      <option value="alpha">A → Z</option>
+      <option value="stage">Funnel Stage</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+// Hardcoded fallback (used if assets.json can't be fetched)
+const FALLBACK_ASSETS = [
+  {
+    title: "Retail's Digital Transformation: From Integration to Unification",
+    type: "Report",
+    typeSlug: "Report",
+    url: null,
+    internal: "Shopify (PDF in project files)",
+    summary: "Shopify report arguing integrated patchworks ≠ unified platforms. Quantifies the 'fragmentation tax' across four dimensions. Features Mejuri, KEEN, Oak+Fort, Parachute spotlights.",
+    stage: "MOFU",
+    persona: "CIO/CTO · COO/Ops · Head of Digital",
+    theme: "Fragmentation/Integration · Scalability/Agility · Maintenance→Innovation",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "HIGH",
+    segment: ["MM", "LA"],
+    notes: "HERO CANDIDATE for both programs. Use as anchor report for owned+paid landing page; excerpt proof points for ABM sequences.",
+    caveats: "Verify Forrester citation permissions; check if Shopify legal has approved all stats for ANZ use."
+  },
+  {
+    title: "EY: Future Proofing Retail — Embracing Unified Commerce",
+    type: "Report",
+    typeSlug: "Report",
+    url: null,
+    internal: "Shopify (PDF in project files)",
+    summary: "EY-authored report with original research: 4,000 org transactional data, 600+ org survey, executive interviews. Covers retail maturity model, COS components, POS buyer guide, TCO assessment.",
+    stage: "MOFU/BOFU",
+    persona: "CIO/CTO · COO/Ops · Finance/Procurement",
+    theme: "Fragmentation/Integration · Scalability/Agility · Maintenance→Innovation",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "HIGH",
+    segment: ["MM", "LA"],
+    notes: "Strongest third-party credibility asset. Use for CIO/CFO stakeholder meetings, ABM C-suite packages, and as gated content for lead gen.",
+    caveats: "EY co-branding rules may apply; confirm Shopify ANZ can redistribute with local wrapper."
+  },
+  {
+    title: "The Retail POS Buyer's Guide (AU)",
+    type: "Buyer Guide",
+    typeSlug: "Buyer Guide",
+    url: null,
+    internal: "Shopify (PDF in project files)",
+    summary: "Comprehensive 24-page buyer's guide structured around 4 user personas + a POS provider evaluation framework. Covers omnichannel fulfillment, BNPL/Shop Pay, unified customer profiles, multi-store reporting, and provider selection rubric.",
+    stage: "BOFU",
+    persona: "COO/Ops · IT Director · Store Ops · Finance/Procurement",
+    theme: "Fragmentation/Integration · Scalability/Agility · Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Use as practical evaluation tool for accounts in active POS evaluation. TCO section (pp. 21-23) particularly strong for finance/procurement. Gate behind lead form as 'POS Evaluation Toolkit'.",
+    caveats: "Last modified August 2023 — verify POS hardware options, pricing, BNPL stats before redistribution."
+  },
+  {
+    title: "Retail Tech's Trap: Why Integration Is Not Unification",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/enterprise/blog/retail-tech-trap-integration-vs-unification",
+    internal: null,
+    summary: "Explains why 'integrated' ≠ 'unified' — the core distinction driving the fragmentation theme. Directly addresses CIO/CTO audience on architectural decisions.",
+    stage: "MOFU",
+    persona: "CIO/CTO · Enterprise Architect · Head of Digital",
+    theme: "Fragmentation/Integration · Maintenance→Innovation",
+    geo: "Global with ANZ wrapper",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Key thought leadership for both programs. Use as 'problem framing' asset in email sequences before case study follow-up.",
+    caveats: "No quantified outcomes — pair with case studies for proof."
+  },
+  {
+    title: "The 4 Signs Your Commerce Tech Stack Is Holding You Back",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/commerce-tech-stack-warnings",
+    internal: null,
+    summary: "ANZ-specific blog addressing tech stack constraints with local retailer context. Directly maps to fragmentation pain theme with Australian relevance.",
+    stage: "TOFU/MOFU",
+    persona: "CIO/CTO · COO/Ops · Head of Digital",
+    theme: "Fragmentation/Integration · Scalability/Agility",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Strong ABM opening sequence asset. 'Does this sound like you?' framing works for cold outreach.",
+    caveats: "Verify case examples are still current/active Shopify customers."
+  },
+  {
+    title: "Unified Commerce in Retail: Business Case and Implementation",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/unified-commerce-retail",
+    internal: null,
+    summary: "Makes the business case for unified commerce with implementation guidance. Bridges problem awareness to solution consideration.",
+    stage: "MOFU/BOFU",
+    persona: "COO/Ops · Head of Digital · CIO/CTO",
+    theme: "Unified Commerce · Fragmentation/Integration",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Use in owned+paid nurture sequence after problem-awareness content.",
+    caveats: "Add ANZ retailer examples if available."
+  },
+  {
+    title: "Unified Commerce Payments vs. Integrated Systems: Which Is Best?",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/unified-commerce-payments",
+    internal: null,
+    summary: "Comparison piece: unified payments vs. integrated payments. Strong for finance/procurement and ops audiences evaluating TCO.",
+    stage: "MOFU",
+    persona: "Finance/Procurement · COO/Ops · CIO/CTO",
+    theme: "Fragmentation/Integration · Unified Commerce",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Decision-stage asset for both programs. Particularly useful for ABM finance stakeholder.",
+    caveats: "May need ANZ-specific payment processor references."
+  },
+  {
+    title: "FRANKIE4: Unified Customer Experiences, 170% Site Visit Increase",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/au/plus/customers/frankie4",
+    internal: null,
+    summary: "Australian footwear brand. Unified customer experiences on Shopify, 170% site visit increase. Strong ANZ proof point.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Unified Commerce · Scalability/Agility · Maintenance→Innovation",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM"],
+    notes: "KEY ANZ PROOF POINT. Use prominently in both programs wherever ANZ credibility is needed.",
+    caveats: "Confirm case study is still live and approved for redistribution."
+  },
+  {
+    title: "Rollie Nation: Reduced Page Load Times After Migration",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/au/plus/customers/rollie-nation",
+    internal: null,
+    summary: "Australian footwear brand migrated to Shopify. Improved page load and conversion rates. Migration/legacy-to-modern narrative.",
+    stage: "BOFU",
+    persona: "CIO/CTO · Head of Digital",
+    theme: "Fragmentation/Integration · Scalability/Agility",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "Good ANZ migration proof point. Pair with 'tech stack holding you back' blog.",
+    caveats: "Verify specific metrics are published and approved."
+  },
+  {
+    title: "How Businesses Are Accelerating with Agile Ecommerce Platforms",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/agile-ecommerce-platform",
+    internal: null,
+    summary: "Covers scalability, integrity, and enhanced customer experiences through agile platforms. Directly addresses scalability/agility pain theme.",
+    stage: "MOFU",
+    persona: "CIO/CTO · Head of Digital",
+    theme: "Scalability/Agility · Composability",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Thought leadership for CIO/CTO. Use in email sequences on scalability theme.",
+    caveats: "May need updated examples."
+  },
+  {
+    title: "Rethinking Build vs Buy: How Modern Platforms Are Changing the Game",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/build-vs-buy-software",
+    internal: null,
+    summary: "Addresses the build vs. buy decision for enterprise commerce. Directly relevant to CIO/CTO evaluating platform approaches.",
+    stage: "MOFU",
+    persona: "CIO/CTO · Enterprise Architect · Finance/Procurement",
+    theme: "Fragmentation/Integration · Maintenance→Innovation",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Good mid-funnel asset for CIO/architect personas weighing replatforming.",
+    caveats: "Ensure TCO claims are current."
+  },
+  {
+    title: "Ecommerce Platform Comparison: Best Value, Conversion, and Speed",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/enterprise/blog/ecommerce-platform-comparison",
+    internal: null,
+    summary: "Platform comparison on value, conversion, and speed metrics. Competitive positioning content.",
+    stage: "MOFU/BOFU",
+    persona: "CIO/CTO · Head of Digital · Finance/Procurement",
+    theme: "Scalability/Agility · Fragmentation/Integration",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Decision-stage content. Use carefully in ABM (avoid aggressive competitive framing for cold accounts).",
+    caveats: "Verify competitive claims are current and approved."
+  },
+  {
+    title: "The Enterprise Exodus: 4 Key Reasons Why Brands Are Moving to Shopify",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/enterprise-exodus",
+    internal: null,
+    summary: "Why enterprise brands are replatforming to Shopify. Four key reasons framing — useful for both awareness and consideration.",
+    stage: "BOFU",
+    persona: "CIO/CTO · Head of Digital · COO/Ops",
+    theme: "Fragmentation/Integration · Maintenance→Innovation · Scalability/Agility",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Owned+paid: strong retargeting asset. ABM: use selectively — soften headline for cold outreach.",
+    caveats: "Check if 'exodus' framing is too aggressive for ABM cold accounts."
+  },
+  {
+    title: "Partner Lab: SMB Edition",
+    type: "Deck",
+    typeSlug: "Deck",
+    url: "https://docs.google.com/presentation/d/1iz6nl5HiavFq_aWEMmV3kMfxlxXScDzBWDrnt7_EszY/edit",
+    internal: null,
+    summary: "Partner Lab deck tailored for the SMB segment. Use for partner-led SMB conversations and co-sell motions.",
+    stage: "BOFU",
+    persona: "All personas (sales enablement)",
+    theme: "All themes",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB"],
+    notes: "SMB-specific partner deck. Use in partner co-sell conversations and for internal SMB enablement.",
+    caveats: "Internal use — confirm redistribution permissions before sharing externally."
+  },
+  {
+    title: "ANZ Pitch Deck 2025",
+    type: "Deck",
+    typeSlug: "Deck",
+    url: null,
+    internal: "Internal (Shopify ANZ)",
+    summary: "2025 ANZ-specific pitch deck. Likely contains latest positioning, proof points, and local market context.",
+    stage: "BOFU",
+    persona: "All personas (sales enablement)",
+    theme: "All themes",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["MM", "LA"],
+    notes: "Reference for message spine alignment. Extract approved stats/claims for proof points bank.",
+    caveats: "Internal use — check redistribution permissions; may contain confidential data."
+  },
+  {
+    title: "ANZ Innovation Campaign (Walking Deck)",
+    type: "Deck",
+    typeSlug: "Deck",
+    url: null,
+    internal: "Internal (Shopify ANZ)",
+    summary: "Innovation campaign deck for ANZ market. Contains campaign framing, possibly target account context.",
+    stage: "TOFU/MOFU",
+    persona: "CIO/CTO · Head of Digital",
+    theme: "Maintenance→Innovation · AI",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Use for tone/message alignment. Extract any innovation stats or ANZ-specific data points.",
+    caveats: "Check if campaign is still active or has been superseded."
+  },
+  {
+    title: "Australian Retail Report",
+    type: "Report",
+    typeSlug: "Report",
+    url: null,
+    internal: "Internal (Shopify ANZ)",
+    summary: "Shopify's Australian retail market report. Local data, trends, and retail landscape context.",
+    stage: "TOFU",
+    persona: "All personas",
+    theme: "All themes (market context)",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Use for ANZ market context in landing pages, email intros, and ABM research packs.",
+    caveats: "Check publication date; may need refresh if >12 months old."
+  },
+  {
+    title: "Ecommerce Fashion and Apparel Industry in Australia",
+    type: "Report",
+    typeSlug: "Report",
+    url: null,
+    internal: "Internal (Shopify ANZ)",
+    summary: "Australia-specific fashion/apparel ecommerce report. Strong for apparel-heavy ABM target accounts.",
+    stage: "TOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Scalability/Agility · Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "Use for fashion-vertical ABM accounts. Personalise outreach with industry-specific data.",
+    caveats: "Industry-specific — only relevant for fashion/apparel accounts."
+  },
+  {
+    title: "Unified Commerce Keynote APAC V1 (2025)",
+    type: "Deck",
+    typeSlug: "Deck",
+    url: null,
+    internal: "Internal (Shopify APAC)",
+    summary: "2025 APAC unified commerce keynote. Latest Shopify positioning for the region.",
+    stage: "MOFU/BOFU",
+    persona: "All personas",
+    theme: "Unified Commerce · AI",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["MM", "LA"],
+    notes: "Extract key slides for ABM leave-behinds. Align message spine to this positioning.",
+    caveats: "Check if deck is approved for external sharing or internal-only."
+  },
+  {
+    title: "Personalisation Whitepaper (English APAC)",
+    type: "Report",
+    typeSlug: "Report",
+    url: null,
+    internal: "Internal (Shopify APAC)",
+    summary: "APAC-specific personalisation whitepaper covering first-party data strategies.",
+    stage: "MOFU",
+    persona: "Head of Digital · CIO/CTO",
+    theme: "AI · Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Support asset for AI/personalisation theme. Use in nurture sequences after problem-awareness.",
+    caveats: "Check currency of data points."
+  },
+  {
+    title: "ANZ Fashion Whitepaper",
+    type: "Report",
+    typeSlug: "Report",
+    url: null,
+    internal: "Internal (Shopify ANZ)",
+    summary: "ANZ-specific fashion industry whitepaper. Detailed industry analysis.",
+    stage: "MOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Scalability/Agility · Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "Fashion-vertical support. Combine with FRANKIE4 case study for fashion ABM accounts.",
+    caveats: "Check overlap with 'Ecommerce Fashion in Australia' report — may be same asset."
+  },
+  {
+    title: "Composable Commerce: What It Means and Is It Right for You?",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/composable-commerce",
+    internal: null,
+    summary: "Explains composable commerce concept and helps readers evaluate fit. Good for CIO/architect personas exploring architecture options.",
+    stage: "TOFU/MOFU",
+    persona: "CIO/CTO · Enterprise Architect",
+    theme: "Fragmentation/Integration · Scalability/Agility",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "CIO/architect nurture content. Pair with 'Integration vs Unification' report for fuller picture.",
+    caveats: "Technical audience — may not resonate with ops/digital personas."
+  },
+  {
+    title: "Making Commerce Better with Shopify's Composable Architecture",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/ecommerce-platform-architecture",
+    internal: null,
+    summary: "Shopify's composable architecture explained. How it delivers flexibility without fragmentation.",
+    stage: "MOFU/BOFU",
+    persona: "CIO/CTO · Enterprise Architect",
+    theme: "Fragmentation/Integration · Scalability/Agility · Composability",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Mid-to-late funnel for technical personas. Use in owned+paid for architects already in-market.",
+    caveats: "More product-focused — use carefully in ABM cold (too solution-forward for early stage)."
+  },
+  {
+    title: "Six Challenges Driving Brands to Explore Alternatives to commercetools",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/commercetools-alternatives",
+    internal: null,
+    summary: "Competitive takedown: why brands leave composable-by-assembly (commercetools) for Shopify. Addresses agility and maintenance burden.",
+    stage: "MOFU/BOFU",
+    persona: "CIO/CTO · Enterprise Architect",
+    theme: "Fragmentation/Integration · Maintenance→Innovation · Scalability/Agility",
+    geo: "Global with ANZ wrapper",
+    effort: "Heavy edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Use only for accounts known to be on commercetools. Soften headline for ABM if used.",
+    caveats: "Aggressive competitive framing — do NOT use in ABM cold outreach. Owned+paid retargeting only."
+  },
+  {
+    title: "8 AI Trends in 2025: What Ecommerce Businesses Need to Know",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/blog/ai-trends",
+    internal: null,
+    summary: "AI trends overview for 2025. Provides market context for AI in commerce narrative.",
+    stage: "TOFU",
+    persona: "Head of Digital · CIO/CTO · COO/Ops",
+    theme: "AI",
+    geo: "Global",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Use as awareness-stage AI content. Drive to Aviator Nation blog or AI webinar.",
+    caveats: "Generic — needs pairing with Shopify-specific content."
+  },
+  {
+    title: "Customer Data Integration: Your Path to Unified Commerce",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/customer-data-integration",
+    internal: null,
+    summary: "How customer data integration enables unified commerce. Bridges data fragmentation problem to unified solution.",
+    stage: "MOFU",
+    persona: "CIO/CTO · Head of Digital · Enterprise Architect",
+    theme: "Fragmentation/Integration · Unified Commerce · AI",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["MM", "LA"],
+    notes: "Technical mid-to-late funnel. Use for data-focused personas in ABM.",
+    caveats: "May need ANZ data privacy/regulation context."
+  },
+  {
+    title: "Mastering Omnichannel Personalization: Boost Your Customer Engagement",
+    type: "Blog",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/enterprise/blog/omnichannel-personalization",
+    internal: null,
+    summary: "Omnichannel personalization strategies. Connects unified data to personalized customer experiences.",
+    stage: "TOFU/MOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "AI · Unified Commerce",
+    geo: "Global with ANZ wrapper",
+    effort: "Light edit",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Supporting content for AI/personalisation stream. Use in owned+paid nurture.",
+    caveats: "Broad — may need tightening for enterprise audience."
+  },
+  {
+    title: "Archie Rose: Digital Transformation Journey with MindArc",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.mindarc.com.au/pages/case-studies/archie-rose-shopify-headless-migration",
+    internal: null,
+    summary: "Australian spirits brand migrated from bespoke platform to Shopify Headless. Incorporated DatoCMS, Nosto, Klaviyo, Okendo. Scalable, future-ready digital storefront.",
+    stage: "BOFU",
+    persona: "CIO/CTO · Head of Digital",
+    theme: "Fragmentation/Integration · Scalability/Agility · Maintenance→Innovation",
+    geo: "ANZ-ready",
+    effort: "Heavy edit",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "Good ANZ migration story. Extract proof points but rewrite for Shopify voice. Best for owned+paid.",
+    caveats: "Partner-hosted content — need partner permission for redistribution."
+  },
+  {
+    title: "Maggie Beer Holdings: Shopify Plus Migration by MindArc",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.mindarc.com/pages/case-studies/maggie-beer-shopify-plus-migration",
+    internal: null,
+    summary: "Iconic Australian food brand migrated to Shopify Plus. SEO and customer experience improvements.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Fragmentation/Integration · Scalability/Agility",
+    geo: "ANZ-ready",
+    effort: "Heavy edit",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "Strong brand recognition for ANZ audience. Extract migration narrative for ABM personalisation.",
+    caveats: "Partner content — need redistribution permissions; limited quantified outcomes."
+  },
+  {
+    title: "Nutrition Warehouse: 120+ Stores on Shopify POS in 6 Months",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/nutrition-warehouse",
+    internal: null,
+    summary: "Australia's largest sports supplement retailer (120+ stores across AU & NZ). Migrated from Magento + Retail Express POS to unified Shopify. $100K+ incremental event sales via mobile POS. 15-min staff training. 15% reduction in data consolidation time.",
+    stage: "BOFU",
+    persona: "COO/Ops · CIO/CTO · Store Ops · Finance/Procurement",
+    theme: "Fragmentation/Integration · Legacy→Unified · Maintenance→Innovation",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "VERY HIGH",
+    segment: ["MM", "LA"],
+    notes: "STRONGEST NEW ANZ CASE STUDY. The ex-Magento narrative is powerful for ABM accounts on Adobe/Magento. COO quote about legacy systems is ideal for C-suite ABM emails.",
+    caveats: "Verify Shopify has approved this for redistribution/excerpting."
+  },
+  {
+    title: "Mocka: 31% Sales Growth After Moving to Shopify",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/mocka",
+    internal: null,
+    summary: "ANZ home & lifestyle retailer (AU + NZ). Migrated from BigCommerce to Shopify in 2024. 31% sales growth in Australia. 13% AOV lift. Sidekick AI used for code verification, trending product identification, and trade insights.",
+    stage: "BOFU",
+    persona: "Head of Digital · CIO/CTO · COO/Ops",
+    theme: "Legacy→Unified · Maintenance→Innovation · AI/Sidekick · Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM"],
+    notes: "Strong AI angle — Sidekick used for merchandising, code verification, trade insights. Pairs well with Aviator Nation AI blog. BigCommerce departure story useful for ABM accounts on BigCommerce.",
+    caveats: "Verify redistribution approval. Sidekick usage may date quickly as AI features evolve."
+  },
+  {
+    title: "Quad Lock: Scales to $500M Thule Acquisition on Shopify",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/au/case-studies/quad-lock",
+    internal: null,
+    summary: "Melbourne-born phone mount brand. Kickstarter startup → $500M acquisition by Thule (Nov 2024). 12 global storefronts, 6 warehouses, DTC + B2B. Shopify POS for pop-up events (F1 Australian Grand Prix, Bathurst 1000).",
+    stage: "BOFU",
+    persona: "CIO/CTO · COO/Ops · Head of Digital · Finance/Procurement",
+    theme: "Scalability/Agility · International expansion · B2B unification · Innovation",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "VERY HIGH",
+    segment: ["MM", "LA"],
+    notes: "HIGHEST-VALUE ANZ PROOF POINT for scalability narrative. '$500M exit' is unmatched. For ABM: 'Would your current platform support a $500M exit?'",
+    caveats: "Now owned by Thule — verify whether Shopify ANZ can still use as 'ANZ success story'. $500M is acquisition price, not revenue."
+  },
+  {
+    title: "Culture Kings: Experiences Beat Discounts on Black Friday",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/au/case-studies/culture-kings-black-friday",
+    internal: null,
+    summary: "Australian streetwear retailer. Black Friday 'Double or Nothing' challenge — custom POS UI Extension for mobile wallet passes. 40-60% YoY growth since joining Shopify Plus.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops · Store Ops",
+    theme: "Innovation · Unified Commerce · Scalability",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["MM", "LA"],
+    notes: "Best used as an innovation/inspiration piece. For owned+paid: 'See what's possible when your platform doesn't hold you back.'",
+    caveats: "BF challenge is creative/experiential — less directly relevant to fragmentation/legacy pain themes."
+  },
+  {
+    title: "Brand Collective: 19 Brands Consolidated onto Shopify, 10% YoY Growth",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/brand-collective",
+    internal: null,
+    summary: "One of Australia's largest retail groups (300+ stores). 19 brands (Reebok, Superdry, Hush Puppies, etc.) migrated from Magento, BigCommerce & SFCC. Team of 20 → 6. IT overheads cut 60%. 15-25% conversion lift. 99% fraud chargeback reduction.",
+    stage: "BOFU",
+    persona: "CIO/CTO · COO/Ops · Finance/Procurement · Enterprise Architect",
+    theme: "Fragmentation/Integration · Maintenance→Innovation · TCO · Scalability",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "VERY HIGH",
+    segment: ["LA"],
+    notes: "STRONGEST FRAGMENTATION CASE STUDY IN ENTIRE INVENTORY. The '19 brands on 19 different technologies' framing is a ready-made ABM email hook. Team of 20→6 is the sharpest operational efficiency proof point.",
+    caveats: "Verify redistribution approval. Some brands (Canada Goose, Reebok) are licensed — check logo use."
+  },
+  {
+    title: "JB Hi-Fi: Scaling from $200M to $1B Online Sales with Shopify",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/au/case-studies/jb-hi-fi",
+    internal: null,
+    summary: "Australia's largest consumer electronics retailer ($6.5B annual revenue). Online sales grew from $200M to $1B (5x). Online share: 5% → 15%. Store-to-Door delivery via Uber integration. CIO Simon Page quoted.",
+    stage: "BOFU",
+    persona: "CIO/CTO · COO/Ops · Head of Digital · Enterprise Architect",
+    theme: "Scalability · Innovation velocity · Maintenance→Innovation · Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "VERY HIGH",
+    segment: ["LA"],
+    notes: "HIGHEST-PROFILE ANZ BRAND IN INVENTORY. CIO quote about not worrying about scale is perfect for Message 4. $1B online sales is an undeniable proof point.",
+    caveats: "Flagship reference — verify with Shopify ANZ before excerpting quotes in ABM materials. $1B is online revenue, not total."
+  },
+  {
+    title: "Milligram: 32% Revenue Surge After Switching to Shopify POS",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/milligram",
+    internal: null,
+    summary: "Australian stationery and lifestyle retailer. Revenue surged 32% after switching to Shopify POS. POS-specific transformation case.",
+    stage: "BOFU",
+    persona: "COO/Ops · Store Ops · Head of Digital",
+    theme: "Unified Commerce · Legacy→Unified",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM"],
+    notes: "Useful POS-specific proof point to pair with Nutrition Warehouse and POS Buyer's Guide.",
+    caveats: "Full case study content not yet fully verified — confirm details before featuring prominently."
+  },
+  {
+    title: "Hommey: 70% Web Dev Time Reduction, POS Across All AU Stores",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/hommey",
+    internal: null,
+    summary: "Australian homewares brand. Moved from headless custom storefront to Shopify Plus. 70% reduction in web dev time. Shopify POS deployed across all Australian stores. Ship from Store increased product availability.",
+    stage: "BOFU",
+    persona: "Head of Digital · CIO/CTO · COO/Ops",
+    theme: "Maintenance→Innovation · Unified Commerce · Scalability",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM"],
+    notes: "The 'headless custom → Shopify Plus' journey challenges assumption that headless = better. 70% dev time stat is useful for CIO/CTO conversations about developer productivity.",
+    caveats: "Relatively young brand (2021) — better suited for mid-market messaging than enterprise CIO outreach."
+  },
+  {
+    title: "Princess Polly: Digital-First Brand Builds Retail Empire with Shopify POS",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/princess-polly",
+    internal: null,
+    summary: "Gold Coast-founded fast fashion retailer. $200M+ annual revenue. Scaled to 7 retail stores unified with Shopify POS. 4% sales increase from Shop Pay authenticated checkout.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops · Store Ops",
+    theme: "Unified Commerce · Scalability · Innovation",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM"],
+    notes: "Best used as 'digital-native expands into physical retail on Shopify' proof point. Gold Coast → global story resonates for ANZ growth narrative.",
+    caveats: "Multiple case study versions exist — verify which to reference. Some stats may be from different time periods."
+  },
+  {
+    title: "DARCHE: B2B Wholesale Revenue Growth on Shopify",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/darche",
+    internal: null,
+    summary: "Australian outdoors/camping brand (since 1991). Migrated from legacy ecomm to Shopify Plus. B2B features: custom catalogs, personalised price lists, self-serve purchasing. 59% YoY web traffic increase. 3x B2B sales projected for FY2025.",
+    stage: "BOFU",
+    persona: "CIO/CTO · COO/Ops",
+    theme: "Legacy→Unified · B2B Commerce · Integration",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "Best for ABM accounts with B2B/wholesale channels. The 'phone/email ordering → self-serve' transformation is relatable for traditional wholesale businesses.",
+    caveats: "3x B2B sales is projected/anticipated, not confirmed. Use the 59% traffic stat as the verified number."
+  },
+  {
+    title: "LSKD: 216% US Revenue Growth via Expansion Stores",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/lskd",
+    internal: null,
+    summary: "Brisbane-based activewear brand. 216% growth in US online revenue using dedicated Shopify expansion store. International scaling proof point.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Scalability · Innovation",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM"],
+    notes: "International expansion proof point. Useful for accounts considering multi-market growth.",
+    caveats: "Full case study not yet fully crawled. Verify details before using externally."
+  },
+  {
+    title: "Bydee: 189% Global Sales Growth with International Selling Tools",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/bydee",
+    internal: null,
+    summary: "Sydney-founded swimwear brand. 189% global sales growth using Shopify Plus international selling tools. D2C growth story.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Scalability · Innovation",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB"],
+    notes: "International scaling proof point for SMB/growth-stage narrative. Lower priority for enterprise ABM.",
+    caveats: "Niche D2C swimwear brand — may not resonate with enterprise retail ABM targets."
+  },
+  {
+    title: "Memobottle: 310% Global Revenue Growth on Shopify Plus",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/memobottle",
+    internal: null,
+    summary: "Melbourne B-corp lifestyle brand. 310% global revenue growth on Shopify Plus. Ships to 100+ countries. B2B module adoption for wholesale alongside D2C.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Scalability · B2B+D2C unification",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB"],
+    notes: "Good for B2B+D2C unification angle. Melbourne proof point. Lower priority for enterprise programme.",
+    caveats: "Niche product category. Less enterprise-relevant for retail ABM."
+  },
+  {
+    title: "Girls with Gems: Doubles Revenue on Shopify Plus",
+    type: "Case Study",
+    typeSlug: "Case Study",
+    url: "https://www.shopify.com/case-studies/girls-with-gems",
+    internal: null,
+    summary: "Australian jewellery brand. Doubled revenue after upgrading to Shopify Plus. Efficiency gains across operations.",
+    stage: "BOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "Scalability · Operational efficiency",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB"],
+    notes: "Supporting proof point. Lower priority for enterprise programme but usable for breadth of ANZ evidence.",
+    caveats: "Full case study not yet crawled. Verify details."
+  },
+  {
+    title: "Unified Commerce: Buzzword or Business Strategy? (Webinar)",
+    type: "Webinar",
+    typeSlug: "Webinar",
+    url: "https://www.shopify.com/webinar/unified-commerce-buzzword-or-business-strategy",
+    internal: null,
+    summary: "Shopify webinar exploring whether unified commerce is a trend or strategic imperative for enterprise retailers.",
+    stage: "TOFU/MOFU",
+    persona: "Head of Digital · CIO/CTO · COO/Ops",
+    theme: "Unified Commerce",
+    geo: "Global with ANZ wrapper",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Use in nurture sequences for awareness-stage prospects. Drive to landing page for gated replay.",
+    caveats: "Verify webinar is still available and replay is accessible."
+  },
+  {
+    title: "Retail Personalization Strategies 2026 (Webinar)",
+    type: "Webinar",
+    typeSlug: "Webinar",
+    url: "https://www.shopify.com/webinar/retail-personalization-strategies-2026",
+    internal: null,
+    summary: "2026 retail personalization strategies webinar. Covers first-party data, AI-driven personalization, and customer engagement.",
+    stage: "TOFU/MOFU",
+    persona: "Head of Digital · COO/Ops",
+    theme: "AI · Unified Commerce",
+    geo: "Global with ANZ wrapper",
+    effort: "Ready",
+    credibility: "MED",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Pair with personalisation whitepaper. Use as TOFU awareness asset in paid campaigns.",
+    caveats: "Verify replay availability and content currency."
+  },
+  {
+    title: "Shopify ANZ Unified Commerce Hub",
+    type: "Landing Page",
+    typeSlug: "Blog",
+    url: "https://www.shopify.com/au/unified-commerce",
+    internal: null,
+    summary: "Shopify ANZ's unified commerce hub page. Central destination for ANZ retail unified commerce positioning.",
+    stage: "TOFU/MOFU",
+    persona: "All personas",
+    theme: "Unified Commerce",
+    geo: "ANZ-ready",
+    effort: "Ready",
+    credibility: "HIGH",
+    segment: ["SMB", "MM", "LA"],
+    notes: "Use as primary CTA destination in owned+paid campaigns. Direct all traffic here for unified commerce content.",
+    caveats: "Check if page content is up to date with latest positioning."
+  }
+];
+
+// Live data from assets.json (populated on load)
+let ASSETS = FALLBACK_ASSETS;
+
+// ── STATE ──────────────────────────────────────────────────
+// Multi-select state: empty array = no filter (show all), populated = AND across groups, OR within group
+let state = {
+  search: '',
+  stage: [],
+  type: [],
+  geo: [],
+  theme: [],
+  segment: [],
+  status: []
+};
+
+function isAll(arr) { return !arr || arr.length === 0; }
+
+// ── HELPERS ────────────────────────────────────────────────
+function credClass(c) {
+  if (!c) return 'cred-MED';
+  if (c.includes('VERY') || c.includes('EXCEPTIONAL')) return 'cred-VERY';
+  if (c.includes('HIGH')) return 'cred-HIGH';
+  return 'cred-MED';
+}
+
+function credLabel(c) {
+  if (!c) return 'MED';
+  if (c.includes('VERY') || c.includes('EXCEPTIONAL')) return '★★★ VERY HIGH';
+  if (c.includes('HIGH')) return '★★ HIGH';
+  return '★ MED';
+}
+
+function stageClass(s) {
+  if (!s) return '';
+  const u = s.toUpperCase();
+  if (u.includes('TOFU') && u.includes('MOFU')) return 'stage-BOTH';
+  if (u.includes('MOFU') && u.includes('BOFU')) return 'stage-BOTH';
+  if (u.includes('TOFU')) return 'stage-TOFU';
+  if (u.includes('MOFU')) return 'stage-MOFU';
+  if (u.includes('BOFU')) return 'stage-BOFU';
+  return '';
+}
+
+// Multi-select matchers: vals is an array; empty = show all; OR logic within each group
+function matchesStage(asset, vals) {
+  if (isAll(vals)) return true;
+  const s = (asset.stage || '').toUpperCase();
+  const norm = ['TOFU','MOFU','BOFU'].includes(s) ? s : 'MOFU';
+  return vals.includes(norm);
+}
+
+function matchesType(asset, vals) {
+  if (isAll(vals)) return true;
+  const raw = (asset.type || '').toLowerCase();
+  function typeMatch(val) {
+    if (val === 'Case Study')  return raw.includes('case study') || raw.includes('case-study');
+    if (val === 'Report')      return raw.includes('report') || raw.includes('whitepaper') ||
+                                      raw.includes('white paper') || raw.includes('research') ||
+                                      (raw.includes('buyer guide') && !raw.includes('case'));
+    if (val === 'Blog')        return (raw.includes('blog') || raw === 'native' ||
+                                      raw.includes('thought leadership')) &&
+                                      !raw.includes('case') && !raw.includes('report');
+    if (val === 'Buyer Guide') return raw.includes('buyer guide');
+    if (val === 'Deck')        return raw.includes('deck') || raw.includes('keynote') ||
+                                      raw.includes('presentation') || raw.includes('slides');
+    if (val === 'Webinar')     return raw.includes('webinar') || raw.includes('video') || raw.includes('demo');
+    return raw === val.toLowerCase();
+  }
+  return vals.some(typeMatch);
+}
+
+function matchesGeo(asset, vals) {
+  if (isAll(vals)) return true;
+  const g = (asset.geo || '').toLowerCase();
+  function geoMatch(val) {
+    if (val === 'ANZ')  return g === 'anz' || g.includes('anz') || g.includes('australia') ||
+                               g.includes('new zealand') || g === 'nz';
+    if (val === 'AMER') return g === 'global' || g === '' || g.includes('global') ||
+                               g === 'amer' || g.includes('amer') || g === 'us' || g === 'apac';
+    if (val === 'EMEA') return g === 'global' || g === '' || g.includes('global') ||
+                               g === 'emea' || g.includes('emea') || g.includes('europe') || g.includes('uk');
+    return true;
+  }
+  return vals.some(geoMatch);
+}
+
+function matchesSearch(asset, q) {
+  if (!q) return true;
+  const haystack = [asset.title, asset.type, asset.summary, asset.persona,
+                    asset.theme, asset.notes, asset.geo, asset.industry, asset.source]
+                    .join(' ').toLowerCase();
+  return q.toLowerCase().split(/\s+/).every(word => haystack.includes(word));
+}
+
+function matchesTheme(asset, vals) {
+  if (isAll(vals)) return true;
+  const t = (asset.theme || '').toLowerCase();
+  const map = {
+    'Unified Commerce': ['unified commerce', 'omnichannel', 'pos', 'point of sale'],
+    'AI':               ['ai in', ' ai', 'agentic', 'machine learning', 'sidekick'],
+    'Innovation':       ['innovation'],
+    'Fragmentation':    ['fragmentation', 'integration', 'patchwork'],
+    'Scalability':      ['scalab', 'scalability', 'scale', 'growth'],
+    'B2B':              ['b2b', 'wholesale', 'business-to-business'],
+    'Composability':    ['composab', 'composability', 'headless', 'extensib'],
+    'Security':         ['security', 'compliance', 'trust'],
+    'BFCM':             ['bfcm', 'black friday', 'cyber monday'],
+    'Crossborder':      ['crossborder', 'cross-border', 'international', 'expansion'],
+    'Fashion':          ['fashion', 'apparel', 'clothing'],
+  };
+  return vals.some(val => {
+    const keywords = map[val];
+    return keywords ? keywords.some(k => t.includes(k)) : t.includes(val.toLowerCase());
+  });
+}
+
+function matchesSegment(asset, vals) {
+  if (isAll(vals)) return true;
+  // Assets with no segment tag are generic — show them for all segments
+  if (!Array.isArray(asset.segment) || asset.segment.length === 0) return true;
+  return vals.some(v => asset.segment.includes(v));
+}
+
+function matchesStatus(a, vals) {
+  if (isAll(vals)) return true;
+  const s = (a.status || 'published').toLowerCase();
+  return vals.some(val => {
+    if (val === 'gated')     return a.gated === true;
+    if (val === 'draft')     return s === 'draft';
+    if (val === 'published') return s !== 'draft';
+    return false;
+  });
+}
+
+function filterAssets() {
+  return ASSETS.filter(a =>
+    matchesSearch(a, state.search) &&
+    matchesStage(a, state.stage) &&
+    matchesType(a, state.type) &&
+    matchesGeo(a, state.geo) &&
+    matchesTheme(a, state.theme) &&
+    matchesSegment(a, state.segment) &&
+    matchesStatus(a, state.status)
+  );
+}
+
+// ── RENDER ─────────────────────────────────────────────────
+function renderCard(asset, i) {
+  const hasLink = asset.url;
+  const noteId = `notes-${i}`;
+  const isDraft = asset.status && asset.status === 'draft';
+  const isGated = asset.gated === true;
+  return `
+    <div class="card${isDraft ? ' is-draft' : ''}" data-idx="${i}">
+      ${isDraft ? `<span class="coming-soon-badge">🕐 Coming Soon</span>` : ''}
+      ${isGated && !isDraft ? `<span class="gated-badge">🔒 Gated — form required</span>` : ''}
+      <div class="card-header">
+        <span class="card-type">${asset.type}</span>
+        <span class="card-credibility ${credClass(asset.credibility)}">${credLabel(asset.credibility)}</span>
+      </div>
+      <div class="card-title">${asset.title}</div>
+      <div class="card-summary">${asset.summary}</div>
+      <div class="card-meta">
+        <span class="meta-tag ${stageClass(asset.stage)}">${asset.stage}</span>
+        <span class="meta-tag meta-geo">📍 ${asset.geo}</span>
+        <span class="meta-tag meta-effort">⚡ ${asset.effort}</span>
+        ${Array.isArray(asset.segment) ? asset.segment.map(s => `<span class="meta-tag meta-segment seg-${s}">${s}</span>`).join('') : ''}
+      </div>
+      <div class="card-footer">
+        ${hasLink
+          ? `<a class="card-link" href="${asset.url}" target="_blank" rel="noopener">${isDraft ? 'Preview ↗' : 'View Asset ↗'}</a>`
+          : isDraft
+            ? `<span class="card-internal">🕐 Not yet published</span>`
+            : `<span class="card-internal">🔒 Internal — ${asset.internal}</span>`
+        }
+        <button class="card-notes-toggle" onclick="toggleNotes('${noteId}', this)">How to use ▾</button>
+      </div>
+      <div class="card-notes" id="${noteId}">
+        ${isDraft ? `<strong>📋 Status:</strong> In progress — not yet published. Sellers can note interest in this asset.<br><br>` : ''}
+        ${isGated && !isDraft ? `<strong>🔒 Gated asset:</strong> This links to a form/landing page. Use mid-cycle when the prospect is warm — avoid for cold outreach.<br><br>` : ''}
+        <strong>How to use:</strong> ${asset.notes || 'No notes available.'}
+        ${asset.caveats ? `<br><br><strong>⚠ Caveats:</strong> ${asset.caveats}` : ''}
+        ${asset.persona ? `<br><br><strong>Persona:</strong> ${asset.persona}` : ''}
+        ${asset.theme ? `<br><strong>Theme:</strong> ${asset.theme}` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function toggleNotes(id, btn) {
+  const el = document.getElementById(id);
+  const open = el.classList.toggle('open');
+  btn.textContent = open ? 'How to use ▴' : 'How to use ▾';
+}
+
+// ── COMING SOON PIPELINE MATRIX ────────────────────────────
+function buildPipelineMatrix() {
+  const drafts = ASSETS.filter(a => (a.status || 'published') === 'draft');
+
+  const STAGES = ['TOFU', 'MOFU', 'BOFU'];
+  const themes = [...new Set(drafts.map(a => a.theme || 'Other').filter(Boolean))].sort();
+  const allThemes = themes.length ? themes : ['Other'];
+
+  // Stage × Theme counts
+  const counts = {};
+  const totals = { TOFU: 0, MOFU: 0, BOFU: 0, total: 0 };
+  for (const t of allThemes) counts[t] = { TOFU: 0, MOFU: 0, BOFU: 0 };
+
+  for (const a of drafts) {
+    const theme = a.theme || 'Other';
+    const stage = ['TOFU','MOFU','BOFU'].includes(a.stage) ? a.stage : 'MOFU';
+    if (!counts[theme]) counts[theme] = { TOFU: 0, MOFU: 0, BOFU: 0 };
+    counts[theme][stage]++;
+    totals[stage]++;
+    totals.total++;
+  }
+
+  const maxCell = Math.max(1, ...allThemes.flatMap(t => STAGES.map(s => counts[t][s])));
+
+  // Build table HTML
+  let html = `<thead><tr>
+    <th class="row-header">Theme</th>
+    ${STAGES.map(s => `<th>${s}</th>`).join('')}
+    <th>Total</th>
+  </tr></thead><tbody>`;
+
+  for (const t of allThemes) {
+    const rowTotal = STAGES.reduce((s, st) => s + counts[t][st], 0);
+    if (rowTotal === 0) continue;
+    html += `<tr>
+      <td class="row-label">${t}</td>
+      ${STAGES.map(st => {
+        const n = counts[t][st];
+        const pct = Math.round((n / maxCell) * 100);
+        return `<td>
+          <span class="matrix-cell-count${n === 0 ? ' zero' : ''}">${n || '–'}</span>
+          ${n > 0 ? `<div class="matrix-cell-bar" style="width:${pct}%"></div>` : ''}
+        </td>`;
+      }).join('')}
+      <td><strong>${rowTotal}</strong></td>
+    </tr>`;
+  }
+
+  html += `<tr class="matrix-total-row">
+    <td class="row-label">Total</td>
+    ${STAGES.map(s => `<td><strong>${totals[s]}</strong></td>`).join('')}
+    <td><strong>${totals.total}</strong></td>
+  </tr></tbody>`;
+
+  document.getElementById('matrixTable').innerHTML = html;
+
+  // Source breakdown
+  const srcCounts = {};
+  for (const a of drafts) {
+    const src = a.source || 'Unknown';
+    srcCounts[src] = (srcCounts[src] || 0) + 1;
+  }
+  const sorted = Object.entries(srcCounts).sort((a, b) => b[1] - a[1]);
+  document.getElementById('sourceGrid').innerHTML = sorted
+    .map(([src, n]) => `<div class="source-card"><div class="src-name">${src}</div><div class="src-count">${n}</div></div>`)
+    .join('');
+}
+
+document.getElementById('pipelineBtn').addEventListener('click', () => {
+  buildPipelineMatrix();
+  document.getElementById('pipelineModal').classList.add('open');
+});
+document.getElementById('pipelineClose').addEventListener('click', () => {
+  document.getElementById('pipelineModal').classList.remove('open');
+});
+document.getElementById('pipelineModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
+function render() {
+  const grid = document.getElementById('grid');
+  const visible = filterAssets();
+
+  document.getElementById('countVisible').textContent = visible.length;
+  document.getElementById('countTotal').textContent = ASSETS.length;
+  // Show note when AMER/EMEA selected explaining Global content is included
+  const geoNote = document.getElementById('geoNote');
+  if (geoNote) {
+    const geoRegions = (state.geo || []).filter(v => v === 'AMER' || v === 'EMEA');
+    if (geoRegions.length > 0) {
+      geoNote.textContent = `Includes all Global assets usable in ${geoRegions.join(' & ')} — tag content in the sheet to add region-specific assets`;
+    } else {
+      geoNote.textContent = '';
+    }
+  }
+
+  // Sort
+  const sort = document.getElementById('sortSelect').value;
+  if (sort === 'alpha') visible.sort((a, b) => a.title.localeCompare(b.title));
+  if (sort === 'cred-high') {
+    const credOrder = { 'VERY HIGH': 0, 'EXCEPTIONAL': 0, 'HIGH': 1, 'MED-HIGH': 2, 'MED': 3, 'LOW': 4 };
+    visible.sort((a, b) => (credOrder[a.credibility] ?? 5) - (credOrder[b.credibility] ?? 5));
+  }
+  if (sort === 'stage') {
+    const stageOrder = { 'TOFU': 0, 'TOFU/MOFU': 1, 'MOFU': 2, 'MOFU/BOFU': 3, 'BOFU': 4 };
+    visible.sort((a, b) => (stageOrder[a.stage] ?? 5) - (stageOrder[b.stage] ?? 5));
+  }
+
+  if (visible.length === 0) {
+    grid.innerHTML = `
+      <div class="empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <h3>No assets found</h3>
+        <p>Try adjusting your search or filters.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = visible.map((a, i) => renderCard(a, ASSETS.indexOf(a))).join('');
+}
+
+// ── HOT THIS WEEK ──────────────────────────────────────────
+(async function loadHotThisWeek() {
+  try {
+    const res = await fetch('hot-this-week.json?v=' + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+
+    const section = document.getElementById('hotSection');
+    const cardsEl = document.getElementById('hotCards');
+    const weekEl  = document.getElementById('hotWeek');
+
+    if (!data.ideas || data.ideas.length === 0) return;
+
+    weekEl.textContent = data.week || '';
+    section.style.display = '';
+
+    cardsEl.innerHTML = data.ideas.map((idea, i) => `
+      <div class="hot-card">
+        <div class="hot-card-rank">#${idea.rank} Trending</div>
+        <div class="hot-card-topic">${idea.topic}</div>
+        <div class="hot-card-why">${(idea.why_trending || '').substring(0, 90)}…</div>
+        <div class="hot-card-actions">
+          <button class="hot-btn hot-btn-post" data-idx="${i}">✍️ LinkedIn draft</button>
+          <button class="hot-btn hot-btn-find" data-idx="${i}">🔍 Find assets</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Wire up buttons
+    cardsEl.querySelectorAll('.hot-btn-post').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idea = data.ideas[+btn.dataset.idx];
+        document.getElementById('liModalTitle').textContent = `LinkedIn Draft — ${idea.topic}`;
+        document.getElementById('liModalPost').textContent  = idea.linkedin_draft;
+        document.getElementById('liModal').classList.add('open');
+        document.getElementById('liCopyBtn').textContent = '📋 Copy to clipboard';
+        document.getElementById('liCopyBtn').classList.remove('copied');
+      });
+    });
+
+    cardsEl.querySelectorAll('.hot-btn-find').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idea = data.ideas[+btn.dataset.idx];
+        const f = idea.related_filters || {};
+        // Reset state
+        state.stage   = f.stage   ? [...f.stage]   : [];
+        state.type    = f.type    ? [...f.type]     : [];
+        state.geo     = f.geo     ? [...f.geo]      : [];
+        state.theme   = f.theme   ? [...f.theme]    : [];
+        state.segment = f.segment ? [...f.segment]  : [];
+        state.status  = f.status  ? [...f.status]   : [];
+        state.search  = '';
+        document.getElementById('search').value = '';
+        // Sync chips
+        document.querySelectorAll('.chip[data-group]').forEach(c => {
+          const g = c.dataset.group, v = c.dataset.val;
+          c.classList.toggle('active', v === 'all' ? isAll(state[g]) : (state[g]||[]).includes(v));
+        });
+        clearScenarioHighlight();
+        updateClearBtn();
+        render();
+        // Scroll to results
+        document.getElementById('grid').scrollIntoView({behavior:'smooth'});
+      });
+    });
+
+  } catch(e) {
+    console.log('Hot this week not available:', e.message);
+  }
+})();
+
+// LinkedIn modal controls
+document.getElementById('liModalClose').addEventListener('click', () => {
+  document.getElementById('liModal').classList.remove('open');
+});
+document.getElementById('liModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+document.getElementById('liCopyBtn').addEventListener('click', () => {
+  const text = document.getElementById('liModalPost').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('liCopyBtn');
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy to clipboard';
+      btn.classList.remove('copied');
+    }, 2500);
+  });
+});
+
+// ── SCENARIO PRESETS ───────────────────────────────────────
+const SCENARIOS = {
+  'prospect-meeting':  { stage: ['TOFU'],         type: [],               geo: ['ANZ'],  theme: [],                  segment: [], status: [] },
+  'outbound':          { stage: ['TOFU'],         type: ['Blog','Report'], geo: [],       theme: [],                  segment: [], status: ['published'] },
+  'active-deal':       { stage: ['MOFU','BOFU'],  type: ['Case Study','Deck'], geo: [],  theme: [],                  segment: [], status: ['published'] },
+  'ai-campaign':       { stage: [],               type: [],               geo: [],       theme: ['AI'],              segment: [], status: [] },
+  'unified-commerce':  { stage: [],               type: [],               geo: [],       theme: ['Unified Commerce'], segment: [], status: [] },
+  'b2b':               { stage: [],               type: [],               geo: [],       theme: ['B2B'],             segment: [], status: [] },
+  'anz-only':          { stage: [],               type: [],               geo: ['ANZ'],  theme: [],                  segment: [], status: [] },
+  'case-studies':      { stage: [],               type: ['Case Study'],   geo: [],       theme: [],                  segment: [], status: ['published'] },
+  'coming-soon':       { stage: [],               type: [],               geo: [],       theme: [],                  segment: [], status: ['draft'] },
+  'shopify-connect':   { stage: [],               type: ['Social / LinkedIn'], geo: ['ANZ'], theme: [],               segment: [], status: [] },
+};
+
+let activeScenario = null;
+
+function syncFilterChips() {
+  document.querySelectorAll('.chip[data-group]').forEach(c => {
+    const group = c.dataset.group;
+    const val = c.dataset.val;
+    if (val === 'all') c.classList.toggle('active', isAll(state[group]));
+    else c.classList.toggle('active', (state[group] || []).includes(val));
+  });
+}
+
+function addIfMissing(arr, val) {
+  if (!arr.includes(val)) arr.push(val);
+}
+
+function setNaturalAgentStatus(msg, isError = false) {
+  const statusEl = document.getElementById('naturalAgentStatus');
+  if (!statusEl) return;
+  statusEl.textContent = msg;
+  statusEl.classList.toggle('error', isError);
+}
+
+function parseNaturalRequest(rawText) {
+  const q = rawText.toLowerCase();
+  const req = { scenarioKey: null, template: 'Smart match', stage: [], type: [], geo: [], theme: [], segment: [], status: [], search: '' };
+
+  const templateRules = [
+    { key: 'prospect-meeting',  label: 'Prospect meeting template', tokens: ['prospect meeting', 'intro call', 'first meeting', 'discovery call'] },
+    { key: 'outbound',          label: 'Outbound prospecting template', tokens: ['outbound', 'cold email', 'prospecting', 'cold outreach'] },
+    { key: 'active-deal',       label: 'Active deal template', tokens: ['active deal', 'late stage', 'proposal', 'procurement', 'in deal'] },
+    { key: 'ai-campaign',       label: 'AI campaign template', tokens: ['ai campaign', 'agentic', 'ai commerce', 'sidekick'] },
+    { key: 'unified-commerce',  label: 'Unified commerce template', tokens: ['unified commerce', 'omnichannel', 'pos'] },
+    { key: 'b2b',               label: 'B2B template', tokens: ['b2b', 'wholesale', 'trade portal'] },
+    { key: 'anz-only',          label: 'ANZ template', tokens: ['anz only', 'australia', 'new zealand', 'au market'] },
+    { key: 'case-studies',      label: 'Case study template', tokens: ['case study', 'customer story', 'proof point'] },
+    { key: 'coming-soon',       label: 'Coming soon template', tokens: ['coming soon', 'pipeline', 'in progress', 'draft asset'] },
+    { key: 'shopify-connect',   label: 'Shopify Connect template', tokens: ['shopify connect', 'connect post', 'event post'] }
+  ];
+
+  for (const rule of templateRules) {
+    if (rule.tokens.some(t => q.includes(t))) {
+      req.scenarioKey = rule.key;
+      req.template = rule.label;
+      break;
+    }
+  }
+
+  if (req.scenarioKey) {
+    const preset = SCENARIOS[req.scenarioKey];
+    req.stage = [...preset.stage];
+    req.type = [...preset.type];
+    req.geo = [...preset.geo];
+    req.theme = [...preset.theme];
+    req.segment = [...preset.segment];
+    req.status = [...preset.status];
+  }
+
+  if (/tofu|top of funnel|awareness/.test(q)) addIfMissing(req.stage, 'TOFU');
+  if (/mofu|mid funnel|consideration/.test(q)) addIfMissing(req.stage, 'MOFU');
+  if (/bofu|bottom of funnel|decision stage|late stage/.test(q)) addIfMissing(req.stage, 'BOFU');
+
+  if (/case study|customer story|proof point/.test(q)) addIfMissing(req.type, 'Case Study');
+  if (/report|whitepaper|white paper|research/.test(q)) addIfMissing(req.type, 'Report');
+  if (/blog|article/.test(q)) addIfMissing(req.type, 'Blog');
+  if (/deck|slides|presentation|pitch deck/.test(q)) addIfMissing(req.type, 'Deck');
+  if (/webinar|on.?demand|replay/.test(q)) addIfMissing(req.type, 'Webinar');
+  if (/linkedin|social post|post copy/.test(q)) addIfMissing(req.type, 'Social / LinkedIn');
+  if (/buyer guide/.test(q)) addIfMissing(req.type, 'Buyer Guide');
+
+  if (/anz|australia|new zealand|\bau\b|\bnz\b/.test(q)) addIfMissing(req.geo, 'ANZ');
+  if (/amer|america|united states|\bus\b/.test(q)) addIfMissing(req.geo, 'AMER');
+  if (/emea|europe|uk|united kingdom/.test(q)) addIfMissing(req.geo, 'EMEA');
+
+  if (/unified commerce|omnichannel|pos/.test(q)) addIfMissing(req.theme, 'Unified Commerce');
+  if (/\bai\b|agentic|sidekick|automation/.test(q)) addIfMissing(req.theme, 'AI');
+  if (/innovation/.test(q)) addIfMissing(req.theme, 'Innovation');
+  if (/fragment|integration|legacy stack|patchwork/.test(q)) addIfMissing(req.theme, 'Fragmentation');
+  if (/scalab|scale|growth/.test(q)) addIfMissing(req.theme, 'Scalability');
+  if (/b2b|wholesale/.test(q)) addIfMissing(req.theme, 'B2B');
+  if (/composable|headless/.test(q)) addIfMissing(req.theme, 'Composability');
+  if (/security|compliance|trust/.test(q)) addIfMissing(req.theme, 'Security');
+  if (/bfcm|black friday|cyber monday/.test(q)) addIfMissing(req.theme, 'BFCM');
+  if (/cross.?border|international/.test(q)) addIfMissing(req.theme, 'Crossborder');
+  if (/fashion|apparel/.test(q)) addIfMissing(req.theme, 'Fashion');
+
+  if (/\bsmb\b|small business/.test(q)) addIfMissing(req.segment, 'SMB');
+  if (/mid market|mid-market|\bmm\b/.test(q)) addIfMissing(req.segment, 'MM');
+  if (/enterprise|large account|large retailer|\bla\b/.test(q)) addIfMissing(req.segment, 'LA');
+
+  if (/gated|form fill|lead form/.test(q)) addIfMissing(req.status, 'gated');
+  if (/draft|coming soon|pipeline/.test(q)) addIfMissing(req.status, 'draft');
+  if (/published|live/.test(q)) addIfMissing(req.status, 'published');
+
+  const hasStructuredFilters = req.stage.length || req.type.length || req.geo.length || req.theme.length || req.segment.length || req.status.length;
+  if (!hasStructuredFilters) req.search = rawText.trim();
+
+  return req;
+}
+
+function applyNaturalRequest() {
+  const input = document.getElementById('naturalAgentInput');
+  const rawText = (input?.value || '').trim();
+  if (!rawText) {
+    setNaturalAgentStatus('Write what you need first, then click Find template.', true);
+    return;
+  }
+
+  const req = parseNaturalRequest(rawText);
+  state = {
+    search: req.search,
+    stage: req.stage,
+    type: req.type,
+    geo: req.geo,
+    theme: req.theme,
+    segment: req.segment,
+    status: req.status
+  };
+  document.getElementById('search').value = state.search;
+
+  syncFilterChips();
+  clearScenarioHighlight();
+  if (req.scenarioKey) {
+    activeScenario = req.scenarioKey;
+    const scenarioChip = document.querySelector(`.scenario-chip[data-scenario="${req.scenarioKey}"]`);
+    if (scenarioChip) scenarioChip.classList.add('active');
+  }
+
+  updateClearBtn();
+  render();
+
+  const appliedFilterCount = ['stage','type','geo','theme','segment','status'].reduce((n, key) => n + (state[key] || []).length, 0);
+  const mode = appliedFilterCount > 0 ? `${appliedFilterCount} filters` : 'keyword search';
+  setNaturalAgentStatus(`Template matched: ${req.template}. Applied ${mode}.`);
+}
+
+function applyScenario(key) {
+  const preset = SCENARIOS[key];
+
+  // Update state
+  state.stage   = [...preset.stage];
+  state.type    = [...preset.type];
+  state.geo     = [...preset.geo];
+  state.theme   = [...preset.theme];
+  state.segment = [...preset.segment];
+  state.status  = [...preset.status];
+  state.search  = '';
+  document.getElementById('search').value = '';
+
+  // Sync all chip active states
+  syncFilterChips();
+
+  updateClearBtn();
+  render();
+}
+
+document.querySelectorAll('.scenario-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const key = chip.dataset.scenario;
+    if (activeScenario === key) {
+      // Toggle off — clear all filters
+      activeScenario = null;
+      chip.classList.remove('active');
+      document.getElementById('clearBtn').click();
+      return;
+    }
+    // Deactivate previous
+    document.querySelectorAll('.scenario-chip').forEach(c => c.classList.remove('active'));
+    activeScenario = key;
+    chip.classList.add('active');
+    applyScenario(key);
+  });
+});
+
+document.getElementById('naturalAgentGo').addEventListener('click', applyNaturalRequest);
+document.getElementById('naturalAgentInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    applyNaturalRequest();
+  }
+});
+
+// Clear scenario highlight when manual filters change
+function clearScenarioHighlight() {
+  activeScenario = null;
+  document.querySelectorAll('.scenario-chip').forEach(c => c.classList.remove('active'));
+}
+
+// ── EVENTS ─────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  state.search = e.target.value;
+  clearScenarioHighlight();
+  updateClearBtn();
+  render();
+});
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const group = chip.dataset.group;
+    const val = chip.dataset.val;
+    const groupChips = document.querySelectorAll(`.chip[data-group="${group}"]`);
+
+    if (val === 'all') {
+      // Clicking "All" clears the group selection
+      state[group] = [];
+      groupChips.forEach(c => c.classList.toggle('active', c.dataset.val === 'all'));
+    } else {
+      // Toggle this value in the group's array
+      const arr = state[group];
+      const idx = arr.indexOf(val);
+      if (idx === -1) arr.push(val); else arr.splice(idx, 1);
+
+      // Sync chip active states: "All" active only when nothing selected
+      groupChips.forEach(c => {
+        if (c.dataset.val === 'all') c.classList.toggle('active', arr.length === 0);
+        else c.classList.toggle('active', arr.includes(c.dataset.val));
+      });
+    }
+
+    clearScenarioHighlight();
+    updateClearBtn();
+    render();
+  });
+});
+
+document.getElementById('sortSelect').addEventListener('change', render);
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  state = { search: '', stage: [], type: [], geo: [], theme: [], segment: [], status: [] };
+  document.getElementById('search').value = '';
+  const naturalInput = document.getElementById('naturalAgentInput');
+  if (naturalInput) naturalInput.value = '';
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.val === 'all');
+  });
+  clearScenarioHighlight();
+  setNaturalAgentStatus('Ask in plain English and I will find the right template.');
+  updateClearBtn();
+  render();
+});
+
+function updateClearBtn() {
+  const active = state.search ||
+    !isAll(state.stage) || !isAll(state.type) || !isAll(state.geo) ||
+    !isAll(state.theme) || !isAll(state.segment) || !isAll(state.status);
+  document.getElementById('clearBtn').classList.toggle('visible', !!active);
+}
+
+// ── LIVE DATA LOADER ───────────────────────────────────────
+function normaliseSheetAsset(a) {
+  // Normalise stage: pick first recognisable token
+  const stageRaw = (a.stage || '').toUpperCase();
+  const stage = ['TOFU', 'MOFU', 'BOFU'].find(s => stageRaw.includes(s)) ||
+                (stageRaw.includes('TOP') ? 'TOFU' : stageRaw.includes('MID') ? 'MOFU' : stageRaw.includes('BOT') ? 'BOFU' : stageRaw || 'MOFU');
+
+  // Normalise credibility
+  const credRaw = (a.credibility || '').toUpperCase();
+  const credibility = credRaw.includes('VERY HIGH') || credRaw.includes('EXCEPTIONAL') ? 'VERY HIGH'
+    : credRaw.includes('HIGH') ? 'HIGH'
+    : credRaw.includes('MED') ? 'MED'
+    : credRaw.includes('LOW') ? 'LOW'
+    : 'MED';
+
+  const url = a.url && !a.url.startsWith('Shopify') && !a.url.startsWith('PDF') && a.url.startsWith('http') ? a.url : null;
+
+  return {
+    title:       a.title || '',
+    type:        a.type || 'Asset',
+    typeSlug:    (a.type || 'Asset').split(/[\s/]/)[0],
+    url:         url,
+    internal:    url ? null : (a.url || 'Internal'),
+    summary:     a.summary || '',
+    stage:       stage,
+    persona:     a.persona || '',
+    theme:       a.theme || '',
+    geo:         a.geo || a.region || 'ANZ',
+    effort:      a.effort || '',
+    credibility: credibility,
+    notes:       a.notes || '',
+    caveats:     a.caveats || '',
+    segment:     Array.isArray(a.segment) ? a.segment : [],
+    source:      a.source || '',
+    metrics:     a.metrics || '',
+    industry:    a.industry || '',
+    // Preserve status & gated — required for Status filter and badges
+    status:      a.status || 'published',
+    gated:       a.gated === true,
+  };
+}
+
+async function loadAssets() {
+  const grid = document.getElementById('grid');
+  const lastUpdatedEl = document.getElementById('lastUpdated');
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)">
+    <div style="font-size:32px;margin-bottom:12px">⟳</div>
+    <p>Loading assets from Google Sheets…</p>
+  </div>`;
+
+  try {
+    const resp = await fetch('./assets.json', { cache: 'no-cache' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    if (data.assets && data.assets.length > 0) {
+      ASSETS = data.assets.map(normaliseSheetAsset).filter(a => a.title);
+      if (lastUpdatedEl) {
+        const ts = new Date(data.generated);
+        lastUpdatedEl.textContent = `Live from Google Sheets · Updated ${ts.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+        lastUpdatedEl.style.display = 'inline';
+      }
+    }
+  } catch (e) {
+    console.warn('Could not load assets.json, using fallback data:', e.message);
+    ASSETS = FALLBACK_ASSETS;
+    if (lastUpdatedEl) {
+      lastUpdatedEl.textContent = 'Showing cached data — run refresh to update';
+      lastUpdatedEl.style.display = 'inline';
+      lastUpdatedEl.style.color = '#f59e0b';
+    }
+  }
+
+  render();
+
+  if (typeof window.__salesAiOnAssetsLoaded === 'function') {
+    window.__salesAiOnAssetsLoaded(ASSETS);
+  }
+}
+
+// ── INIT ───────────────────────────────────────────────────
+loadAssets();
+</script>
+
+<footer style="
+  background: #1a1a2e;
+  color: #9ca3af;
+  text-align: center;
+  padding: 20px 32px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  border-top: 1px solid #2d2d4e;
+  margin-top: 40px;
+">
+  For questions about this content library, reach out to
+  <a href="mailto:shalini.keyan@shopify.com" style="color: #00a877; text-decoration: none; font-weight: 600;">
+    Shalini Keyan
+  </a>
+  &nbsp;|&nbsp;
+  <a href="mailto:shalini.keyan@shopify.com" style="color: #6d7175; text-decoration: none;">
+    shalini.keyan@shopify.com
+  </a>
+</footer>
+</div><!-- /panel-content -->
+
+<script>
+function switchTab(tab, e) { if (e) e.preventDefault(); }
+</script>
+
+<!-- Content Copilot: ranks catalog + optional LLM via meta anz-sales-ai-endpoint -->
+<div id="salesAiPanel" class="" aria-hidden="true">
+  <div class="sales-ai-backdrop" data-close-sales-ai tabindex="-1" aria-hidden="true"></div>
+  <aside class="sales-ai-drawer" role="dialog" aria-labelledby="salesAiTitle">
+    <div class="sales-ai-head">
+      <div>
+        <h2 id="salesAiTitle">Content Copilot</h2>
+        <p>Built for sales: ask in plain language. Uses this hub’s catalog; with an endpoint, the model can clarify and recommend.</p>
+        <span class="sales-ai-pill" data-sales-ai-mode>Catalog: <span data-sales-ai-count>0</span> assets</span>
+      </div>
+      <div class="sales-ai-head-actions">
+        <button type="button" class="sales-ai-icon-btn" data-sales-ai-clear title="Clear chat">⌫</button>
+        <button type="button" class="sales-ai-icon-btn" data-close-sales-ai title="Close">✕</button>
+      </div>
+    </div>
+    <div data-sales-ai-messages></div>
+    <div class="sales-ai-foot">
+      <div class="sales-ai-composer">
+        <textarea data-sales-ai-input rows="2" placeholder="e.g. CIO asked about AI and POS together — what should I send for an ANZ retailer?"></textarea>
+        <button type="button" data-sales-ai-send>Send</button>
+      </div>
+      <div data-sales-ai-status></div>
+    </div>
+  </aside>
+</div>
+<button type="button" class="sales-ai-fab" data-open-sales-ai aria-label="Open Content Copilot">
+  ✨ Ask the hub
+</button>
+<script src="sales-ai.js" defer></script>
+
+</body>
+</html>
