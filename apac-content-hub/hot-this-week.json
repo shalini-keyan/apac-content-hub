@@ -1,72 +1,83 @@
 {
-  "generated": "2026-04-13T00:00:00+00:00",
-  "week": "Week of April 13, 2026",
+  "generated": "2026-05-05T00:00:00+00:00",
+  "week": "Week of May 5, 2026",
   "signal_count": 4,
   "ideas": [
     {
       "rank": 1,
-      "topic": "Agentic Commerce",
-      "signal_count": 3,
-      "why_trending": "Roundtables coming up April 30 + May 14. Accounts hitting free-trial and pricing pages across ANZ, Japan, India — strong commercial intent this week.",
-      "linkedin_draft": "\ud83e\udd16 Agentic commerce isn't coming \u2014 it's already here.\n\nAI is no longer just recommending products. It's making purchasing decisions on behalf of shoppers.\n\nIn the Australia Post eCommerce Report 2026, Shopify's Shaun Broughton explores what this shift means for Australian retailers:\n\n\u2022 Which generations are leading AI-driven shopping adoption\n\u2022 Where agentic AI is already influencing discovery and conversion\n\u2022 How brands can stay visible and frictionless as commerce evolves\n\nThe retailers who'll win aren't the ones waiting to see what happens \u2014 they're the ones building for it now.\n\nWhat are you doing to stay discoverable in an AI-first world?\n\n\ud83d\udcd6 Read the full report: https://auspost.com.au/content/dam/ecommerce-report/australia-post-ecommerce-report-2026.pdf\n\n#AgenticCommerce #AICommerce #eCommerce #Shopify #ANZ #RetailTech",
+      "topic": "After Shopify Connect Melbourne",
+      "signal_count": 4,
+      "why_trending": "Melbourne Connect (29 Apr) is in the rear-view. This week, accounts want follow-up: proof, recap, and what to do next. Strong moment for case studies, unified commerce, and AI enablement assets.",
+      "linkedin_draft": "Last week, retail and ecommerce leaders came together in Melbourne for Shopify Connect.\n\nThe through-line in the room: unifying data, staff, and channels is no longer a nice-to-have, it is the baseline for growth.\n\nIf you are turning those conversations into next steps, the content that lands is specific: local proof, clear POS and online story, and a credible AI path (not buzzwords).\n\nWhat is the one follow-up resource you are sending to prospects this week?\n\n#ShopifyConnect #ANZ #Retail #eCommerce #UnifiedCommerce #Shopify",
       "related_filters": {
-        "theme": [
-          "AI"
-        ],
-        "stage": [
-          "TOFU"
-        ]
+        "theme": ["Unified Commerce", "AI"],
+        "geo": ["ANZ"],
+        "stage": ["MOFU", "BOFU"]
       },
       "related_assets": [
-        "Australia Post eCommerce Report 2026",
-        "Australia eCom Report Partner Toolkit"
+        "APAC Case Studies Master Deck",
+        "ANZ Pitch Deck — April 2025"
       ],
       "sources": [
-        "Gmail: Agentic Commerce Executive Round Tables April 30th + May 14t",
-        "Gmail: The 2026 Australia Post eCommerce report is here",
-        "Slack: #revenue-apac: agentic commerce discussion"
+        "Programme: post-event nurture and sales follow-up (May 2026)",
+        "Slack: #rev-apac-anz — Connect + pipeline"
       ]
     },
     {
       "rank": 2,
-      "topic": "Shopify Connect",
-      "signal_count": 2,
-      "why_trending": "2 weeks out. Melbourne, April 29 — use this as the hook for outreach to engaged accounts in your book this week.",
-      "linkedin_draft": "\ud83d\udccd Melbourne \u2014 April 29.\n\nShopify Connect is coming to Melbourne and it's built for senior retail and ecommerce leaders who want to cut through the noise and focus on what actually drives growth in 2026.\n\nExpect honest conversations around:\n\ud83e\udd16 AI and agentic commerce\n\ud83c\udfea Unified online and in-store experiences\n\ud83d\udcca What the data actually says about Australian shoppers this year\n\nLimited seats. If you're in Melbourne and want to be in the room \u2014 get in touch.\n\n#ShopifyConnect #eCommerce #RetailLeadership #Melbourne #ANZ #Shopify",
+      "topic": "Agentic commerce",
+      "signal_count": 3,
+      "why_trending": "Executive conversations still heating up. May 14 roundtable slot remains a natural hook; Australia Post eCommerce Report 2026 continues to anchor local stats on AI-assisted shopping behaviour.",
+      "linkedin_draft": "Agentic commerce is the shift from \"browse and buy\" to systems that plan, compare, and purchase on the shopper's behalf.\n\nThe 2026 Australia Post eCommerce Report spells out how Australian consumers are already experimenting with AI-led discovery and checkout.\n\nFor brands, the question is not whether this shows up, it is whether you are visible and trustworthy when it does.\n\nWorth a read if you are briefing leadership or a board this month.\n\nRead the report: https://auspost.com.au/content/dam/ecommerce-report/australia-post-ecommerce-report-2026.pdf\n\n#AgenticCommerce #AICommerce #eCommerce #ANZ #RetailTech #Shopify",
       "related_filters": {
-        "theme": [
-          "Innovation"
-        ],
-        "geo": [
-          "ANZ"
-        ]
+        "theme": ["AI"],
+        "stage": ["TOFU", "MOFU"]
       },
-      "related_assets": [],
+      "related_assets": [
+        "Australia Post eCommerce Report 2026",
+        "The Renaissance: Agentic Commerce — ShopForward (12 Mar 2026)"
+      ],
       "sources": [
-        "Gmail: Agentic Commerce Executive Round Tables April 30th + May 14t",
-        "Gmail: Melbourne, April 29 - Shopify Connect"
+        "Australia Post eCommerce Report 2026",
+        "Roundtable narrative — mid-May 2026"
       ]
     },
     {
       "rank": 3,
-      "topic": "Unified Commerce",
-      "signal_count": 1,
-      "why_trending": "Detected in 1 recent signal(s): Gmail: The 2026 Australia Post eCommerce report is here",
-      "linkedin_draft": "\ud83c\udfea The gap between online and in-store is officially closing.\n\nAustralian retailers are realising that running two separate systems \u2014 one for ecom, one for retail \u2014 is costing them more than just money. It's costing them speed, data, and customer experience.\n\nThe brands getting it right are the ones treating every touchpoint as one unified experience:\n\u2705 Real-time inventory across all locations\n\u2705 One customer profile \u2014 online and in-store\n\u2705 Campaigns that launch in hours, not days\n\nThe Good Guys did it. Quad Lock did it. Nutrition Warehouse did it.\n\nWhat's stopping you?\n\n#UnifiedCommerce #Shopify #RetailTech #ANZ #eCommerce #ShopifyPOS",
+      "topic": "EOFY prep (Australia)",
+      "signal_count": 2,
+      "why_trending": "With 8 weeks to 30 June, finance and ops leaders are locking budgets and vendor decisions. Good week for ROI-led decks, TCO-style narratives, and POS plus ecommerce unified stories.",
+      "linkedin_draft": "Australian EOFY is eight weeks out.\n\nThat matters for ecommerce and retail tech decisions: anything that touches revenue, cost of sale, or compliance gets extra scrutiny before 30 June.\n\nIf you are in active deals, lead with clarity: total cost of ownership, time to value, and how online and in-store roll up to one view of the business.\n\nLeaders are not buying slides. They are buying a safer path through peak and EOFY reporting.\n\n#EOFY #Retail #ANZ #Shopify #UnifiedCommerce #eCommerce",
       "related_filters": {
-        "theme": [
-          "Unified Commerce"
-        ],
-        "stage": [
-          "MOFU"
-        ]
+        "theme": ["Unified Commerce", "Innovation"],
+        "stage": ["BOFU"],
+        "geo": ["ANZ"]
+      },
+      "related_assets": [
+        "Unlock the Power of Unified Commerce (AU)",
+        "ANZ Burst Deck — Industry & Competitor Share"
+      ],
+      "sources": [
+        "Seasonal sales rhythm — AU May/June 2026"
+      ]
+    },
+    {
+      "rank": 4,
+      "topic": "Unified Commerce proof",
+      "signal_count": 2,
+      "why_trending": "Evergreen but urgent while Connect follow-ups are live: one inventory, one customer, campaigns in hours. Pair ANZ names prospects already know.",
+      "linkedin_draft": "Unified commerce sounds abstract until you spell it in outcomes.\n\nOne inventory truth across channels. One customer profile whether they walk in or check out online. Campaigns that do not need a three-week IT ticket.\n\nIn ANZ we keep seeing the same pattern: the retailers pulling ahead are the ones who stopped accepting \"good enough\" glue between store and ecommerce.\n\nIf your prospect runs separate stacks for POS and DTC, that is the conversation.\n\n#UnifiedCommerce #ShopifyPOS #ANZ #Retail #Shopify",
+      "related_filters": {
+        "theme": ["Unified Commerce"],
+        "stage": ["MOFU"]
       },
       "related_assets": [
         "Unlock the Power of Unified Commerce (AU)",
         "The Good Guys: Double-Digit Online Sales Growth"
       ],
       "sources": [
-        "Gmail: The 2026 Australia Post eCommerce report is here"
+        "Connect follow-up themes — May 2026",
+        "Always-on ANZ GTM"
       ]
     }
   ]
