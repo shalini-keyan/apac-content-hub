@@ -389,9 +389,24 @@
     gap: 10px;
     align-items: stretch;
   }
-  #naturalAgentInput {
+  .na-featured .na-search-wrap {
     flex: 1;
-    padding: 14px 16px;
+    position: relative;
+    min-width: 0;
+  }
+  .na-featured .na-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7c869a;
+    font-size: 16px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .na-featured #search {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
     border-radius: 12px;
     border: 1px solid #334155;
     background: rgba(15,15,36,0.85);
@@ -400,9 +415,10 @@
     font-family: 'Inter', sans-serif;
     outline: none;
     min-height: 52px;
+    box-sizing: border-box;
   }
-  #naturalAgentInput::placeholder { color: #7c869a; }
-  #naturalAgentInput:focus {
+  .na-featured #search::placeholder { color: #7c869a; }
+  .na-featured #search:focus {
     border-color: var(--green-light);
     box-shadow: 0 0 0 4px rgba(0,168,119,0.22);
   }
@@ -541,42 +557,7 @@
     color: #94a3b8;
     font-size: 15px;
     line-height: 1.6;
-    margin-bottom: 28px;
-  }
-
-  /* Search */
-  .search-wrap {
-    position: relative;
-    max-width: 520px;
-    margin: 0 auto;
-  }
-  .search-icon {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8;
-    font-size: 15px;
-    pointer-events: none;
-  }
-  #search {
-    width: 100%;
-    padding: 12px 14px 12px 40px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px;
-    color: #fff;
-    outline: none;
-    transition: border-color 0.2s, background 0.2s;
-    backdrop-filter: blur(8px);
-  }
-  #search::placeholder { color: #64748b; }
-  #search:focus {
-    background: rgba(255,255,255,0.12);
-    border-color: var(--green-light);
-    box-shadow: 0 0 0 3px rgba(0,168,119,0.2);
+    margin-bottom: 0;
   }
 
   /* ── FILTERS ───────────────────────────────────────────── */
@@ -1341,11 +1322,14 @@
       <div class="na-featured-icon" aria-hidden="true">💡</div>
       <div class="na-featured-titles">
         <h2 class="na-featured-h2">Ask me anything</h2>
-        <p class="na-featured-dek">Describe the account, the moment, or the format (deck, case study, blog, LinkedIn). One click turns that into filters and a search so you can scroll the grid below.</p>
+        <p class="na-featured-dek"><strong>Type below</strong> to filter the grid live by keyword. Press <strong>Enter</strong> or <strong>Find assets</strong> to map plain English to stage, type, theme, and region.</p>
       </div>
     </div>
     <div class="na-featured-row">
-      <input type="text" id="naturalAgentInput" placeholder="e.g. BOFU ANZ case study for a large fashion retailer" autocomplete="off" aria-label="Ask in plain language what you need">
+      <div class="na-search-wrap">
+        <span class="na-search-icon" aria-hidden="true">🔍</span>
+        <input type="text" id="search" placeholder="Search live, or describe what you need — Enter / Find assets for smart filters" autocomplete="off" aria-label="Search and smart filters">
+      </div>
       <button type="button" class="natural-agent-btn" id="naturalAgentGo">Find assets</button>
     </div>
     <p class="natural-agent-status" id="naturalAgentStatus">Ready when you are. This box updates filters and search, it does not chat back.</p>
@@ -1364,10 +1348,6 @@
   <div class="hero-inner">
     <h1>APAC Content <span>Hub</span></h1>
     <p>Updated for May 2026. Find the right asset for any account, persona, or campaign stage. Unified Commerce &amp; AI programme — owned+paid and ABM.</p>
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search" placeholder="Search by title, brand, stat, theme…" autocomplete="off">
-    </div>
   </div>
 </section>
 
@@ -2837,7 +2817,7 @@ function parseNaturalRequest(rawText) {
 }
 
 function applyNaturalRequest() {
-  const input = document.getElementById('naturalAgentInput');
+  const input = document.getElementById('search');
   const rawText = (input?.value || '').trim();
   if (!rawText) {
     setNaturalAgentStatus('Add a short description first, then click Find assets.', true);
@@ -2911,7 +2891,7 @@ document.querySelectorAll('.scenario-chip').forEach(chip => {
 });
 
 document.getElementById('naturalAgentGo').addEventListener('click', applyNaturalRequest);
-document.getElementById('naturalAgentInput').addEventListener('keydown', e => {
+document.getElementById('search').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     e.preventDefault();
     applyNaturalRequest();
@@ -2966,8 +2946,6 @@ document.getElementById('sortSelect').addEventListener('change', render);
 document.getElementById('clearBtn').addEventListener('click', () => {
   state = { search: '', stage: [], type: [], geo: [], theme: [], segment: [], status: [] };
   document.getElementById('search').value = '';
-  const naturalInput = document.getElementById('naturalAgentInput');
-  if (naturalInput) naturalInput.value = '';
   document.querySelectorAll('.chip').forEach(c => {
     c.classList.toggle('active', c.dataset.val === 'all');
   });

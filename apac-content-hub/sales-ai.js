@@ -417,8 +417,8 @@
         root.classList.add('open');
         root.setAttribute('aria-hidden', 'false');
         const inp = root.querySelector('[data-sales-ai-input]');
-        const na = document.getElementById('naturalAgentInput');
-        if (inp && na && na.value.trim()) inp.value = na.value.trim();
+        const hubSearch = document.getElementById('search');
+        if (inp && hubSearch && hubSearch.value.trim()) inp.value = hubSearch.value.trim();
         refreshEndpointUi();
         if (inp) setTimeout(() => inp.focus(), 200);
       })
