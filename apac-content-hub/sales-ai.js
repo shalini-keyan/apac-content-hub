@@ -37,6 +37,89 @@
       .filter((t) => t.length > 2);
   }
 
+  /** Greetings and small talk: no LLM in offline mode, so we handle these explicitly. */
+  function isLikelyChitChat(raw) {
+    const q = (raw || '').trim().toLowerCase();
+    if (q.length <= 2) return true;
+    if (
+      /^(hi|hello|hey|hiya|yo|sup|thanks?|thank you|thx|cheers|gm|good (morning|afternoon|evening)|what'?s up|whats up|howdy|how are you|you good|u good|ok(ay)?|cool|nice|lol+)[\s!.?]*$/i.test(
+        q
+      )
+    ) {
+      return true;
+    }
+    const words = q.split(/\s+/).filter(Boolean);
+    if (words.length > 5) return false;
+    const stop = new Set([
+      'hi', 'hello', 'hey', 'yo', 'sup', 'thanks', 'thank', 'you', 'thx', 'cheers', 'whats', 'what', 'up', 'how', 'are', 'is', 'it', 'the', 'a', 'an', 'to', 'in', 'on', 'for', 'there', 'here', 'yes', 'no', 'ok', 'cool', 'nice', 'good', 'doing', 'going', 'just', 'chilling', 'anyone', 'testing', 'test',
+    ]);
+    const allStop = words.every((w) => {
+      const x = w.replace(/[^a-z]/gi, '');
+      return x.length <= 2 || stop.has(x);
+    });
+    return allStop && words.length <= 4;
+  }
+
+  /** Curated ANZ starters when the query does not map to search terms (e.g. “hi”). */
+  function pickAnzStarters(assets, n) {
+    const credOrder = { 'VERY HIGH': 3, HIGH: 2, MED: 1, LOW: 0 };
+    const scored = assets
+      .filter((a) => {
+        const geo = (a.geo || a.region || '').toString();
+        const okGeo = /anz/i.test(geo);
+        const preferType = /pitch|deck|case study|presentation|report|blog/i.test(a.type || '');
+        return okGeo && (a.status === 'published' || !a.status) && (preferType || a.url);
+      })
+      .map((a) => ({
+        a,
+        s: (credOrder[a.credibility] || 0) + (a.title && /anz|pitch|case/i.test(a.title) ? 2 : 0),
+      }))
+      .sort((x, y) => y.s - x.s);
+    const out = [];
+    const seen = new Set();
+    for (const { a } of scored) {
+      const k = a.title || '';
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push(a);
+      if (out.length >= n) break;
+    }
+    return out;
+  }
+
+  function formatPickList(ranked, max) {
+    const lines = [];
+    ranked.slice(0, max).forEach((a, i) => {
+      const link = a.url ? `[${a.title}](${a.url})` : a.title;
+      lines.push(`${i + 1}. ${link} · ${a.type || 'Asset'} · ${a.stage || '—'} · ${a.geo || '—'}`);
+      if (a.summary) lines.push('   ' + trimSummary(a.summary));
+    });
+    return lines;
+  }
+
+  function localChitChatReply(assets) {
+    const starters = pickAnzStarters(assets, 6);
+    const lines = [];
+    lines.push(
+      'Hey! Right now this Copilot is in **offline mode** (no AI endpoint on this site), so I am **not** running a full language model. I cannot freestyle chat the way ChatGPT would.'
+    );
+    lines.push('');
+    lines.push(
+      'What I **can** do here is **rank assets** when you describe a deal or asset type. Try something like: **“BOFU ANZ case study for department stores”** or **“deck for CIO unified commerce”**.'
+    );
+    lines.push('');
+    if (starters.length) {
+      lines.push('**Popular ANZ picks** to open while you refine your ask:');
+      lines.push('');
+      lines.push(...formatPickList(starters, 6));
+      lines.push('');
+    }
+    lines.push(
+      '**Want real back-and-forth?** Your team needs to set `anz-sales-ai-endpoint` on this hub (or test with `?ai=https://…`) to a proxy that calls OpenAI or similar.'
+    );
+    return lines.join('\n');
+  }
+
   /** @param {object[]} assets normalized hub assets */
   function scoreAssetsForQuery(query, assets, limit) {
     const terms = tokenize(query);
@@ -148,11 +231,11 @@
       const hint = document.createElement('div');
       hint.className = 'sales-ai-welcome';
       hint.innerHTML =
-        '<p><strong>Ask anything</strong> about what to send a prospect, which deck fits a CIO meeting, ANZ case studies for retail, etc.</p>' +
-        '<p class="sales-ai-welcome-sub">I pull the closest matches from this hub catalog, then ' +
+        '<p><strong>Ask in plain language</strong> about what to send a prospect, which deck fits a CIO, ANZ case studies, etc.</p>' +
+        '<p class="sales-ai-welcome-sub">' +
         (endpoint
-          ? 'your connected model reasons over them and can ask a clarifying question before recommending.'
-          : '<strong>add an AI endpoint</strong> (meta tag, <code>?ai=</code>, or localStorage) for full reasoning. Until then you still get ranked asset picks.') +
+          ? 'Your connected model sees catalog context and can reply conversationally, including clarifying questions.'
+          : '<strong>No AI endpoint is configured on this site.</strong> Replies use catalog search and templates, not a live chat model. Add <code>anz-sales-ai-endpoint</code> (or <code>?ai=</code>) for real conversation.') +
         '</p>';
       list.appendChild(hint);
       return;
@@ -182,22 +265,40 @@
     root.classList.toggle('sales-ai--busy', !!on);
   }
 
-  function localFallbackReply(query, ranked) {
+  function localFallbackReply(query, ranked, assets) {
     const lines = [];
-    lines.push('Here are the closest assets in this hub right now (connect an AI endpoint for deeper reasoning and follow-up questions).');
+    lines.push(
+      '**Offline mode:** I matched your words against this hub’s catalog (no LLM). Here is what ranked closest.'
+    );
     lines.push('');
     if (!ranked.length) {
-      lines.push('No strong keyword overlap. Try the search bar or name a format (deck, case study, blog).');
+      lines.push(
+        'I did not get strong keyword overlap. Add **stage** (TOFU/MOFU/BOFU), **format** (deck, case study, blog), **industry**, or **ANZ**, then send again.'
+      );
+      lines.push('');
+      const starters = pickAnzStarters(assets, 5);
+      if (starters.length) {
+        lines.push('**ANZ examples you can start from:**');
+        lines.push('');
+        lines.push(...formatPickList(starters, 5));
+        lines.push('');
+      }
+      lines.push(
+        '**Full conversational answers** need an AI endpoint on this site (see tip below).'
+      );
+      lines.push('');
+      lines.push(
+        '**Tip:** `<meta name="anz-sales-ai-endpoint" content="https://…">` or `?ai=` pointing at your secure proxy.'
+      );
       return lines.join('\n');
     }
-    lines.push('**Top picks**');
-    ranked.slice(0, 8).forEach((a, i) => {
-      const link = a.url ? `[${a.title}](${a.url})` : a.title;
-      lines.push(`${i + 1}. ${link} — _${a.type || 'Asset'}_ · ${a.stage || ''} · ${a.geo || ''}`);
-      if (a.summary) lines.push('   ' + trimSummary(a.summary));
-    });
+    lines.push('**Closest matches**');
     lines.push('');
-    lines.push('**Tip:** Add `<meta name="anz-sales-ai-endpoint" content="https://…">` or `?ai=` with your proxy URL to enable the full assistant.');
+    lines.push(...formatPickList(ranked, 8));
+    lines.push('');
+    lines.push(
+      '**Tip:** Connect an endpoint for follow-up questions and synthesis, not just keyword ranking.'
+    );
     return lines.join('\n');
   }
 
@@ -256,8 +357,12 @@
         const hist = chatMessages.slice(0, -1).map((m) => ({ role: m.role, content: m.content }));
         reply = await callAssistant(endpoint, text, hist, contextAssets);
       } else {
-        await new Promise((r) => setTimeout(r, 180));
-        reply = localFallbackReply(text, ranked);
+        await new Promise((r) => setTimeout(r, 120));
+        if (isLikelyChitChat(text)) {
+          reply = localChitChatReply(assetsRef);
+        } else {
+          reply = localFallbackReply(text, ranked, assetsRef);
+        }
       }
 
       chatMessages.push({ role: 'assistant', content: reply });
