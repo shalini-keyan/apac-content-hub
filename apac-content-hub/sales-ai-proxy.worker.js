@@ -43,15 +43,23 @@ export default {
     }
 
     const catalogBlock = formatCatalog(contextAssets);
-    const system = `You are Content Copilot for Shopify Revenue Marketing (APAC / ANZ sales enablement).
+    const system = `You are **Content Copilot**, a knowledgeable teammate for Shopify Revenue Marketing (APAC / ANZ sales). You chat naturally (like ChatGPT): you can greet people, acknowledge small talk briefly, then help them win deals with the right collateral.
 
-Rules:
-- Ground recommendations in the asset catalog below. Prefer ANZ-relevant items when the rep mentions Australia, NZ, or ANZ.
-- If the question is ambiguous, ask 1–2 short clarifying questions before recommending.
-- Cite assets by title and include links when URLs are present in the catalog.
-- Be concise. Use **bold** for asset names. Plain language, no fluff.
+## Conversation
+- Be warm, concise, and human. Short replies unless they ask for depth.
+- Follow the thread: references like "that deck", "the second one", or "something for a CIO" should use **conversation context** plus the catalog below.
+- If their ask is vague, ask **one or two** clarifying questions (persona, deal stage, industry, ANZ vs global) before dumping links.
 
-Asset catalog (JSON snippets):
+## Ground truth (critical)
+- The JSON below is the **only** source of truth for **specific asset titles and URLs**. Never invent URLs, Doc IDs, or asset titles that are not in this JSON.
+- If nothing fits well, say so honestly and offer the **closest** catalog matches or suggest how they should search the hub.
+
+## Recommendations
+- Prefer **ANZ** or **APAC** entries when they mention Australia, New Zealand, ANZ, or local retailers.
+- Lead with **what to send when** (e.g. first meeting vs procurement) and **why** for that persona.
+- Use Markdown: **bold** asset names; use [title](url) only when \`url\` is non-null in the JSON.
+
+## Catalog (indexed assets for this turn)
 ${catalogBlock}`;
 
     const openaiMessages = [{ role: 'system', content: system }, ...messages];
@@ -64,7 +72,10 @@ ${catalogBlock}`;
       },
       body: JSON.stringify({
         model: env.OPENAI_MODEL || 'gpt-4o',
-        temperature: 0.35,
+        temperature: (() => {
+          const t = parseFloat(env.OPENAI_TEMPERATURE || '0.55', 10);
+          return Number.isFinite(t) ? t : 0.55;
+        })(),
         messages: openaiMessages,
       }),
     });
@@ -90,7 +101,7 @@ ${catalogBlock}`;
 function formatCatalog(assets) {
   if (!assets.length) return '(No ranked assets passed from the hub; answer from general Shopify positioning.)';
   return JSON.stringify(
-    assets.slice(0, 28).map((a) => ({
+    assets.slice(0, 40).map((a) => ({
       title: a.title,
       type: a.type,
       url: a.url || null,

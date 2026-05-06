@@ -11,8 +11,30 @@
   'use strict';
 
   const STORAGE_MESSAGES = 'anzSalesAiMessages';
-  const MAX_CONTEXT_ASSETS = 22;
+  const MAX_CONTEXT_ASSETS = 40;
   const SUMMARY_MAX = 420;
+
+  const STOP_FOR_SCORING = new Set(
+    'the and for are but not you all can was one our out day get has him his how its may new now old see two way who did let put say she too use what when with have this that from they been into than then them some will just like also back here come could would should about your want tell help need know think something anything thanks please hello hey hi'.split(
+      ' '
+    )
+  );
+
+  /** Role / intent hints so conversational phrases still retrieve indexed assets */
+  const QUERY_HINTS = [
+    [/(\bcio\b|\bcto\b|\bvp\s*tech\b|\bchief\s*(information|technology)\b|\btech\s*lead\b)/i, 'enterprise pitch deck technical executive unified commerce AI roadmap'],
+    [/(\bcfo\b|\bfinance\b|\bbudget\b|\broi\b|\btco\b)/i, 'ROI business case finance enterprise deck'],
+    [/(\bcmo\b|\bmarketing\s*lead\b)/i, 'marketing campaign content demand gen brand'],
+    [/(\bpos\b|point of sale|in store|in-store|omnichannel|omni channel)/i, 'Shopify POS unified commerce retail online store'],
+    [/(\bwholesale\b|\bb2b\b|trade portal)/i, 'B2B wholesale trade'],
+    [/(\benterprise\b|\blarge account\b|\bla\b)/i, 'enterprise case study deck ANZ'],
+    [/(\bmid[- ]?market\b|\bmm\b)/i, 'mid-market case study deck'],
+    [/(\bcase study\b|customer story|proof point)/i, 'case study'],
+    [/(\bpitch\b|\bdeck\b|\bslides\b|\bpresentation\b)/i, 'pitch deck presentation'],
+    [/(\banz\b|australia|new zealand|\bau\b|\bnz\b)/i, 'ANZ Australia New Zealand'],
+    [/(\bai\b|agentic|sidekick|machine learning)/i, 'AI Sidekick agentic commerce'],
+    [/(\bunified commerce\b|\bomnichannel\b)/i, 'unified commerce'],
+  ];
 
   function getEndpoint() {
     const meta = document.querySelector('meta[name="anz-sales-ai-endpoint"]');
@@ -35,6 +57,41 @@
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
       .filter((t) => t.length > 2);
+  }
+
+  function tokenizeForScore(text) {
+    return tokenize(text).filter((t) => !STOP_FOR_SCORING.has(t));
+  }
+
+  function expandQueryForRetrieval(q) {
+    let out = (q || '').trim();
+    for (const [re, hint] of QUERY_HINTS) {
+      if (re.test(out)) out += ' ' + hint;
+    }
+    return out;
+  }
+
+  /** Use recent user turns so follow-ups like "what about for retail?" still retrieve well */
+  function buildRetrievalQuery(currentText, priorMessages) {
+    const prev = (priorMessages || [])
+      .filter((m) => m.role === 'user')
+      .slice(-3)
+      .map((m) => m.content);
+    return [...prev, currentText].join(' ').slice(0, 2500);
+  }
+
+  function mergeRankedWithCoverage(ranked, assets, limit) {
+    const seen = new Set((ranked || []).map((a) => a.title));
+    const out = [...(ranked || [])];
+    const fillers = pickAnzStarters(assets, limit);
+    for (const a of fillers) {
+      if (out.length >= limit) break;
+      if (a.title && !seen.has(a.title)) {
+        seen.add(a.title);
+        out.push(a);
+      }
+    }
+    return out.slice(0, limit);
   }
 
   /** Greetings and small talk: no LLM in offline mode, so we handle these explicitly. */
@@ -122,7 +179,7 @@
 
   /** @param {object[]} assets normalized hub assets */
   function scoreAssetsForQuery(query, assets, limit) {
-    const terms = tokenize(query);
+    const terms = tokenizeForScore(query);
     if (!terms.length || !assets.length) return [];
 
     const scored = assets.map((a) => {
@@ -231,11 +288,11 @@
       const hint = document.createElement('div');
       hint.className = 'sales-ai-welcome';
       hint.innerHTML =
-        '<p><strong>Ask in plain language</strong> about what to send a prospect, which deck fits a CIO, ANZ case studies, etc.</p>' +
+        '<p><strong>Chat naturally</strong> (like GPT): say hi, describe the deal, or ask what to send a CIO. Each reply uses <strong>your conversation plus ranked rows</strong> from this hub’s catalog so suggestions stay tied to indexed assets.</p>' +
         '<p class="sales-ai-welcome-sub">' +
         (endpoint
-          ? 'Your connected model sees catalog context and can reply conversationally, including clarifying questions.'
-          : '<strong>No AI endpoint is configured on this site.</strong> Replies use catalog search and templates, not a live chat model. Add <code>anz-sales-ai-endpoint</code> (or <code>?ai=</code>) for real conversation.') +
+          ? 'AI endpoint is <strong>on</strong>. Full back-and-forth is enabled; the model only gets URLs and titles from the catalog slice we pass each turn.'
+          : '<strong>No AI endpoint on this page yet.</strong> You get keyword-style answers only, not real chat. Deploy <code>sales-ai-proxy.worker.js</code>, add your OpenAI secret, then set <code>&lt;meta name="anz-sales-ai-endpoint" content="https://…/chat"&gt;</code> or test with <code>?ai=</code>.') +
         '</p>';
       list.appendChild(hint);
       return;
@@ -339,7 +396,10 @@
     if (!text) return;
 
     const endpoint = getEndpoint();
-    const ranked = scoreAssetsForQuery(text, assetsRef, MAX_CONTEXT_ASSETS);
+    const retrievalRaw = buildRetrievalQuery(text, chatMessages);
+    const retrievalExpanded = expandQueryForRetrieval(retrievalRaw);
+    let ranked = scoreAssetsForQuery(retrievalExpanded, assetsRef, MAX_CONTEXT_ASSETS);
+    ranked = mergeRankedWithCoverage(ranked, assetsRef, MAX_CONTEXT_ASSETS);
     const contextAssets = ranked.map(assetToContext);
 
     chatMessages.push({ role: 'user', content: text });

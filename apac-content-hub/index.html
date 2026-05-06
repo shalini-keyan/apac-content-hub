@@ -3137,7 +3137,7 @@ function switchTab(tab, e) { if (e) e.preventDefault(); }
     <div class="sales-ai-head">
       <div>
         <h2 id="salesAiTitle">Content Copilot</h2>
-        <p>Built for sales: ask in plain language. <strong>With an AI endpoint</strong> this is fully conversational. <strong>Without one</strong> (current default) you get smart catalog matching and templated help, not a live model.</p>
+        <p><strong>GPT-style chat</strong> when an endpoint is set: natural back-and-forth, grounded in indexed catalog rows sent each turn. No endpoint means offline keyword help only.</p>
         <span class="sales-ai-pill" data-sales-ai-mode>Catalog: <span data-sales-ai-count>0</span> assets</span>
       </div>
       <div class="sales-ai-head-actions">
@@ -3148,7 +3148,7 @@ function switchTab(tab, e) { if (e) e.preventDefault(); }
     <div data-sales-ai-messages></div>
     <div class="sales-ai-foot">
       <div class="sales-ai-composer">
-        <textarea data-sales-ai-input rows="2" placeholder="e.g. CIO asked about AI and POS together — what should I send for an ANZ retailer?"></textarea>
+        <textarea data-sales-ai-input rows="3" placeholder="Hey — I’m meeting a dept store CIO tomorrow. What deck + case study combo for unified commerce in ANZ?"></textarea>
         <button type="button" data-sales-ai-send>Send</button>
       </div>
       <div data-sales-ai-status></div>
