@@ -44,6 +44,42 @@
     min-height: 100vh;
   }
 
+  /* Opened as file:// — warn; live data + APIs need HTTPS hub */
+  #file-protocol-banner {
+    display: none;
+    background: linear-gradient(90deg, #451a03 0%, #78350f 50%, #451a03 100%);
+    color: #fef3c7;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    border-bottom: 2px solid #f59e0b;
+    position: relative;
+    z-index: 10002;
+    line-height: 1.45;
+  }
+  #file-protocol-banner strong { color: #fff; }
+  #file-protocol-banner a.hub-live-url {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+  }
+  #file-protocol-banner button {
+    margin-left: 10px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  #file-protocol-banner button:hover { background: rgba(255,255,255,0.22); }
+
   /* ── TOP BAR ─────────────────────────────────────────── */
   .topbar {
     background: #1a1a2e;
@@ -1272,6 +1308,29 @@
 </style>
 </head>
 <body>
+
+<div id="file-protocol-banner" role="alert">
+  <strong>Use the live hub.</strong> Bookmark this instead of opening <code style="background:rgba(0,0,0,.25);padding:2px 6px;border-radius:4px;font-size:11px">index.html</code> from disk (<code style="background:rgba(0,0,0,.25);padding:2px 6px;border-radius:4px;font-size:11px">file://…</code>). Otherwise search, assets, and Copilot often break or show stale data.
+  <a class="hub-live-url" href="https://apac-content-hub.quick.shopify.io/">https://apac-content-hub.quick.shopify.io/</a>
+  <button type="button" id="fileProtocolCopyUrl" aria-label="Copy live hub URL">Copy URL</button>
+</div>
+<script>
+(function () {
+  var LIVE = 'https://apac-content-hub.quick.shopify.io/';
+  if (location.protocol !== 'file:') return;
+  var bar = document.getElementById('file-protocol-banner');
+  if (bar) bar.style.display = 'block';
+  var btn = document.getElementById('fileProtocolCopyUrl');
+  if (btn && navigator.clipboard) {
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(LIVE).then(function () {
+        btn.textContent = 'Copied!';
+        setTimeout(function () { btn.textContent = 'Copy URL'; }, 2000);
+      });
+    });
+  }
+})();
+</script>
 
 <!-- TOP BAR -->
 <header class="topbar">
