@@ -8,6 +8,10 @@
 !assets.json
 !hot-this-week.json
 
+# Cloudflare Worker package (Content Copilot deploy)
+!apac-content-hub/workers/content-copilot/package.json
+!apac-content-hub/workers/content-copilot/pnpm-lock.yaml
+
 # ── Internal folders ──────────────────────────────────────────
 2026 Strategic priorities/
 anz-sales-insights/
@@ -42,3 +46,9 @@ review_values.json
 
 # ── Deploy temp folders ───────────────────────────────────────
 /tmp/
+
+# Merchant Swipe: local API key, SQLite cache (do not commit)
+merchant-swipe-app/data/
+
+# Local venv for slide deck generation (python-pptx)
+.venv-deck/
