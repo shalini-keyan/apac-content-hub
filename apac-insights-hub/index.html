@@ -758,8 +758,26 @@
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    margin: 0 0 12px;
+    margin: 0 0 8px;
   }
+  .weekly-signal-defs {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-size: 12px;
+    color: #334155;
+    line-height: 1.55;
+  }
+  .weekly-signal-defs summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  .weekly-signal-defs-body { margin-top: 8px; }
+  .weekly-signal-defs-body p { margin: 0 0 8px; }
+  .weekly-signal-defs-body p:last-child { margin-bottom: 0; }
   .weekly-signal-chip {
     display: inline-flex;
     align-items: center;
@@ -786,10 +804,9 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
-  .weekly-signal-dot.salesready { background: #10b981; }
+  .weekly-signal-dot.outreach { background: #0f766e; }
   .weekly-signal-dot.mqa { background: #16a34a; }
   .weekly-signal-dot.reengaging { background: #ef4444; }
-  .weekly-signal-dot.newcontact { background: #8b5cf6; }
   .weekly-signal-dot.engagement { background: #eab308; }
   .weekly-toolbar {
     display: flex;
@@ -856,15 +873,13 @@
     border-radius: 10px 0 0 10px;
     background: #cbd5e1;
   }
-  .weekly-card.salesready::before { background: #10b981; }
+  .weekly-card.outreach::before { background: #14b8a6; }
   .weekly-card.mqa::before { background: #22c55e; }
   .weekly-card.reengaging::before { background: #ef4444; }
-  .weekly-card.newcontact::before { background: #8b5cf6; }
   .weekly-card.engagement::before { background: #eab308; }
-  .weekly-card.salesready { background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 28%); }
+  .weekly-card.outreach { background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 28%); }
   .weekly-card.mqa { background: linear-gradient(180deg, #f7fee7 0%, #ffffff 28%); }
   .weekly-card.reengaging { background: linear-gradient(180deg, #fff1f2 0%, #ffffff 28%); }
-  .weekly-card.newcontact { background: linear-gradient(180deg, #faf5ff 0%, #ffffff 28%); }
   .weekly-card.engagement { background: linear-gradient(180deg, #fefce8 0%, #ffffff 28%); }
   .weekly-card:hover {
     border-color: #b8c6d3;
@@ -879,10 +894,9 @@
     font-weight: 700;
     border: 1px solid;
   }
-  .weekly-signal-badge.salesready { color: #065f46; background: #d1fae5; border-color: #6ee7b7; }
+  .weekly-signal-badge.outreach { color: #115e59; background: #ccfbf1; border-color: #5eead4; }
   .weekly-signal-badge.mqa { color: #166534; background: #dcfce7; border-color: #86efac; }
   .weekly-signal-badge.reengaging { color: #991b1b; background: #fee2e2; border-color: #fca5a5; }
-  .weekly-signal-badge.newcontact { color: #5b21b6; background: #ede9fe; border-color: #c4b5fd; }
   .weekly-signal-badge.engagement { color: #854d0e; background: #fef9c3; border-color: #fde047; }
   .weekly-card-top {
     display: flex;
@@ -892,6 +906,25 @@
   }
   .weekly-card-name { font-size: 14px; font-weight: 700; color: #111827; line-height: 1.3; }
   .weekly-card-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .weekly-primary-contact {
+    font-size: 12px;
+    color: #1e293b;
+    margin-top: 6px;
+    padding: 6px 8px;
+    background: #f1f5f9;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    line-height: 1.4;
+  }
+  .weekly-pc-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+    display: block;
+    margin-bottom: 2px;
+  }
   .weekly-card-priority-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 52%; }
   .weekly-sfdc-block {
     font-size: 11px; color: #374151; line-height: 1.45;
@@ -1133,7 +1166,7 @@
     <div class="topbar-week-cluster" id="topbar-week-cluster">
       <span class="week-label"><strong id="weekLabel"></strong></span>
       <span id="viewing-week-label"></span>
-      <button type="button" id="btn-prev-week" class="topbar-week-btn" onclick="switchToWeek('prev')" style="display:none" title="View previous week snapshot">← <span id="prev-week-label"></span></button>
+      <button type="button" id="btn-prev-week" class="topbar-week-btn" onclick="switchToWeek('prev')" style="display:none" title="View the previous week snapshot (embedded in weekly-tabs.js)">← <span id="prev-week-label"></span></button>
       <button type="button" id="btn-next-week" class="topbar-week-btn" onclick="switchToWeek('next')" style="display:none" title="Back to latest week"><span id="next-week-label"></span> →</button>
     </div>
     <div class="viewing-as hidden" id="viewingAs" title="Current view">
@@ -1404,19 +1437,25 @@
       <div class="weekly-signal-chip active" data-weekly-signal="all" onclick="toggleWeeklySignal(this)">
         <span class="weekly-signal-dot engagement"></span>All
       </div>
-      <div class="weekly-signal-chip" data-weekly-signal="salesready" onclick="toggleWeeklySignal(this)">
-        <span class="weekly-signal-dot salesready"></span>New Sales Ready
+      <div class="weekly-signal-chip" data-weekly-signal="outreach" onclick="toggleWeeklySignal(this)">
+        <span class="weekly-signal-dot outreach"></span>Outreach-ready
       </div>
       <div class="weekly-signal-chip" data-weekly-signal="mqa" onclick="toggleWeeklySignal(this)">
-        <span class="weekly-signal-dot mqa"></span>MQA · No touch
+        <span class="weekly-signal-dot mqa"></span>MQA · No AE touch
       </div>
       <div class="weekly-signal-chip" data-weekly-signal="reengaging" onclick="toggleWeeklySignal(this)">
         <span class="weekly-signal-dot reengaging"></span>Being worked · Re-engaging
       </div>
-      <div class="weekly-signal-chip" data-weekly-signal="newcontact" onclick="toggleWeeklySignal(this)">
-        <span class="weekly-signal-dot newcontact"></span>New buying contact
-      </div>
     </div>
+    <details class="weekly-signal-defs">
+      <summary>What do these filters mean? (plain English)</summary>
+      <div class="weekly-signal-defs-body">
+        <p><strong>Outreach-ready</strong> combines two old views into one practical bucket: either the <strong>scoring model</strong> says strong fit plus momentum (high pipeline predict and decent qualification or heavy 7-day engagement), <strong>or</strong> the <strong>activity text</strong> looks like a new person or first-time buying contact showing up on the account. Same next step: reach out this week with something specific to what they did.</p>
+        <p><strong>MQA · No AE touch</strong> is Salesforce <strong>Marketing Qualified Account</strong>: the account hit the marketing “enough engagement” bar. People sometimes say <strong>MQL</strong> for a <strong>single lead</strong>; Bob exports here are mostly <strong>account-level</strong>, so we use MQA. These rows are still framed as <strong>no AE touch yet</strong> in this hub.</p>
+        <p><strong>Being worked · Re-engaging</strong> means the account is already in a <strong>sales-owned</strong> stage (for example SAL or an open opportunity) or the journey label reads like re-engagement. Signals are there to <strong>inform the live deal</strong>, not to treat it as cold net-new.</p>
+        <p><strong>All</strong> shows every account in the tab, including lighter web research that did not hit the rules above (those cards still show an <strong>Engagement detail</strong> badge on the card).</p>
+      </div>
+    </details>
     <div class="weekly-toolbar" id="weekly-toolbar">
       <div class="weekly-search-wrap">
         <input id="weekly-search" type="text" placeholder="Search account, owner, SDR, context or keywords" oninput="onWeeklySearch(this.value)">
@@ -3942,6 +3981,10 @@ let activeVicSdr = "all";
 let weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablement: [] };
 let _weeklyDataCurrent = weeklyData;
 let _weeklyDataPrev    = window.WEEKLY_TABS_PREV || null;
+if (_weeklyDataPrev && weeklyData.weekStart && _weeklyDataPrev.weekStart === weeklyData.weekStart) {
+  console.warn("WEEKLY_TABS_PREV matches current weekStart; ignoring duplicate PREV.");
+  _weeklyDataPrev = null;
+}
 let _viewingPrev = false;
 let activeWeeklyTab = "ANZ";
 let weeklySearchQuery = "";
@@ -4004,32 +4047,30 @@ function classifyWeeklySignal(r) {
 
   if (journey.includes("mqa")) return "mqa";
   if (journey.includes("sal") || journey.includes("opp") || journey.includes("re-engag") || journey.includes("reengag")) return "reengaging";
-  if (
+  const newPersonCue =
     context.includes("first time") ||
     context.includes("new contact") ||
     context.includes("new contacts") ||
-    keywords.includes("first time")
-  ) return "newcontact";
-  if (predict >= 0.8 && (qual >= 0.4 || eng7 >= 20)) return "salesready";
+    keywords.includes("first time");
+  const modelReady = predict >= 0.8 && (qual >= 0.4 || eng7 >= 20);
+  if (newPersonCue || modelReady) return "outreach";
   return "engagement";
 }
 
 function signalBadgeLabel(signal) {
   return {
-    salesready: "New Sales Ready",
-    mqa: "MQA · No touch",
+    outreach: "Outreach-ready",
+    mqa: "MQA · No AE touch",
     reengaging: "Being worked · Re-engaging",
-    newcontact: "New buying contact",
     engagement: "Engagement detail",
   }[signal] || "Engagement detail";
 }
 
 function nextActionHint(signal, r) {
   const predict = Number(r.pipelinePredictScore || 0);
-  if (signal === "salesready") return "Prioritise this account this week and send a tailored outreach within 24 hours.";
-  if (signal === "mqa") return "No touch yet: send first outreach with one clear business problem and one proof point.";
-  if (signal === "reengaging") return "Re-open with context: reference prior thread/opportunity and ask what changed.";
-  if (signal === "newcontact") return "Map buying role and send a light intro tied to the exact topic they engaged with.";
+  if (signal === "outreach") return "Reach out this week with one line tied to what they did (person, page, or campaign), plus one business angle from their industry.";
+  if (signal === "mqa") return "No AE touch yet on a marketing-qualified account: first outreach with one clear problem and one proof point.";
+  if (signal === "reengaging") return "Re-open with context: reference the active deal or last thread and ask what changed on their side.";
   if (predict >= 0.7) return "High predict score: move this from monitor to active outreach.";
   return "Keep warm with short, relevant follow-up and watch for repeat commercial activity.";
 }
@@ -4079,6 +4120,7 @@ function filterWeeklyRows(rows) {
       r.priority, r.journeyStage, r.engagedContext, r.campaignKeywords,
       r.salesforceCampaign, r.firstEngaged, r.lastEngaged,
       String(r.priorityRank || ""),
+      String(r.primaryContactSummary || ""),
       (r.contacts || []).map(c => [c.name, c.title, c.email, (c.engagement || []).join(" ")].join(" ")).join(" "),
     ].join(" ").toLowerCase();
     return blob.includes(q);
@@ -4166,12 +4208,17 @@ function buildWeeklyCards(regionName) {
                 </div>`;
               }).join("")}
             </div>` : "";
+        const pcSum = String(r.primaryContactSummary || "").trim();
+        const primaryPersonHtml = pcSum
+          ? `<div class="weekly-primary-contact"><span class="weekly-pc-label">Known person on this account (from exports)</span>${escHtml(shortText(pcSum, 200))}</div>`
+          : "";
         return `
           <div class="weekly-card ${signalType}">
             <div class="weekly-card-top">
               <div>
                 <div class="weekly-card-name">${escHtml(r.account)}</div>
                 <div class="weekly-card-meta">${escHtml(r.country || "")}${r.industry ? ` · ${escHtml(r.industry)}` : ""}</div>
+                ${primaryPersonHtml}
               </div>
               <div class="weekly-card-priority-row">
                 <span class="weekly-priority ${priorityClass}" title="Salesforce Priority">${escHtml(r.priority)}</span>
