@@ -5,7 +5,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEPLOY_DIR="/tmp/apac-content-hub"
+DEPLOY_DIR="$SCRIPT_DIR/apac-content-hub"
 
 echo "📊 Fetching latest data from Google Sheets..."
 /Users/shalini.keyan/.local/bin/python3.12 "$SCRIPT_DIR/refresh-assets.py"
@@ -15,9 +15,8 @@ echo "🔥 Generating Hot This Week..."
 /Users/shalini.keyan/.local/bin/python3.12 "$SCRIPT_DIR/generate-hot-this-week.py"
 
 echo ""
-echo "📁 Copying files to deploy folder..."
+echo "📁 Syncing deploy folder..."
 mkdir -p "$DEPLOY_DIR"
-cp "$SCRIPT_DIR/content-library.html" "$DEPLOY_DIR/index.html"
 cp "$SCRIPT_DIR/assets.json" "$DEPLOY_DIR/assets.json"
 cp "$SCRIPT_DIR/hot-this-week.json" "$DEPLOY_DIR/hot-this-week.json"
 

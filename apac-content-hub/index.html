@@ -1344,7 +1344,7 @@
       ✨ Content Copilot
     </button>
     <span id="lastUpdated" style="display:none;font-size:11px;color:#a0aec0"></span>
-    <a href="https://docs.google.com/spreadsheets/d/1kUt_4iUk_g7mi5I6yV_I68VD29fZ9ho2DfpPmc-5veM/edit" target="_blank">↗ Source Sheet</a>
+    <a href="https://docs.google.com/spreadsheets/d/1kUt_4iUk_g7mi5I6yV_I68VD29fZ9ho2DfpPmc-5veM/edit?gid=702906003#gid=702906003" target="_blank" rel="noopener" title="Opens the ANZ Content Library tab (gid 702906003), the primary tab ingested into this hub">↗ Source Sheet</a>
   </div>
 </header>
 
@@ -3022,6 +3022,8 @@ function updateClearBtn() {
 }
 
 // ── LIVE DATA LOADER ───────────────────────────────────────
+// Catalog data comes from Google Sheet 1kUt_4iUk_g7mi5I6yV_I68VD29fZ9ho2DfpPmc-5veM (tab gid 702906003 = ANZ Content Library + other tabs).
+// Regenerate apac-content-hub/assets.json from the repo root: python3 refresh-assets.py (requires Google auth). file:// cannot call Sheets API; use this JSON + or open https://apac-content-hub.quick.shopify.io/
 function normaliseSheetAsset(a) {
   // Normalise stage: pick first recognisable token
   const stageRaw = (a.stage || '').toUpperCase();

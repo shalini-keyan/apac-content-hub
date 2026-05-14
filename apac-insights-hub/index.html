@@ -56,7 +56,37 @@
     padding: 3px 8px; border-radius: 20px;
     border: 1px solid #30363d;
   }
-  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; flex: 1; min-width: 0; }
+  .topbar-week-cluster {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+  .topbar-week-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #e6edf3;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .topbar-week-btn:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.28);
+  }
+  #viewing-week-label {
+    font-size: 11px;
+    color: #8b949e;
+    max-width: 200px;
+  }
   .week-label { font-size: 12px; color: #8b949e; }
   .week-label strong { color: #e6edf3; }
   .topbar-owner { font-size: 11px; color: #6e7681; }
@@ -862,6 +892,25 @@
   }
   .weekly-card-name { font-size: 14px; font-weight: 700; color: #111827; line-height: 1.3; }
   .weekly-card-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .weekly-card-priority-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 52%; }
+  .weekly-sfdc-block {
+    font-size: 11px; color: #374151; line-height: 1.45;
+    padding: 8px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;
+  }
+  .weekly-sfdc-block dt { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.45px; color: #64748b; margin-top: 6px; }
+  .weekly-sfdc-block dt:first-child { margin-top: 0; }
+  .weekly-sfdc-block dd { margin: 0; color: #1e293b; word-break: break-word; }
+  .weekly-contacts-wrap { margin-top: 2px; }
+  .weekly-contact-card {
+    font-size: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff;
+    margin-bottom: 6px;
+  }
+  .weekly-contact-card:last-child { margin-bottom: 0; }
+  .weekly-contact-mail { font-size: 11px; margin-top: 2px; }
+  .weekly-contact-mail a { color: #0369a1; text-decoration: none; }
+  .weekly-contact-mail a:hover { text-decoration: underline; }
+  .weekly-contact-eng { margin: 6px 0 0 0; padding-left: 16px; color: #475569; }
+  .weekly-contact-eng li { margin-bottom: 3px; }
   .weekly-chip-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .weekly-mini-chip {
     display: inline-flex;
@@ -981,6 +1030,7 @@
   }
   .weekly-priority.high { color: #065f46; background: #d1fae5; border-color: #6ee7b7; }
   .weekly-priority.medium { color: #92400e; background: #fef3c7; border-color: #fcd34d; }
+  .weekly-priority.low { color: #1e40af; background: #dbeafe; border-color: #93c5fd; }
   .weekly-context details { margin-top: 3px; }
   .weekly-context summary { cursor: pointer; color: #2563eb; font-size: 11px; }
   .weekly-enable-grid {
@@ -1080,11 +1130,16 @@
     <span class="topbar-badge">Weekly · APAC</span>
   </div>
   <div class="topbar-right">
+    <div class="topbar-week-cluster" id="topbar-week-cluster">
+      <span class="week-label"><strong id="weekLabel"></strong></span>
+      <span id="viewing-week-label"></span>
+      <button type="button" id="btn-prev-week" class="topbar-week-btn" onclick="switchToWeek('prev')" style="display:none" title="View previous week snapshot">← <span id="prev-week-label"></span></button>
+      <button type="button" id="btn-next-week" class="topbar-week-btn" onclick="switchToWeek('next')" style="display:none" title="Back to latest week"><span id="next-week-label"></span> →</button>
+    </div>
     <div class="viewing-as hidden" id="viewingAs" title="Current view">
       <div class="va-avatar" id="vaAvatar"></div>
       <span class="va-label" id="vaLabel"></span>
     </div>
-    <span class="week-label"><strong id="weekLabel"></strong></span>
   </div>
 </div>
 
@@ -1323,13 +1378,13 @@
     <div class="weekly-head">
       <div>
         <div class="weekly-title" id="weeklyTitle">Regional Account Tabs</div>
-        <div class="weekly-sub">High + medium priority only, Education removed, context + campaign keywords + SDR retained.</div>
+        <div class="weekly-sub">Sorted by Salesforce Priority (High → Medium → Low), universities + service providers removed, SF campaign + first/last engaged + contact snippets where exports include them.</div>
       </div>
       <div class="weekly-sub" id="weekly-sub-count"></div>
     </div>
     <div class="weekly-guide" id="weekly-guide-default">
       <div class="weekly-guide-title">How to use this view</div>
-      <div class="weekly-guide-copy">Pick a country tab, scan <strong>High priority</strong> first, then review engagement context and campaign/keyword signals before outreach.</div>
+      <div class="weekly-guide-copy">Pick a country tab: accounts sort by Salesforce <strong>Priority</strong> (High → Medium → Low), then 7-day engagement. Use SF campaign + first/last engaged plus contact snippets for talk tracks.</div>
       <div class="weekly-score-help"><strong>How to read scores:</strong> Predict and Qual are 0 to 1 models (shown as 0 to 100%). Use bands: <strong>80%+</strong> high, <strong>50% to 79%</strong> medium, <strong>below 50%</strong> low. Engagement scores are relative activity signals, not revenue.</div>
     </div>
     <div class="weekly-guide enablement" id="weekly-guide-enablement">
@@ -1339,9 +1394,11 @@
     <div class="weekly-legend" id="weekly-legend">
       <span class="weekly-priority high">High priority</span>
       <span class="weekly-priority medium">Medium priority</span>
+      <span class="weekly-priority low">Low priority</span>
       <span class="weekly-mini-chip">Context retained</span>
       <span class="weekly-mini-chip">Campaign/keyword retained</span>
       <span class="weekly-mini-chip">SDR shown where available</span>
+      <span class="weekly-mini-chip">SF Priority ordering</span>
     </div>
     <div class="weekly-signal-filters" id="weekly-signal-filters">
       <div class="weekly-signal-chip active" data-weekly-signal="all" onclick="toggleWeeklySignal(this)">
@@ -1380,7 +1437,7 @@
 // ─────────────────────────────────────────────────
 // DATA — replace with real weekly CSV pull
 // ─────────────────────────────────────────────────
-const WEEK = ((window.WEEKLY_TABS_DATA && window.WEEKLY_TABS_DATA.week) || "Week of 27 Apr 2026").replace(/^Week of\s*/i, "");
+let WEEK = ((window.WEEKLY_TABS_DATA && window.WEEKLY_TABS_DATA.week) || "Week of 27 Apr 2026").replace(/^Week of\s*/i, "");
 const AVAILABLE_WEEK_SNAPSHOTS = {
   "Apr 13": "https://apacinsights-apr13.quick.shopify.io"
 };
@@ -3882,7 +3939,10 @@ const vicAccounts = [
 ];
 
 let activeVicSdr = "all";
-const weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablement: [] };
+let weeklyData = window.WEEKLY_TABS_DATA || { week: "", regions: {}, enablement: [] };
+let _weeklyDataCurrent = weeklyData;
+let _weeklyDataPrev    = window.WEEKLY_TABS_PREV || null;
+let _viewingPrev = false;
 let activeWeeklyTab = "ANZ";
 let weeklySearchQuery = "";
 let activeWeeklySignals = new Set(["all"]);
@@ -3901,6 +3961,14 @@ function shortText(v, max = 180) {
   const text = String(v || "").trim();
   if (text.length <= max) return text;
   return `${text.slice(0, max).trim()}...`;
+}
+
+function fmtEngDate(s) {
+  if (!s) return "—";
+  const t = String(s).trim();
+  const m = t.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (m) return m[1];
+  return shortText(t, 22);
 }
 
 function splitSignalItems(text, maxItems = 4) {
@@ -4008,7 +4076,10 @@ function filterWeeklyRows(rows) {
     if (!q) return true;
     const blob = [
       r.account, r.accountOwner, r.sdrOwner, r.country, r.industry,
-      r.priority, r.journeyStage, r.engagedContext, r.campaignKeywords
+      r.priority, r.journeyStage, r.engagedContext, r.campaignKeywords,
+      r.salesforceCampaign, r.firstEngaged, r.lastEngaged,
+      String(r.priorityRank || ""),
+      (r.contacts || []).map(c => [c.name, c.title, c.email, (c.engagement || []).join(" ")].join(" ")).join(" "),
     ].join(" ").toLowerCase();
     return blob.includes(q);
   });
@@ -4056,7 +4127,8 @@ function buildWeeklyCards(regionName) {
   return `
     <div class="weekly-cards">
       ${rows.map(r => {
-        const priorityClass = String(r.priority || "").toLowerCase() === "high" ? "high" : "medium";
+        const prLow = String(r.priority || "").toLowerCase();
+        const priorityClass = prLow === "high" ? "high" : prLow === "low" ? "low" : "medium";
         const sfUrl = r.accountId ? `https://banff.lightning.force.com/lightning/r/Account/${r.accountId}/view` : "";
         const signalType = classifyWeeklySignal(r);
         const signalLabel = signalBadgeLabel(signalType);
@@ -4068,6 +4140,32 @@ function buildWeeklyCards(regionName) {
         const eng3 = formatMetric("eng3", r.engagement3m);
         const predict = formatMetric("predict", r.pipelinePredictScore);
         const qual = formatMetric("qual", r.qualificationScore);
+        const sfCamp = String(r.salesforceCampaign || "").trim();
+        const sfdcMetaHtml = (sfCamp || r.firstEngaged || r.lastEngaged) ? `
+            <div class="weekly-sfdc-block">
+              <dl style="margin:0;">
+                ${sfCamp ? `<dt>Salesforce campaign / source</dt><dd>${escHtml(shortText(sfCamp, 220))}</dd>` : ""}
+                <dt>First engaged</dt><dd>${escHtml(fmtEngDate(r.firstEngaged))}</dd>
+                <dt>Last engaged</dt><dd>${escHtml(fmtEngDate(r.lastEngaged))}</dd>
+              </dl>
+            </div>` : "";
+        const contacts = Array.isArray(r.contacts) ? r.contacts : [];
+        const contactsHtml = contacts.length ? `
+            <div class="weekly-block weekly-contacts-wrap">
+              <div class="weekly-block-title">Contacts</div>
+              ${contacts.map(c => {
+                const eng = Array.isArray(c.engagement) ? c.engagement : [];
+                const engLis = eng.length
+                  ? `<ul class="weekly-contact-eng">${eng.map(line => `<li>${escHtml(shortText(line, 140))}</li>`).join("")}</ul>`
+                  : "";
+                const mail = c.email ? `<div class="weekly-contact-mail"><a href="mailto:${escHtml(c.email)}">${escHtml(c.email)}</a></div>` : "";
+                return `<div class="weekly-contact-card">
+                  <strong>${escHtml(c.name || "")}</strong>${c.title ? ` · ${escHtml(c.title)}` : ""}
+                  ${mail}
+                  ${engLis}
+                </div>`;
+              }).join("")}
+            </div>` : "";
         return `
           <div class="weekly-card ${signalType}">
             <div class="weekly-card-top">
@@ -4075,7 +4173,9 @@ function buildWeeklyCards(regionName) {
                 <div class="weekly-card-name">${escHtml(r.account)}</div>
                 <div class="weekly-card-meta">${escHtml(r.country || "")}${r.industry ? ` · ${escHtml(r.industry)}` : ""}</div>
               </div>
-              <span class="weekly-priority ${priorityClass}">${escHtml(r.priority)}</span>
+              <div class="weekly-card-priority-row">
+                <span class="weekly-priority ${priorityClass}" title="Salesforce Priority">${escHtml(r.priority)}</span>
+              </div>
             </div>
 
             <div class="weekly-chip-row">
@@ -4107,6 +4207,8 @@ function buildWeeklyCards(regionName) {
               </div>
             </div>
 
+            ${sfdcMetaHtml}
+
             <div class="weekly-block">
               <div class="weekly-block-title">Top engagement signals</div>
               ${
@@ -4124,6 +4226,8 @@ function buildWeeklyCards(regionName) {
                   : `<div class="weekly-block-copy">No keyword/campaign data.</div>`
               }
             </div>
+
+            ${contactsHtml}
 
             <div class="weekly-action"><strong>Now what:</strong> ${escHtml(actionHint)}</div>
 
@@ -4284,6 +4388,19 @@ function showCountryMode(defaultTab = "ANZ") {
   switchWeeklyTab(defaultTab, document.querySelector(`.view-tab[data-weekly-tab="${defaultTab}"]`));
 }
 
+function switchToWeek(which) {
+  if (which === 'prev' && _weeklyDataPrev && !_viewingPrev) {
+    weeklyData = _weeklyDataPrev;
+    _viewingPrev = true;
+  } else if (which === 'next' && _viewingPrev) {
+    weeklyData = _weeklyDataCurrent;
+    _viewingPrev = false;
+  }
+  WEEK = (weeklyData.week || "").replace(/^Week of\s*/i, "");
+  updateWeeklyCounts();
+  renderWeeklyView();
+}
+
 function updateWeeklyCounts() {
   const regions = weeklyData.regions || {};
   const anz = (regions["ANZ"] || []).length;
@@ -4302,28 +4419,38 @@ function updateWeeklyCounts() {
   const title = document.getElementById("weeklyTitle");
   if (title) title.textContent = `Week of ${WEEK}, Regional Account Tabs`;
 
-  const prevLink = document.getElementById("prevWeekLink");
-  if (prevLink && weeklyData.weekStart) {
-    const parsed = new Date(`${weeklyData.weekStart}T00:00:00`);
-    if (!Number.isNaN(parsed.getTime())) {
-      const prev = new Date(parsed.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const month = prev.toLocaleString("en-AU", { month: "short" });
-      const day = String(prev.getDate()).padStart(2, "0");
-      const prevLabel = `${month} ${day}`;
-      const snapshotUrl = AVAILABLE_WEEK_SNAPSHOTS[prevLabel];
-      if (snapshotUrl) {
-        prevLink.href = snapshotUrl;
-        prevLink.textContent = `← Previous week: ${prevLabel}`;
-        prevLink.style.opacity = "1";
-        prevLink.style.pointerEvents = "auto";
+  // ── Week navigation bar ──────────────────────────────────────────────────
+  const btnPrev  = document.getElementById("btn-prev-week");
+  const btnNext  = document.getElementById("btn-next-week");
+  const lblPrev  = document.getElementById("prev-week-label");
+  const lblNext  = document.getElementById("next-week-label");
+  const lblView  = document.getElementById("viewing-week-label");
+
+  if (btnPrev && btnNext) {
+    const currentWeek  = (_weeklyDataCurrent.week || "").replace(/^Week of\s*/i, "");
+    const prevWeekStr  = (_weeklyDataPrev && _weeklyDataPrev.week || "").replace(/^Week of\s*/i, "");
+
+    if (_viewingPrev) {
+      // Viewing previous week — show "→ current" button
+      if (lblNext)  lblNext.textContent  = currentWeek;
+      btnNext.style.display = "inline-block";
+      btnPrev.style.display = "none";
+      if (lblView) lblView.textContent   = `Viewing: ${WEEK}`;
+    } else {
+      // Viewing current week — show "← prev" button if prev data exists
+      if (_weeklyDataPrev) {
+        if (lblPrev) lblPrev.textContent = prevWeekStr;
+        btnPrev.style.display = "inline-block";
       } else {
-        prevLink.removeAttribute("href");
-        prevLink.textContent = `← Previous week: ${prevLabel} (snapshot unavailable)`;
-        prevLink.style.opacity = "0.65";
-        prevLink.style.pointerEvents = "none";
+        btnPrev.style.display = "none";
       }
+      btnNext.style.display = "none";
+      if (lblView) lblView.textContent = "";
     }
   }
+
+  const prevLink = document.getElementById("prevWeekLink");
+  if (prevLink) prevLink.style.display = "none"; // superseded by new nav bar
 }
 
 function intentClass(score) {

@@ -1,9 +1,7 @@
 /**
  * Content Copilot for APAC Content Hub — client bundle.
- * Configure the AI backend via:
- *   <meta name="anz-sales-ai-endpoint" content="https://your-worker.workers.dev/chat">
- *   or URL query ?ai=https://...
- *   or localStorage.setItem('anzSalesAiEndpoint', url)
+ * Endpoint URL resolution (first wins): ?ai= → localStorage anzSalesAiEndpoint → <meta name="anz-sales-ai-endpoint"> → ./copilot-endpoint.json { "endpoint": "https://…" }.
+ * Hosting options without Cloudflare: COPILOT-HOSTING.md
  *
  * Without an endpoint, sends still rank catalog assets and show a local fallback summary.
  */
@@ -36,10 +34,8 @@
     [/(\bunified commerce\b|\bomnichannel\b)/i, 'unified commerce'],
   ];
 
+  /** @see loadRemoteEndpointHint */
   function getEndpoint() {
-    const meta = document.querySelector('meta[name="anz-sales-ai-endpoint"]');
-    const fromMeta = meta && meta.getAttribute('content');
-    if (fromMeta && fromMeta.trim()) return fromMeta.trim();
     try {
       const q = new URLSearchParams(window.location.search).get('ai');
       if (q) return q.trim();
@@ -48,7 +44,32 @@
       const ls = localStorage.getItem('anzSalesAiEndpoint');
       if (ls) return ls.trim();
     } catch (_) {}
+    const meta = document.querySelector('meta[name="anz-sales-ai-endpoint"]');
+    const fromMeta = meta && meta.getAttribute('content');
+    if (fromMeta && fromMeta.trim()) return fromMeta.trim();
+    try {
+      const re = window.__anzSalesAiRemoteEndpoint;
+      if (re && String(re).trim()) return String(re).trim();
+    } catch (_) {}
     return '';
+  }
+
+  function newSessionId() {
+    try {
+      if (crypto.randomUUID) return crypto.randomUUID();
+    } catch (_) {}
+    return 's' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
+  }
+
+  function loadRemoteEndpointHint() {
+    return fetch('./copilot-endpoint.json', { cache: 'no-cache' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j && typeof j.endpoint === 'string' && j.endpoint.trim()) {
+          window.__anzSalesAiRemoteEndpoint = j.endpoint.trim();
+        }
+      })
+      .catch(function () {});
   }
 
   function tokenize(text) {
@@ -292,7 +313,7 @@
         '<p class="sales-ai-welcome-sub">' +
         (endpoint
           ? 'AI endpoint is <strong>on</strong>. Full back-and-forth is enabled; the model only gets URLs and titles from the catalog slice we pass each turn.'
-          : '<strong>No AI endpoint on this page yet.</strong> You get keyword-style answers only, not real chat. Deploy <code>sales-ai-proxy.worker.js</code>, add your OpenAI secret, then set <code>&lt;meta name="anz-sales-ai-endpoint" content="https://…/chat"&gt;</code> or test with <code>?ai=</code>.') +
+          : '<strong>No AI endpoint yet.</strong> Keyword-style answers only until you point the hub at your proxy (e.g. <code>?ai=https://…</code>, meta <code>anz-sales-ai-endpoint</code>, or <code>copilot-endpoint.json</code> next to this site).') +
         '</p>';
       list.appendChild(hint);
       return;
@@ -345,7 +366,7 @@
       );
       lines.push('');
       lines.push(
-        '**Tip:** `<meta name="anz-sales-ai-endpoint" content="https://…">` or `?ai=` pointing at your secure proxy.'
+        '**Tip:** Add `?ai=`, meta tag, or `copilot-endpoint.json` with your Vercel `/api/chat` or Worker `/chat` URL.'
       );
       return lines.join('\n');
     }
@@ -363,7 +384,7 @@
     const body = {
       messages: history.concat([{ role: 'user', content: userText }]),
       contextAssets,
-      sessionId: window.__anzSalesAiSession || (window.__anzSalesAiSession = crypto.randomUUID()),
+      sessionId: window.__anzSalesAiSession || (window.__anzSalesAiSession = newSessionId()),
     };
 
     const ctrl = new AbortController();
@@ -469,30 +490,32 @@
     const root = document.getElementById('salesAiPanel');
     if (!root) return;
 
-    wire(root);
+    return loadRemoteEndpointHint().then(function () {
+      wire(root);
 
-    const openers = document.querySelectorAll('[data-open-sales-ai]');
-    openers.forEach((el) =>
-      el.addEventListener('click', () => {
-        root.classList.add('open');
-        root.setAttribute('aria-hidden', 'false');
-        const inp = root.querySelector('[data-sales-ai-input]');
-        const hubSearch = document.getElementById('search');
-        if (inp && hubSearch && hubSearch.value.trim()) inp.value = hubSearch.value.trim();
-        refreshEndpointUi();
-        if (inp) setTimeout(() => inp.focus(), 200);
-      })
-    );
+      const openers = document.querySelectorAll('[data-open-sales-ai]');
+      openers.forEach((el) =>
+        el.addEventListener('click', () => {
+          root.classList.add('open');
+          root.setAttribute('aria-hidden', 'false');
+          const inp = root.querySelector('[data-sales-ai-input]');
+          const hubSearch = document.getElementById('search');
+          if (inp && hubSearch && hubSearch.value.trim()) inp.value = hubSearch.value.trim();
+          refreshEndpointUi();
+          if (inp) setTimeout(() => inp.focus(), 200);
+        })
+      );
 
-    root.querySelectorAll('[data-close-sales-ai]').forEach((el) => {
-      el.addEventListener('click', () => {
-        root.classList.remove('open');
-        root.setAttribute('aria-hidden', 'true');
+      root.querySelectorAll('[data-close-sales-ai]').forEach((el) => {
+        el.addEventListener('click', () => {
+          root.classList.remove('open');
+          root.setAttribute('aria-hidden', 'true');
+        });
       });
-    });
 
-    renderChat(root);
-    refreshEndpointUi();
+      renderChat(root);
+      refreshEndpointUi();
+    });
   }
 
   function refreshEndpointUi() {
@@ -510,7 +533,9 @@
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount);
+    document.addEventListener('DOMContentLoaded', function () {
+      mount();
+    });
   } else {
     mount();
   }

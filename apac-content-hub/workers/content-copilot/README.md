@@ -2,6 +2,8 @@
 
 Proxies the hub to OpenAI so **Content Copilot** can chat like GPT while only citing assets from the catalog JSON each request sends.
 
+**No Cloudflare access?** Use Vercel, local + ngrok, or another host. See [`../../COPILOT-HOSTING.md`](../../COPILOT-HOSTING.md).
+
 ## One-time setup
 
 From this directory:

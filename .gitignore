@@ -7,6 +7,11 @@
 # ── Re-allow generated site data ─────────────────────────────
 !assets.json
 !hot-this-week.json
+!apac-content-hub/copilot-endpoint.json
+
+# APAC Content Hub — Vercel + npm scripts
+!apac-content-hub/package.json
+!apac-content-hub/vercel.json
 
 # Cloudflare Worker package (Content Copilot deploy)
 !apac-content-hub/workers/content-copilot/package.json

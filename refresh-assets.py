@@ -6,7 +6,7 @@ Reads from:
   2. Slack channels (SLACK_CHANNELS list below) — extracts content links from messages
 
 Run: /Users/shalini.keyan/.local/bin/python3.12 refresh-assets.py
-Then: quick deploy /tmp/anz-content-library anzcontent
+Then: ./deploy.sh
 """
 import json, re, sys, subprocess, datetime
 
@@ -22,6 +22,7 @@ SPREADSHEET_ID = "1kUt_4iUk_g7mi5I6yV_I68VD29fZ9ho2DfpPmc-5veM"
 
 SOURCES = [
     # ── Core master inventories ───────────────────────────────────────────
+    # ANZ Content Library (gid 702906003) = primary tab deep-linked from apac-content-hub/index.html "Source Sheet"
     {"name": "ANZ Content Library",            "gid": "702906003",  "region": "ANZ",    "schema": "master"},
     {"name": "Presentations & Pitch Decks",    "gid": "345448935",  "region": "ANZ",    "schema": "master"},
     # ── Vertical content audits ───────────────────────────────────────────
@@ -58,7 +59,7 @@ SLACK_CHANNELS = [
 ]
 
 OUTPUT_PATH = "/Users/shalini.keyan/Cursor Workspaces/outline/assets.json"
-DEPLOY_DIR  = "/tmp/anz-content-library"
+DEPLOY_DIR  = "/Users/shalini.keyan/Cursor Workspaces/outline/apac-content-hub"
 
 # ── URL CLASSIFICATION ──────────────────────────────────────────────────────
 URL_RULES = [
@@ -1427,11 +1428,11 @@ def main():
     if os.path.exists(DEPLOY_DIR):
         shutil.copy(OUTPUT_PATH, f"{DEPLOY_DIR}/assets.json")
         shutil.copy(
-            "/Users/shalini.keyan/Cursor Workspaces/outline/content-library.html",
+            "/Users/shalini.keyan/Cursor Workspaces/outline/apac-content-hub/index.html",
             f"{DEPLOY_DIR}/index.html"
         )
         print(f"📁 Copied to {DEPLOY_DIR}/")
-        print(f"\nTo deploy: quick deploy {DEPLOY_DIR} anzcontent")
+        print("\nTo deploy: ./deploy.sh")
 
 if __name__ == '__main__':
     main()
